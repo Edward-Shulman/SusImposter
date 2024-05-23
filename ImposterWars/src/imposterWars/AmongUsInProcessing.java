@@ -1,5 +1,7 @@
 package imposterWars;
 
+import java.util.ArrayList;
+
 import processing.core.PApplet;
 
 public class AmongUsInProcessing extends PApplet
@@ -9,9 +11,10 @@ public class AmongUsInProcessing extends PApplet
 	private boolean keyRight, keyLeft, keyUp, keyDown;
 	private boolean inStart, inCaf, inCenterHallway, inUpperLeftHallway, inWeapons, inMedbay, inAdmin, inStorage, inRightHallway, inOxygen, inNavigation, inShields, inBottomRightHallway;
 	private boolean inComms, inBottomLeftHallway, inElectrical, inUpperEngine, inLowerEngine, inLeftHallway, inReactor, inSecurity, inEmptyRoom, inWinRoom, imposter;
-	Amoghi amoghi;
-	Amoghi[] guys = new Amoghi[10];
+	AmmoDrop ammoDrops;
+	AmmoDrop[] guys = new AmmoDrop[10];
 	PlayerClient player;
+	ArrayList<Bullet> bullets;
 	
 	public static void main(String[] args)
 	{
@@ -26,14 +29,14 @@ public class AmongUsInProcessing extends PApplet
 	public void setup()
 	{
 		player = new PlayerClient(255, 0, 0, this);
-		amoghi = new Amoghi(this, 400, 400);
+		ammoDrops = new AmmoDrop(this, 400, 400);
 		playerX = 400;
 		playerY = 400;
 		playerRed = 247;
 		playerGreen = 37;
 		playerBlue = 37;
-		centerX = amoghi.generateX();
-		centerY = amoghi.generateY();
+		centerX = ammoDrops.generateX();
+		centerY = ammoDrops.generateY();
 		keyRight = false;
 		keyLeft = false;
 		keyUp = false;
@@ -64,10 +67,12 @@ public class AmongUsInProcessing extends PApplet
 		inEmptyRoom = false;
 		imposter = false;
 		elapsedTime = 0;
+		bullets = new ArrayList<>();
 	}
 	
 	public void draw()
 	{
+		
 		if (inStart)
 			drawStartScreen();
 		
@@ -428,23 +433,32 @@ public class AmongUsInProcessing extends PApplet
 		if (!inStart)
 		{
 			player.draw();
+			drawHUD();
 			player.move();
+			rotatePlayer();
+			int i = 0;
+			while (i < bullets.size())
+			{
+				Bullet b = bullets.get(i);
+				b.draw();
+				if (b.move()) 
+				{
+					i++;
+				}
+				else
+				{
+					bullets.remove(i);
+				}
+			}
 		}
 		
 		//spawnimposter
 		if(dist(playerX, playerY, centerX, centerY) <= 130 && ! inStart)
 		{
-			centerX = amoghi.generateX();
-			centerY = amoghi.generateY();
+			centerX = ammoDrops.generateX();
+			centerY = ammoDrops.generateY();
 			this.spawnAmongUs();
 			score += 1;
-		}
-		
-		if(! inStart && ! imposter)
-		{
-			textSize(20);
-			text("Your score is " + (score), 20, 40);
-			this.spawnAmongUs();
 		}
 		
 		if(imposter)
@@ -453,7 +467,7 @@ public class AmongUsInProcessing extends PApplet
 	
 	public void spawnAmongUs()
 	{
-		amoghi.drawAmongUs(centerX, centerY);
+		ammoDrops.drawAmongUs(centerX, centerY);
 	}
 	
 	public boolean isColliding()
@@ -890,7 +904,7 @@ public class AmongUsInProcessing extends PApplet
 		for(int i = 0; i < 10; i++)
 		{
 			random = (int) (Math.random() * 20);
-			guys[i] = new Amoghi(this, amoghi.generateX(), amoghi.generateY(), random);
+			guys[i] = new AmmoDrop(this, ammoDrops.generateX(), ammoDrops.generateY(), random);
 		}
 	}
 
@@ -1170,6 +1184,16 @@ public class AmongUsInProcessing extends PApplet
 				player.setColor(41, 41, 38);
 			}
 		}
+		else
+		{
+			if (player.getAmmo() != 0)
+			{
+				bullets.add(new Bullet(player.getX() + 165 * cos(player.getRotation()), player.getY() + 165 * sin(player.getRotation()), player.getRColor(), 
+						player.getGColor(), player.getBColor(), player.getRotation(), this));
+				
+				player.setAmmo(player.getAmmo() - 1);
+			}
+		}
 	}
 	
 	public boolean inRect(float x, float y, float rX, float rY, float w, float h)
@@ -1213,5 +1237,21 @@ public class AmongUsInProcessing extends PApplet
 		rect(170, 480, 70, 70);
 		fill(41, 41, 38); //black
 		rect(470, 480, 70, 70);
+	}
+	
+	public void drawHUD()
+	{
+		fill(player.getRColor(), player.getGColor(), player.getBColor());
+		rect(0, 600, 700, 100);
+		fill(255);
+		textSize(30);
+		text("Kills: " + player.getKills(), 20, 640);
+		text("Health: " + player.getHealth(), 250, 640);
+		text("Ammo: " + player.getAmmo(), 460, 640);
+	}
+	
+	public void rotatePlayer() 
+	{
+		player.setRotation(atan2(mouseY - player.getY(), mouseX - player.getX()));
 	}
 }

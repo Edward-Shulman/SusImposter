@@ -2,14 +2,14 @@ package imposterWars;
 
 import processing.core.PApplet;
 
-public class Amoghi
+public class AmmoDrop
 {
 	
 	private PApplet parent;
 	int centerX, centerY;
 	private int room;
 	
-	public Amoghi(PApplet p, int x, int y)
+	public AmmoDrop(PApplet p, int x, int y)
 	{
 		parent = p;
 		centerX = x;
@@ -17,7 +17,7 @@ public class Amoghi
 		room = -1;
 	}
 	
-	public Amoghi(PApplet p, int x, int y, int r)
+	public AmmoDrop(PApplet p, int x, int y, int r)
 	{
 		parent = p;
 		centerX = x;
