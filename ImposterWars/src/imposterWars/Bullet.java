@@ -9,6 +9,7 @@ public class Bullet
 	private int color;
 	private PVector velocity;
 	private PApplet a;
+	private int owner;
 	
 	public Bullet(float x, float y, int r, int g, int b, float rotation, PApplet a)
 	{
