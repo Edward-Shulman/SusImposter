@@ -14,6 +14,7 @@ public class AmongUsInProcessing extends PApplet
 	AmmoDrop[] ammoDrops;
 	PlayerClient player;
 	ArrayList<Bullet> bullets;
+	static GameState state;
 	
 	public static void main(String[] args)
 	{
@@ -1266,7 +1267,7 @@ public class AmongUsInProcessing extends PApplet
 		fill(255);
 		textSize(30);
 		text("Host Game", 120, 650);
-		text("Join Game", 520, 650);
+		text("Join Game", 420, 650);
 	}
 	
 	public void drawHUD()

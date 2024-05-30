@@ -1,5 +1,11 @@
 package imposterWars;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -34,6 +40,41 @@ public class PlayerClient
 		rotation = 0;
 		weapon = a.loadImage("assets/real.png");
 		weapon.resize(100, 0);
+	}
+	
+	public PlayerClient(byte[] buf, int offset, int len) throws IOException {
+		ByteArrayInputStream bais = new ByteArrayInputStream(buf, offset, len);
+		DataInputStream d = new DataInputStream(bais);
+		
+		room = Rooms.values()[d.readInt()];
+		x = d.readFloat();
+		y = d.readFloat();
+		int color = d.readInt();
+		rColor = (color >> 16) & 0xff;
+		gColor = (color >> 8) & 0xFF;
+		bColor = color & 0xFF;
+		ammo = d.readInt();
+		kills = d.readInt();
+		health = d.readInt();
+		vX = d.readFloat();
+		vY = d.readFloat();
+		rotation = d.readFloat();
+	}
+	
+	public byte[] toBytes() throws IOException {
+		ByteArrayOutputStream result = new ByteArrayOutputStream(40);
+		DataOutputStream d = new DataOutputStream(result);
+		d.writeInt(room.getID());
+		d.writeFloat(x);
+		d.writeFloat(y);
+		d.writeInt(a.color(rColor, gColor, bColor));
+		d.writeInt(ammo);
+		d.writeInt(kills);
+		d.writeInt(health);
+		d.writeFloat(vX);
+		d.writeFloat(vY);
+		d.writeFloat(rotation);
+		return result.toByteArray();
 	}
 	
 	public void draw()
