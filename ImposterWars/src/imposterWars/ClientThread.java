@@ -10,13 +10,15 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 
-public class ClientThread extends Thread {
+public class ClientThread extends Thread 
+{
 
 	private DatagramSocket socket;
 	private boolean connected;
 	private InetSocketAddress serverAddr;
 	
-	public ClientThread(int port, InetAddress serverAddr) throws SocketException {
+	public ClientThread(int port, InetAddress serverAddr) throws SocketException 
+	{
 		super();
 		socket = new DatagramSocket(port);
 		connected = true;
@@ -24,11 +26,14 @@ public class ClientThread extends Thread {
 	}
 	
 	@Override
-	public void run() {
-		while (connected) {
+	public void run() 
+	{
+		while (connected) 
+		{
 			byte[] buf = new byte[1024];
 			DatagramPacket recievePacket = new DatagramPacket(buf, 0, 1024);
-			try {
+			try 
+			{
 				socket.receive(recievePacket);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -36,8 +41,10 @@ public class ClientThread extends Thread {
 			}
 			
 			DataInputStream recieve = new DataInputStream(new ByteArrayInputStream(recievePacket.getData(), recievePacket.getOffset(), recievePacket.getLength()));
-			try {
-				switch (PacketTypes.values()[recieve.read()]) {
+			try 
+			{
+				switch (PacketTypes.values()[recieve.read()]) 
+				{
 				case END_MOVE_X:
 					break;
 				case END_MOVE_Y:
@@ -68,7 +75,9 @@ public class ClientThread extends Thread {
 					break;
 				
 				}
-			} catch (IOException e) {
+			} 
+			catch (IOException e) 
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -77,15 +86,19 @@ public class ClientThread extends Thread {
 		dcStream.write(PacketTypes.UPDATE_CONNECTION.getID());
 		dcStream.write(AmongUsInProcessing.state.getCurrentPlayerIndex());
 		DatagramPacket dcPacket = new DatagramPacket(dcStream.toByteArray(), 2, serverAddr);
-		try {
+		try 
+		{
 			socket.send(dcPacket);
-		} catch (IOException e) {
+		} 
+		catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
 		socket.close();
 	}
 	
-	public void disconnect() {
+	public void disconnect() 
+	{
 		connected = false;
 	}
 
