@@ -42,7 +42,7 @@ public class PlayerClient
 		weapon.resize(100, 0);
 	}
 	
-	public PlayerClient(byte[] buf, int offset, int len) throws IOException {
+	public PlayerClient(byte[] buf, int offset, int len, PApplet a) throws IOException {
 		ByteArrayInputStream bais = new ByteArrayInputStream(buf, offset, len);
 		DataInputStream d = new DataInputStream(bais);
 		

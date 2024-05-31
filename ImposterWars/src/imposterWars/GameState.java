@@ -21,44 +21,65 @@ public class GameState
 		this.a = a;
 	}
 	
-	public PlayerClient getPlayer(int id) {
+	public int getPlayerCount() {
+		return players.size();
+	}
+	
+	public PApplet getWindow() {
+		return a;
+	}
+	
+	public PlayerClient getPlayer(int id)
+	{
 		return players.get(id);
 	}
 	
-	public int addPlayer(PlayerClient p) {
+	public int addPlayer(PlayerClient p)
+	{
 		players.add(p);
 		return players.size() - 1;
 	}
 	
-	public void removePlayer(int id) {
+	public void removePlayer(int id) 
+	{
 		players.remove(id);
 	}
 	
-	public Vector<Bullet> getBullets() {
+	public Vector<Bullet> getBullets()
+	{
 		return bullets;
 	}
 	
-	public void removeBullet(int i) {
+	public void removeBullet(int i)
+	{
 		bullets.remove(i);
 	}
 	
-	public Vector<AmmoDrop> getAmmoDrops() {
+	public Vector<AmmoDrop> getAmmoDrops()
+	{
 		return ammoDrops;
 	}
 	
-	public void pickUpAmmoDrop(int id, int ammoID) {
+	public void pickUpAmmoDrop(int id, int ammoID)
+	{
 		PlayerClient p = players.get(id);
 		p.setAmmo(p.getAmmo() + 15);
 		ammoDrops.remove(ammoID);
 	}
 
-	public int getCurrentPlayerIndex() {
+	public int getCurrentPlayerIndex()
+	{
 		return currentPlayerIndex;
 	}
 	
-	public void addBullet(int owner) {
+	public void addBullet(int owner) 
+	{
 		PlayerClient player = players.get(owner);
 		bullets.add(new Bullet(player.getX() + 165 * PApplet.cos(player.getRotation()), player.getY() + 165 * PApplet.sin(player.getRotation()), 
 				player.getRColor(), player.getGColor(), player.getBColor(), player.getRotation(), a));
+	}
+	
+	public void setPlayer(int id, PlayerClient p) {
+		players.set(id, p);
 	}
 }

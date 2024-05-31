@@ -1,5 +1,10 @@
 package imposterWars;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -7,18 +12,35 @@ public class AmmoDrop
 {
 	
 	private PApplet parent;
-	int centerX, centerY;
+	float centerX, centerY;
 	private Rooms room;
 	private PImage img;
 	
 	public AmmoDrop(PApplet p, Rooms r)
 	{
 		parent = p;
-		centerX = (int) ((Math.random() * 560) + 70);
-		centerY = (int) ((Math.random() * 480) + 70);
+		centerX = (float) ((Math.random() * 560) + 70);
+		centerY = (float) ((Math.random() * 480) + 70);
 		room = r;
 		img = p.loadImage("assets/real2.png");
 		img.resize(75, 0);
+	}
+	
+	public AmmoDrop(PApplet p, byte[] buffer) {
+		parent = p;
+		ByteBuffer buf = ByteBuffer.wrap(buffer);
+		centerX = buf.getFloat();
+		centerY = buf.getFloat();
+		room = Rooms.values()[buf.get()];
+	}
+	
+	public byte[] toBytes() throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(9);
+		DataOutputStream d = new DataOutputStream(baos);
+		d.writeFloat(centerX);
+		d.writeFloat(centerY);
+		d.write(room.getID());
+		return baos.toByteArray();
 	}
 	
 	public Rooms getRoom()
@@ -26,12 +48,12 @@ public class AmmoDrop
 		return room;
 	}
 	
-	public int getX()
+	public float getX()
 	{
 		return centerX;
 	}
 	
-	public int getY()
+	public float getY()
 	{
 		return centerY;
 	}

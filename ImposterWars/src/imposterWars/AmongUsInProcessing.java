@@ -1,5 +1,7 @@
 package imposterWars;
 
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import processing.core.PApplet;
@@ -10,11 +12,12 @@ public class AmongUsInProcessing extends PApplet
 	private int playerX, playerY, centerX, centerY, score, playerRed, playerGreen, playerBlue, startTime, elapsedTime;
 	private boolean keyRight, keyLeft, keyUp, keyDown;
 	private boolean inStart, inCaf, inCenterHallway, inUpperLeftHallway, inWeapons, inMedbay, inAdmin, inStorage, inRightHallway, inOxygen, inNavigation, inShields, inBottomRightHallway;
-	private boolean inComms, inBottomLeftHallway, inElectrical, inUpperEngine, inLowerEngine, inLeftHallway, inReactor, inSecurity, inEmptyRoom, inWinRoom, imposter;
+	private boolean inComms, inBottomLeftHallway, inElectrical, inUpperEngine, inLowerEngine, inLeftHallway, inReactor, inSecurity, inEmptyRoom, inWinRoom, inHost, inJoin;
 	AmmoDrop[] ammoDrops;
 	PlayerClient player;
 	ArrayList<Bullet> bullets;
 	static GameState state;
+	String ip;
 	
 	public static void main(String[] args)
 	{
@@ -61,7 +64,6 @@ public class AmongUsInProcessing extends PApplet
 		inReactor = false;
 		inSecurity = false;
 		inEmptyRoom = false;
-		imposter = false;
 		elapsedTime = 0;
 		bullets = new ArrayList<>();
 		ammoDrops = new AmmoDrop[10];
@@ -69,6 +71,9 @@ public class AmongUsInProcessing extends PApplet
 		{
 			ammoDrops[i] = new AmmoDrop(this, Rooms.values()[(int) random(0, 20)]);
 		}
+		inHost = false;
+		inJoin = false;
+		ip = "";
 	}
 	
 	public void draw()
@@ -129,15 +134,6 @@ public class AmongUsInProcessing extends PApplet
 			textSize(30);
 			fill(184, 82, 191);
 			text("You are in the cafeteria", 200, 40);
-			if(dist(playerX, playerY, 350, 305) <= 30) //impostermode
-			{
-				imposter = true;
-				elapsedTime = 0;
-				startTime = millis();
-				inCaf = false;
-				inEmptyRoom = true;
-				
-			}
 		}
 		
 		if(inWeapons)
@@ -425,7 +421,15 @@ public class AmongUsInProcessing extends PApplet
 			text("You are in reactor", 400, 40);
 		}
 
-		if (!inStart)
+		if (inHost) 
+		{
+			drawHostScreen();
+		}
+		else if (inJoin) 
+		{
+			drawJoinScreen();
+		}
+		else if (!inStart)
 		{
 			imposterSpawn();
 			player.draw();
@@ -1152,6 +1156,25 @@ public class AmongUsInProcessing extends PApplet
 	{
 		if(inStart)
 		{
+			if(inRect(mouseX, mouseY, 100, 600, 200, 75)) //host
+			{
+				inHost = true;
+				inStart = false;
+				try
+				{
+					ip = Inet4Address.getLocalHost().getHostAddress();
+				} 
+				catch (UnknownHostException e)
+				{
+					e.printStackTrace();
+				}
+			}
+			if(inRect(mouseX, mouseY, 400, 600, 200, 75)) //join
+			{
+				inJoin = true;
+				inStart = false;
+			}
+			
 			if (inRect(mouseX, mouseY, 20, 40, 70, 70))
 			{
 				player.setColor(247, 37, 37);
@@ -1205,6 +1228,16 @@ public class AmongUsInProcessing extends PApplet
 			if (inRect(mouseX, mouseY, 470, 480, 70, 70))
 			{
 				player.setColor(41, 41, 38);
+			}
+		}
+		else if (inJoin || inHost) 
+		{
+			if (inRect(mouseX, mouseY, 10, 10, 100, 50)) 
+			{
+				inJoin = false;
+				inHost = false;
+				inStart = true;
+				ip = "";
 			}
 		}
 		else
@@ -1267,7 +1300,7 @@ public class AmongUsInProcessing extends PApplet
 		fill(255);
 		textSize(30);
 		text("Host Game", 120, 650);
-		text("Join Game", 420, 650);
+		text("Join Game", 430, 650);
 	}
 	
 	public void drawHUD()
@@ -1285,4 +1318,83 @@ public class AmongUsInProcessing extends PApplet
 	{
 		player.setRotation(atan2(mouseY - player.getY(), mouseX - player.getX()));
 	}
+	
+	public void drawHostScreen()
+	{
+		background(0, 0, 0);
+		noStroke();
+		fill(255);
+		for (int i = 0; i < 50; i++)
+		{
+			float randX = random(700);
+			float randY = random(700);
+			ellipse(randX, randY, 5, 5);
+		}
+		
+		fill(128);
+		rect(100, 120, 500, 300);
+		textSize(68);
+		fill(240);
+		text("(JOIN CODE) \n" + ip, 150, 220);
+		
+		fill(59, 212, 95);
+		rect(250, 550, 200, 100);
+		textSize(50);
+		fill(240);
+		text("Start", 294, 615);
+		
+		fill(128);
+		rect(10, 10, 100, 50);
+		textSize(40);
+		fill(240);
+		text("<-----", 16, 47);
+	}
+	
+	public void drawJoinScreen()
+	{
+		background(0, 0, 0);
+		noStroke();
+		fill(255);
+		for (int i = 0; i < 50; i++)
+		{
+			float randX = random(700);
+			float randY = random(700);
+			ellipse(randX, randY, 5, 5);
+		}
+		
+		fill(128);
+		rect(100, 120, 500, 300);
+		textSize(60);
+		fill(240);
+		text("(ENTER CODE) \n" + ip, 136, 220);
+		
+		fill(59, 212, 95);
+		rect(250, 550, 200, 100);
+		textSize(50);
+		fill(240);
+		text("Join", 310, 615);
+		
+		fill(128);
+		rect(10, 10, 100, 50);
+		textSize(40);
+		fill(240);
+		text("<-----", 16, 47);
+		
+		
+	}
+	
+	public void keyTyped()
+	{
+		if (inJoin)
+		{
+			if (key == BACKSPACE)
+			{
+				if (!ip.isEmpty())
+					ip = ip.substring(0, ip.length() - 1);
+			}
+			else
+				ip += key;
+		}
+	}
+	
 }

@@ -1,6 +1,7 @@
 package imposterWars;
 
-public enum PacketTypes {
+public enum PacketTypes 
+{
 
 	UPDATE_CONNECTION(0),
 	MOVE_UP(1),
@@ -17,12 +18,14 @@ public enum PacketTypes {
 	UPDATE_HP(12),
 	UPDATE_PLAYER(13);
 	
-	private PacketTypes(int id) {
+	private PacketTypes(int id) 
+	{
 		this.id = (byte) id;
 	}
 	byte id;
 	
-	public byte getID() {
+	public byte getID() 
+	{
 		return id;
 	}
 }
