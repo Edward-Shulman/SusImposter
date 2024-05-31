@@ -2,6 +2,7 @@ package imposterWars;
 
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import processing.core.PApplet;
@@ -31,7 +32,7 @@ public class AmongUsInProcessing extends PApplet
 	
 	public void setup()
 	{
-		player = new PlayerClient(255, 0, 0, this);
+		player = new PlayerClient(Colors.Red, this);
 		playerX = 400;
 		playerY = 400;
 		playerRed = 247;
@@ -468,6 +469,10 @@ public class AmongUsInProcessing extends PApplet
 			inCaf = false;
 			inUpperLeftHallway = true;
 			player.setRoom(Rooms.UpperLeftHallway);
+			return true;
+		}
+		else if(player.getY() < 65 && inCaf)
+		{
 			return true;
 		}
 		else if( player.getX() > 635 && inCaf)
@@ -1156,20 +1161,21 @@ public class AmongUsInProcessing extends PApplet
 	{
 		if(inStart)
 		{
-			if(inRect(mouseX, mouseY, 100, 600, 200, 75)) //host
+			if(inRect(mouseX, mouseY, 25, 600, 150, 75)) //host
 			{
 				inHost = true;
 				inStart = false;
 				try
 				{
-					ip = Inet4Address.getLocalHost().getHostAddress();
+					ByteBuffer buf = ByteBuffer.wrap(Inet4Address.getLocalHost().getAddress());
+					ip = Integer.toHexString(buf.getInt());
 				} 
 				catch (UnknownHostException e)
 				{
 					e.printStackTrace();
 				}
 			}
-			if(inRect(mouseX, mouseY, 400, 600, 200, 75)) //join
+			if(inRect(mouseX, mouseY, 275, 600, 150, 75)) //join
 			{
 				inJoin = true;
 				inStart = false;
@@ -1177,57 +1183,57 @@ public class AmongUsInProcessing extends PApplet
 			
 			if (inRect(mouseX, mouseY, 20, 40, 70, 70))
 			{
-				player.setColor(247, 37, 37);
+				player.setColor(Colors.Red);
 			}
 			
 			if (inRect(mouseX, mouseY, 170, 40, 70, 70))
 			{
-				player.setColor(28, 45, 232);
+				player.setColor(Colors.Blue);
 			}
 			
 			if (inRect(mouseX, mouseY, 320, 40, 70, 70))
 			{
-				player.setColor(53, 92, 54);
+				player.setColor(Colors.Green);
 			}
 			
 			if (inRect(mouseX, mouseY, 470, 40, 70, 70))
 			{
-				player.setColor(240, 101, 228);
+				player.setColor(Colors.Pink);
 			}
 			
 			if (inRect(mouseX, mouseY, 620, 40, 70, 70))
 			{
-				player.setColor(242, 168, 7);
+				player.setColor(Colors.Orange);
 			}
 			
 			if (inRect(mouseX, mouseY, 20, 270, 70, 70))
 			{
-				player.setColor(5, 240, 44);
+				player.setColor(Colors.Lime);
 			}
 			
 			if (inRect(mouseX, mouseY, 20, 480, 70, 70))
 			{
-				player.setColor(139, 40, 209);
+				player.setColor(Colors.Purple);
 			}
 			
 			if (inRect(mouseX, mouseY, 620, 270, 70, 70))
 			{
-				player.setColor(110, 82, 38);
+				player.setColor(Colors.Brown);
 			}
 			
 			if (inRect(mouseX, mouseY, 620, 480, 70, 70))
 			{
-				player.setColor(65, 240, 237);
+				player.setColor(Colors.Cyan);
 			}
 			
 			if (inRect(mouseX, mouseY, 170, 480, 70, 70))
 			{
-				player.setColor(242, 250, 10);
+				player.setColor(Colors.Yellow);
 			}
 			
 			if (inRect(mouseX, mouseY, 470, 480, 70, 70))
 			{
-				player.setColor(41, 41, 38);
+				player.setColor(Colors.Black);
 			}
 		}
 		else if (inJoin || inHost) 
@@ -1262,7 +1268,7 @@ public class AmongUsInProcessing extends PApplet
 		background(0, 0, 0);
 		noStroke();
 		fill(255);
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 30; i++)
 		{
 			float randX = random(700);
 			float randY = random(700);
@@ -1295,12 +1301,14 @@ public class AmongUsInProcessing extends PApplet
 		rect(470, 480, 70, 70);
 		
 		fill(128);
-		rect(100, 600, 200, 75);
-		rect(400, 600, 200, 75);
+		rect(25, 600, 150, 75);
+		rect(275, 600, 150, 75);
+		rect(525, 600, 150, 75);
 		fill(255);
-		textSize(30);
-		text("Host Game", 120, 650);
-		text("Join Game", 430, 650);
+		textSize(25);
+		text("Host Game", 35, 650);
+		text("Join Game", 290, 650);
+		text("Practice", 552, 650);
 	}
 	
 	public void drawHUD()
@@ -1324,7 +1332,7 @@ public class AmongUsInProcessing extends PApplet
 		background(0, 0, 0);
 		noStroke();
 		fill(255);
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 15; i++)
 		{
 			float randX = random(700);
 			float randY = random(700);
@@ -1355,7 +1363,7 @@ public class AmongUsInProcessing extends PApplet
 		background(0, 0, 0);
 		noStroke();
 		fill(255);
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 15; i++)
 		{
 			float randX = random(700);
 			float randY = random(700);
@@ -1392,9 +1400,22 @@ public class AmongUsInProcessing extends PApplet
 				if (!ip.isEmpty())
 					ip = ip.substring(0, ip.length() - 1);
 			}
-			else
+			else if (ip.length() >= 0 && ip.length() < 8)
 				ip += key;
 		}
+		
+//		int ipInt = Integer.parseInt(ip, 16);
+//		ByteBuffer buffer = ByteBuffer.allocate(4);
+//		buffer.putInt(ipInt);
+//		try 
+//		{
+//			System.out.println(Inet4Address.getByAddress(buffer.array()).getHostAddress());
+//		} 
+//		catch (UnknownHostException e) 
+//		{
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
 }
