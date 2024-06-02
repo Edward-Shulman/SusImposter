@@ -23,11 +23,11 @@ public class PlayerClient
 	private float vX, vY, rotation;
 	private PImage weapon;
 	
-	public PlayerClient(int r, int g, int b, PApplet a)
+	public PlayerClient(Colors color, PApplet a)
 	{
-		rColor = r;
-		gColor = g;
-		bColor = b;
+		rColor = color.getR();
+		gColor = color.getG();
+		bColor = color.getB();
 		ammo = 50;
 		kills = 0;
 		room = Rooms.Caf;
@@ -38,11 +38,12 @@ public class PlayerClient
 		setvY(0);
 		setHealth(99);
 		rotation = 0;
-		weapon = a.loadImage("assets/real.png");
+		weapon = a.loadImage(color.getFile());
 		weapon.resize(100, 0);
 	}
 	
-	public PlayerClient(byte[] buf, int offset, int len, PApplet a) throws IOException {
+	public PlayerClient(byte[] buf, int offset, int len, PApplet a) throws IOException
+	{
 		ByteArrayInputStream bais = new ByteArrayInputStream(buf, offset, len);
 		DataInputStream d = new DataInputStream(bais);
 		
@@ -61,7 +62,8 @@ public class PlayerClient
 		rotation = d.readFloat();
 	}
 	
-	public byte[] toBytes() throws IOException {
+	public byte[] toBytes() throws IOException
+	{
 		ByteArrayOutputStream result = new ByteArrayOutputStream(40);
 		DataOutputStream d = new DataOutputStream(result);
 		d.writeInt(room.getID());
@@ -136,11 +138,13 @@ public class PlayerClient
 		return bColor;
 	}
 
-	public void setColor(int r, int g, int b)
+	public void setColor(Colors color)
 	{
-		rColor = r;
-		gColor = g;
-		bColor = b;
+		rColor = color.getR();
+		gColor = color.getG();
+		bColor = color.getB();
+		weapon = a.loadImage(color.getFile());
+		weapon.resize(100, 0);
 	}
 
 	public int getAmmo()
@@ -163,19 +167,23 @@ public class PlayerClient
 		kills++;
 	}
 
-	public float getvX() {
+	public float getvX()
+	{
 		return vX;
 	}
 
-	public void setvX(float vX) {
+	public void setvX(float vX)
+	{
 		this.vX = vX;
 	}
 
-	public float getvY() {
+	public float getvY() 
+	{
 		return vY;
 	}
 
-	public void setvY(float vY) {
+	public void setvY(float vY)
+	{
 		this.vY = vY;
 	}
 	
@@ -194,11 +202,13 @@ public class PlayerClient
 		this.health = health;
 	}
 
-	public float getRotation() {
+	public float getRotation()
+	{
 		return rotation;
 	}
 
-	public void setRotation(float rotation) {
+	public void setRotation(float rotation)
+	{
 		this.rotation = rotation;
 	}
 }
