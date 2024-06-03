@@ -9,7 +9,6 @@ import processing.core.PVector;
 
 public class Bullet
 {
-	//TODO rooms for bullets
 	private float x, y;
 	private int color;
 	private PVector velocity;
@@ -17,7 +16,7 @@ public class Bullet
 	private int owner;
 	private Rooms room;
 	
-	public Bullet(float x, float y, int r, int g, int b, float rotation, PApplet a)
+	public Bullet(float x, float y, int r, int g, int b, float rotation, int id, PApplet a)
 	{
 		this(x, y, a.color(r, g, b), rotation, 0, a); //TODO acutally assign id
 	}

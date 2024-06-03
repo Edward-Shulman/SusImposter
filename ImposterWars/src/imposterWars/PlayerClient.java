@@ -60,11 +60,13 @@ public class PlayerClient
 		vX = d.readFloat();
 		vY = d.readFloat();
 		rotation = d.readFloat();
+		weapon = a.loadImage(Colors.getByRGB(rColor, gColor, bColor).getFile());
+		weapon.resize(100, 0);
 	}
 	
 	public byte[] toBytes() throws IOException
 	{
-		ByteArrayOutputStream result = new ByteArrayOutputStream(40);
+		ByteArrayOutputStream result = new ByteArrayOutputStream(44);
 		DataOutputStream d = new DataOutputStream(result);
 		d.writeInt(room.getID());
 		d.writeFloat(x);

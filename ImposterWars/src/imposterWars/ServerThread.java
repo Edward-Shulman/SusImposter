@@ -102,8 +102,9 @@ public class ServerThread extends Thread
 	
 	private void playerConnectionUpdate(byte[] buf, InetSocketAddress addr) throws IOException
 	{
-		if (buf[0] == 255)
+		if (buf[0] == Byte.MAX_VALUE)
 		{
+			System.out.println("New player joined");
 			ByteArrayOutputStream send = new ByteArrayOutputStream(42);
 			send.write(PacketTypes.UPDATE_PLAYER.getID());
 			int nid = AmongUsInProcessing.state.addPlayer(new PlayerClient(buf, 1, buf.length - 1, AmongUsInProcessing.state.getWindow()));
@@ -122,6 +123,12 @@ public class ServerThread extends Thread
 		ByteArrayOutputStream send = new ByteArrayOutputStream(2);
 		send.write(PacketTypes.UPDATE_CONNECTION.getID());
 		send.write(buf[0]);
+		clients.remove(Integer.valueOf(buf[0]));
+		for (Entry<Integer, InetSocketAddress> client : clients.entrySet())
+		{
+			DatagramPacket sendPacket = new DatagramPacket(send.toByteArray(), send.size(), client.getValue());
+			socket.send(sendPacket);
+		}
 	}
 	
 	private void playerXMovement(int id, float vX) throws IOException 
@@ -196,7 +203,7 @@ public class ServerThread extends Thread
 		}
 	}
 	
-	private void shot(int id) throws IOException 
+	public void shot(int id) throws IOException 
 	{
 		AmongUsInProcessing.state.addBullet(id);
 		Vector<Bullet> bullets = AmongUsInProcessing.state.getBullets();
@@ -216,7 +223,7 @@ public class ServerThread extends Thread
 		}
 	}
 	
-	private void updateRotation(int id, float rot) throws IOException 
+	public void updateRotation(int id, float rot) throws IOException 
 	{
 		AmongUsInProcessing.state.getPlayer(id).setRotation(rot);
 		
@@ -232,4 +239,45 @@ public class ServerThread extends Thread
 		}
 	}
 
+	public void updateMovement(PacketTypes movement) throws IOException
+	{
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(6);
+		DataOutputStream send = new DataOutputStream(baos);
+		send.write(movement.getID());
+		send.write(AmongUsInProcessing.state.getCurrentPlayerIndex());
+		switch (movement) {
+		case END_MOVE_X:
+			AmongUsInProcessing.state.getCurrentPlayer().setvX(0);
+			send.writeFloat(0);
+			break;
+		case END_MOVE_Y:
+			AmongUsInProcessing.state.getCurrentPlayer().setvY(0);
+			send.writeFloat(0);
+			break;
+		case MOVE_DOWN:
+			AmongUsInProcessing.state.getCurrentPlayer().setvY(5);
+			send.writeFloat(5);
+			break;
+		case MOVE_LEFT:
+			AmongUsInProcessing.state.getCurrentPlayer().setvX(-5);
+			send.writeFloat(-5);
+			break;
+		case MOVE_RIGHT:
+			AmongUsInProcessing.state.getCurrentPlayer().setvX(5);
+			send.writeFloat(5);
+			break;
+		case MOVE_UP:
+			AmongUsInProcessing.state.getCurrentPlayer().setvY(-5);
+			send.writeFloat(-5);
+			break;
+		default:
+			break;
+		
+		}
+		for (Entry<Integer, InetSocketAddress> client : clients.entrySet()) 
+		{
+			DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), 6, client.getValue());
+			socket.send(sendPacket);
+		}
+	}
 }

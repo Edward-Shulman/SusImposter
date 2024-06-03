@@ -38,4 +38,30 @@ public enum Colors
 		return b;
 	}
 	
+	public static Colors getByRGB(int r, int g, int b) {
+		if (r == 247 && g == 37 && b == 37)
+			return Red;
+		else if (r == 28 && g == 45 && b == 232)
+			return Blue;
+		else if (r == 53 && g == 92 && b == 54)
+			return Green;
+		else if (r == 242 && g == 250 && b == 10)
+			return Yellow;
+		else if (r == 242 && g == 168 && b == 7)
+			return Orange;
+		else if (r == 5 && g == 240 && b == 44)
+			return Lime;
+		else if (r == 65 && b == 240 && g == 237)
+			return Cyan; 
+		else if (r == 139 && g == 40 && b ==209)
+			return Purple;
+		else if (r == 240 && g == 101 && b == 228)
+			return Pink;
+		else if (r == 110 && g == 82 && b == 38)
+			return Brown;
+		else if (r == 41 && g == 41 && b == 38)
+			return Black;
+		throw new IllegalArgumentException("Invalid color");
+	}
+	
 }

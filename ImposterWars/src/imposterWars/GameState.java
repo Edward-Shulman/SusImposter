@@ -72,11 +72,16 @@ public class GameState
 		return currentPlayerIndex;
 	}
 	
+	public PlayerClient getCurrentPlayer() 
+	{
+		return players.get(currentPlayerIndex);
+	}
+	
 	public void addBullet(int owner) 
 	{
 		PlayerClient player = players.get(owner);
 		bullets.add(new Bullet(player.getX() + 165 * PApplet.cos(player.getRotation()), player.getY() + 165 * PApplet.sin(player.getRotation()), 
-				player.getRColor(), player.getGColor(), player.getBColor(), player.getRotation(), a));
+				player.getRColor(), player.getGColor(), player.getBColor(), player.getRotation(), owner, a));
 	}
 	
 	public void setPlayer(int id, PlayerClient p) {

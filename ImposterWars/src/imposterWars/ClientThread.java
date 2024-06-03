@@ -31,6 +31,12 @@ public class ClientThread extends Thread
 	@Override
 	public void run() 
 	{
+		try {
+			initConnection();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		while (connected) 
 		{
 			byte[] buf = new byte[1024];
@@ -113,6 +119,16 @@ public class ClientThread extends Thread
 		socket.close();
 	}
 	
+	private void initConnection() throws IOException
+	{
+		ByteArrayOutputStream send = new ByteArrayOutputStream(46);
+		send.write(PacketTypes.UPDATE_CONNECTION.getID());
+		send.write(Byte.MAX_VALUE);
+		send.write(AmongUsInProcessing.state.getCurrentPlayer().toBytes());
+		DatagramPacket sendPacket = new DatagramPacket(send.toByteArray(), 46, serverAddr);
+		socket.send(sendPacket);
+	}
+	
 	private void updateAmmoDrops(byte[] buf) throws IOException {
 		ByteArrayInputStream bais = new ByteArrayInputStream(buf);
 		DataInputStream read = new DataInputStream(bais);
@@ -129,6 +145,7 @@ public class ClientThread extends Thread
 	}
 	
 	private void updatePlayer(int id, byte[] buf) throws IOException {
+		//TODO inital index conflict
 		if (id >= AmongUsInProcessing.state.getPlayerCount()) {
 			AmongUsInProcessing.state.addPlayer(new PlayerClient(buf, 0, buf.length, AmongUsInProcessing.state.getWindow()));
 			return;
@@ -176,6 +193,58 @@ public class ClientThread extends Thread
 	public void disconnect() 
 	{
 		connected = false;
+	}
+	
+	public void shoot() throws IOException {
+		byte[] shoot = new byte[2];
+		shoot[0] = PacketTypes.SHOOT.getID();
+		shoot[1] = (byte) AmongUsInProcessing.state.getCurrentPlayerIndex();
+		DatagramPacket send = new DatagramPacket(shoot, 2, serverAddr);
+		socket.send(send);
+	}
+	
+	public void updateRotataion(float rot) throws IOException
+	{
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(6);
+		DataOutputStream send = new DataOutputStream(baos);
+		send.write(PacketTypes.UPDATE_ROTATION.getID());
+		send.write(AmongUsInProcessing.state.getCurrentPlayerIndex());
+		send.writeFloat(rot);
+		DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), 6, serverAddr);
+		socket.send(sendPacket);
+	}
+	
+	public void updateMovement(PacketTypes movement) throws IOException
+	{
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(6);
+		DataOutputStream send = new DataOutputStream(baos);
+		send.write(movement.getID());
+		send.write(AmongUsInProcessing.state.getCurrentPlayerIndex());
+		switch (movement) {
+		case END_MOVE_X:
+			send.writeFloat(0);
+			break;
+		case END_MOVE_Y:
+			send.writeFloat(0);
+			break;
+		case MOVE_DOWN:
+			send.writeFloat(5);
+			break;
+		case MOVE_LEFT:
+			send.writeFloat(-5);
+			break;
+		case MOVE_RIGHT:
+			send.writeFloat(5);
+			break;
+		case MOVE_UP:
+			send.writeFloat(-5);
+			break;
+		default:
+			break;
+		
+		}
+		DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), 6, serverAddr);
+		socket.send(sendPacket);
 	}
 
 }

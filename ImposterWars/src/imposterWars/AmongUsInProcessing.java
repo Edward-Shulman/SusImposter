@@ -1,9 +1,13 @@
 package imposterWars;
 
+import java.io.IOException;
 import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.net.InetSocketAddress;
+import java.net.SocketException;
 
 import processing.core.PApplet;
 
@@ -19,6 +23,8 @@ public class AmongUsInProcessing extends PApplet
 	ArrayList<Bullet> bullets;
 	static GameState state;
 	String ip;
+	private ClientThread client;
+	private ServerThread server;
 	
 	public static void main(String[] args)
 	{
@@ -120,307 +126,6 @@ public class AmongUsInProcessing extends PApplet
 			
 			
 		}
-		
-		if(inCaf)
-		{
-			background(185, 186, 143);
-			fill(53, 158, 219);
-			arc(350, 300, 160, 160, 0, 360);
-			arc(100, 100, 160, 160, 0, 360);
-			arc(100, 500, 160, 160, 0, 360);
-			arc(600, 100, 160, 160, 0, 360);
-			arc(600, 500, 160, 160, 0, 360);
-			fill(219, 53, 53);
-			rect(335, 290, 30, 30);
-			textSize(30);
-			fill(184, 82, 191);
-			text("You are in the cafeteria", 200, 40);
-		}
-		
-		if(inWeapons)
-		{
-			background(185, 186, 143);
-			fill(130, 157, 168);
-			arc(350, 300, 250, 250, 0, 360);
-			fill(35, 68, 117);
-			rect(300, 340, 100, 30);
-			rect(300, 240, 30, 120);
-			fill(41, 227, 84);
-			rect(440, 160, 135, 120);
-			fill(184, 82, 191);
-			textSize(30);
-			text("You are in weapons", 200, 40);
-		}
-		
-		if(inUpperLeftHallway)
-		{
-			background(227, 225, 218);
-			fill(184, 82, 191);
-			textSize(30);
-			text("You are in the top left hallway", 200, 40);
-		}
-		
-		if(inCenterHallway)
-		{
-			background(227, 225, 218);
-			fill(184, 82, 191);
-			textSize(30);
-			text("You are in the center hallway", 200, 40);
-		}
-		
-		if(inRightHallway)
-		{
-			background(227, 225, 218);
-			fill(184, 82, 191);
-			textSize(30);
-			text("You are in the right hallway", 200, 40);
-		}
-		
-		if(inAdmin)
-		{
-			background(156, 44, 44);
-			fill(51, 143, 58);
-			rect(200, 230, 300, 160);
-			fill(140, 156, 141);
-			rect(200, 230, 20, 160);
-			rect(480, 230, 20, 160);
-			fill(79, 232, 88);
-			rect(235, 230, 230, 160);
-			fill(184, 82, 191);
-			textSize(30);
-			text("You are in admin", 200, 40);
-		}
-		
-		if(inMedbay)
-		{
-			background(194, 188, 186);
-			fill(34, 131, 191);
-			rect(0, 80, 130, 100);
-			rect(0, 200, 130, 100);
-			rect(570, 80, 130, 100);
-			rect(570, 200, 130, 100);
-			fill(235, 239, 242);
-			rect(0, 80, 20, 100);
-			rect(0, 200, 20, 100);
-			rect(680, 80, 20, 100);
-			rect(680, 200, 20, 100);
-			fill(237, 250, 239);
-			ellipse(500, 400, 180, 180);
-			fill(65, 232, 93);
-			ellipse(500, 400, 140, 140);
-			fill(184, 82, 191);
-			textSize(30);
-			text("You are in medbay", 200, 40);
-		}
-		
-		if(inOxygen)
-		{
-			background(171, 173, 132);
-			fill(45, 224, 237);
-			ellipse(500, 80, 100, 150);
-			fill(166, 161, 161);
-			ellipse(500, 120, 70, 70);
-			ellipse(50, 525, 100, 150);
-			ellipse(650, 525, 100, 150);
-			ellipse(350, 525, 100, 150);
-			rect(0, 250, 60, 20);
-			fill(0, 0, 0);
-			rect(60, 210, 20, 100);
-			fill(184, 82, 191);
-			textSize(30);
-			text("You are in oxygen", 200, 40);
-		}
-		
-		if(inNavigation)
-		{
-			background(163, 162, 157);
-			fill(35, 68, 117);
-			rect(480, 340, 100, 30);
-			rect(480, 240, 30, 120);
-			rect(480, 140, 100, 30);
-			rect(480, 40, 30, 120);
-			rect(500, 540, 100, 30);
-			rect(500, 440, 30, 120);
-			fill(212, 210, 199);
-			rect(600, 220, 100, 130);
-			rect(600, 50, 100, 110);
-			fill(184, 82, 191);
-			textSize(30);
-			text("You are in navigation", 200, 40);
-		}
-		
-		if(inShields)
-		{
-			background(185, 186, 143);
-			fill(0, 0, 0);
-			rect(100, 530, 75, 40);
-			fill(125, 121, 109);
-			rect(130, 570, 10, 30);
-			fill(247, 246, 242);
-			rect(125, 540, 20, 20);
-			stroke(242, 60, 44);
-			strokeWeight(10);
-			line(600, 50, 600, 600);
-			line(600, 50, 700, 50);
-			line(0, 150, 150, 0);
-			line(0, 380, 250, 510);
-			line(250, 510, 0, 510);
-			fill(184, 82, 191);
-			noStroke();
-			textSize(30);
-			text("You are in shields", 200, 40);
-		}
-		
-		if(inBottomRightHallway)
-		{
-			background(227, 225, 218);
-			fill(184, 82, 191);
-			textSize(20);
-			text("You are in the bottom right hallway", 200, 40);
-		}
-		
-		if(inComms)
-		{
-			background(99, 99, 97);
-			fill(66, 168, 93);
-			rect(350, 500, 100, 30);
-			rect(350, 400, 30, 120);
-			fill(224, 166, 83);
-			rect(250, 550, 250, 50);
-			rect(0, 150, 50, 150);
-			rect(650, 150, 50, 150);
-			fill(0, 0, 0);
-			rect(380, 565, 75, 30);
-			fill(184, 82, 191);
-			textSize(30);
-			text("You are in communications", 200, 40);
-		}
-		
-		if(inStorage)
-		{
-			background(84, 84, 80);
-			fill(166, 161, 161);
-			rect(550, 540, 20, 60);
-			fill(0, 0, 0);
-			rect(513, 520, 100, 20);
-			fill(66, 168, 93);
-			rect(300, 200, 150, 150);
-			rect(50, 0, 80, 80);
-			fill(37, 110, 184);
-			rect(250, 200, 50, 100);
-			fill(227, 53, 41);
-			rect(257, 310, 35, 50);
-			fill(191, 119, 17);
-			rect(350, 120, 130, 80);
-			fill(184, 82, 191);
-			textSize(30);
-			text("You are in storage", 200, 40);
-		}
-		
-		if(inBottomLeftHallway)
-		{
-			background(227, 225, 218);
-			fill(184, 82, 191);
-			textSize(20);
-			text("You are in the bottom left hallway", 200, 40);
-		}
-		
-		if(inLeftHallway)
-		{
-			background(133, 113, 113);
-			fill(184, 82, 191);
-			textSize(30);
-			text("You are in the left hallway", 200, 40);
-		}
-		
-		if(inElectrical) 
-		{
-			background(128, 111, 46);
-			fill(124, 133, 123);
-			rect(0, 250, 380, 100);
-			rect(450, 0, 250, 55);
-			fill(219, 227, 64);
-			triangle(100, 270, 140, 320, 60, 320);
-			triangle(600, 10, 570, 45, 630, 45);
-			strokeWeight(3);
-			stroke(0, 0, 0);
-			line(0, 150, 600, 55);
-			line(0, 450, 300, 350);
-			line(255, 350, 550, 600);
-			stroke(191, 176, 57);
-			line(0, 530, 396, 470);
-			line(470, 77, 550, 365);
-			stroke(55, 74, 171);
-			line(430, 500, 700, 200);
-			fill(184, 82, 191);
-			noStroke();
-			textSize(30);
-			text("You are in electrical", 200, 40);
-		}
-		
-		if(inLowerEngine) 
-		{
-			background(133, 113, 113);
-			fill(219, 133, 83);
-			rect(0, 150, 400, 250);
-			ellipse(400, 275, 150, 250);
-			fill(114, 236, 242);
-			ellipse(470, 275, 50, 100);
-			fill(166, 161, 161);
-			rect(0, 350, 100, 100);
-			fill(184, 82, 191);
-			textSize(30);
-			text("You are in lower engine", 200, 40);
-		}
-		
-		if(inUpperEngine) 
-		{
-			background(133, 113, 113);
-			fill(219, 133, 83);
-			rect(0, 150, 400, 250);
-			ellipse(400, 275, 150, 250);
-			fill(114, 236, 242);
-			ellipse(470, 275, 50, 100);
-			fill(166, 161, 161);
-			rect(0, 350, 100, 100);
-			fill(184, 82, 191);
-			textSize(30);
-			text("You are in upper engine", 200, 40);
-		}
-		
-		if(inSecurity)
-		{
-			background(41, 150, 79);
-			fill(153, 91, 64);
-			rect(600, 200, 100, 210);
-			rect(525, 200, 75, 60);
-			fill(70, 214, 60);
-			ellipse(555, 320, 70, 70);
-			fill(0, 0, 0);
-			rect(195, 0, 220, 150);
-			strokeWeight(2);
-			stroke(250, 250, 250);
-			line(195, 75, 415, 75);
-			line(305, 0, 305, 150);
-			fill(184, 82, 191);
-			noStroke();
-			textSize(30);
-			text("You are in security", 430, 40);
-		}
-		
-		if(inReactor)
-		{
-			background(102, 72, 212);
-			fill(44, 123, 163);
-			ellipse(50, 300, 175, 350);
-			rect(125, 280, 75, 75);
-			fill(144, 157, 163);
-			rect(300, 0, 75, 75);
-			rect(300, 525, 75, 75);
-			fill(184, 82, 191);
-			textSize(30);
-			text("You are in reactor", 400, 40);
-		}
 
 		if (inHost) 
 		{
@@ -432,26 +137,394 @@ public class AmongUsInProcessing extends PApplet
 		}
 		else if (!inStart)
 		{
-			imposterSpawn();
-			player.draw();
-			drawHUD();
-			player.move();
-			rotatePlayer();
+			switch (state.getCurrentPlayer().getRoom()) {
+			case Admin:
+				drawAdmin();
+				break;
+			case BottomLeftHallway:
+				drawBottomLeftHall();
+				break;
+			case BottomRightHallway:
+				drawBottomRightHall();
+				break;
+			case Caf:
+				drawCaf();
+				break;
+			case CenterHallway:
+				drawCenterHall();
+				break;
+			case Comms:
+				drawComms();
+				break;
+			case Electrical:
+				drawElectrical();
+				break;
+			case LeftHallway:
+				drawLeftHall();
+				break;
+			case LowerEngine:
+				drawLowerEngine();
+				break;
+			case Medbay:
+				drawMedbay();
+				break;
+			case Navigation:
+				drawNav();
+				break;
+			case Oxygen:
+				drawO2();
+				break;
+			case Reactor:
+				drawReactor();
+				break;
+			case RightHallway:
+				drawRightHall();
+				break;
+			case Security:
+				drawSecurity();
+				break;
+			case Shields:
+				drawShields();
+				break;
+			case Storage:
+				drawStorage();
+				break;
+			case UpperEngine:
+				drawUpperEngine();
+				break;
+			case UpperLeftHallway:
+				drawUpperLeftHall();
+				break;
+			case Weapons:
+				drawWeapons();
+				break;
+			default:
+				break;
+			}
+			
+//			imposterSpawn();
 			int i = 0;
-			while (i < bullets.size())
+			while (i < state.getAmmoDrops().size()) {
+				AmmoDrop ad = state.getAmmoDrops().get(i);
+				if (state.getCurrentPlayer().getRoom().equals(ad.getRoom())) 
+				{
+					ad.draw();
+				}
+				i++;
+			}
+//			player.draw();
+			state.getCurrentPlayer().draw();
+			drawHUD();
+//			player.move();
+			state.getCurrentPlayer().move();
+			rotatePlayer();
+			
+			i = 0;
+//			while (i < bullets.size())
+//			{
+//				Bullet b = bullets.get(i);
+//				b.draw();
+//				if (b.move()) 
+//				{
+//					i++;
+//				}
+//				else
+//				{
+//					bullets.remove(i);
+//				}
+//			}
+			
+			while (i < state.getBullets().size()) 
 			{
-				Bullet b = bullets.get(i);
-				b.draw();
-				if (b.move()) 
+				Bullet b = state.getBullets().get(i);
+				if (b.getRoom().equals(state.getCurrentPlayer().getRoom()))
 				{
-					i++;
+					b.draw();
 				}
-				else
-				{
-					bullets.remove(i);
-				}
+				i++;
 			}
 		}
+	}
+
+	private void drawReactor() {
+		background(102, 72, 212);
+		fill(44, 123, 163);
+		ellipse(50, 300, 175, 350);
+		rect(125, 280, 75, 75);
+		fill(144, 157, 163);
+		rect(300, 0, 75, 75);
+		rect(300, 525, 75, 75);
+		fill(184, 82, 191);
+		textSize(30);
+		text("You are in reactor", 400, 40);
+	}
+
+	private void drawSecurity() {
+		background(41, 150, 79);
+		fill(153, 91, 64);
+		rect(600, 200, 100, 210);
+		rect(525, 200, 75, 60);
+		fill(70, 214, 60);
+		ellipse(555, 320, 70, 70);
+		fill(0, 0, 0);
+		rect(195, 0, 220, 150);
+		strokeWeight(2);
+		stroke(250, 250, 250);
+		line(195, 75, 415, 75);
+		line(305, 0, 305, 150);
+		fill(184, 82, 191);
+		noStroke();
+		textSize(30);
+		text("You are in security", 430, 40);
+	}
+
+	private void drawUpperEngine() {
+		background(133, 113, 113);
+		fill(219, 133, 83);
+		rect(0, 150, 400, 250);
+		ellipse(400, 275, 150, 250);
+		fill(114, 236, 242);
+		ellipse(470, 275, 50, 100);
+		fill(166, 161, 161);
+		rect(0, 350, 100, 100);
+		fill(184, 82, 191);
+		textSize(30);
+		text("You are in upper engine", 200, 40);
+	}
+
+	private void drawLowerEngine() {
+		background(133, 113, 113);
+		fill(219, 133, 83);
+		rect(0, 150, 400, 250);
+		ellipse(400, 275, 150, 250);
+		fill(114, 236, 242);
+		ellipse(470, 275, 50, 100);
+		fill(166, 161, 161);
+		rect(0, 350, 100, 100);
+		fill(184, 82, 191);
+		textSize(30);
+		text("You are in lower engine", 200, 40);
+	}
+
+	private void drawElectrical() {
+		background(128, 111, 46);
+		fill(124, 133, 123);
+		rect(0, 250, 380, 100);
+		rect(450, 0, 250, 55);
+		fill(219, 227, 64);
+		triangle(100, 270, 140, 320, 60, 320);
+		triangle(600, 10, 570, 45, 630, 45);
+		strokeWeight(3);
+		stroke(0, 0, 0);
+		line(0, 150, 600, 55);
+		line(0, 450, 300, 350);
+		line(255, 350, 550, 600);
+		stroke(191, 176, 57);
+		line(0, 530, 396, 470);
+		line(470, 77, 550, 365);
+		stroke(55, 74, 171);
+		line(430, 500, 700, 200);
+		fill(184, 82, 191);
+		noStroke();
+		textSize(30);
+		text("You are in electrical", 200, 40);
+	}
+
+	private void drawLeftHall() {
+		background(133, 113, 113);
+		fill(184, 82, 191);
+		textSize(30);
+		text("You are in the left hallway", 200, 40);
+	}
+
+	private void drawBottomLeftHall() {
+		background(227, 225, 218);
+		fill(184, 82, 191);
+		textSize(20);
+		text("You are in the bottom left hallway", 200, 40);
+	}
+
+	private void drawStorage() {
+		background(84, 84, 80);
+		fill(166, 161, 161);
+		rect(550, 540, 20, 60);
+		fill(0, 0, 0);
+		rect(513, 520, 100, 20);
+		fill(66, 168, 93);
+		rect(300, 200, 150, 150);
+		rect(50, 0, 80, 80);
+		fill(37, 110, 184);
+		rect(250, 200, 50, 100);
+		fill(227, 53, 41);
+		rect(257, 310, 35, 50);
+		fill(191, 119, 17);
+		rect(350, 120, 130, 80);
+		fill(184, 82, 191);
+		textSize(30);
+		text("You are in storage", 200, 40);
+	}
+
+	private void drawComms() {
+		background(99, 99, 97);
+		fill(66, 168, 93);
+		rect(350, 500, 100, 30);
+		rect(350, 400, 30, 120);
+		fill(224, 166, 83);
+		rect(250, 550, 250, 50);
+		rect(0, 150, 50, 150);
+		rect(650, 150, 50, 150);
+		fill(0, 0, 0);
+		rect(380, 565, 75, 30);
+		fill(184, 82, 191);
+		textSize(30);
+		text("You are in communications", 200, 40);
+	}
+
+	private void drawBottomRightHall() {
+		background(227, 225, 218);
+		fill(184, 82, 191);
+		textSize(20);
+		text("You are in the bottom right hallway", 200, 40);
+	}
+
+	private void drawShields() {
+		background(185, 186, 143);
+		fill(0, 0, 0);
+		rect(100, 530, 75, 40);
+		fill(125, 121, 109);
+		rect(130, 570, 10, 30);
+		fill(247, 246, 242);
+		rect(125, 540, 20, 20);
+		stroke(242, 60, 44);
+		strokeWeight(10);
+		line(600, 50, 600, 600);
+		line(600, 50, 700, 50);
+		line(0, 150, 150, 0);
+		line(0, 380, 250, 510);
+		line(250, 510, 0, 510);
+		fill(184, 82, 191);
+		noStroke();
+		textSize(30);
+		text("You are in shields", 200, 40);
+	}
+
+	private void drawNav() {
+		background(163, 162, 157);
+		fill(35, 68, 117);
+		rect(480, 340, 100, 30);
+		rect(480, 240, 30, 120);
+		rect(480, 140, 100, 30);
+		rect(480, 40, 30, 120);
+		rect(500, 540, 100, 30);
+		rect(500, 440, 30, 120);
+		fill(212, 210, 199);
+		rect(600, 220, 100, 130);
+		rect(600, 50, 100, 110);
+		fill(184, 82, 191);
+		textSize(30);
+		text("You are in navigation", 200, 40);
+	}
+
+	private void drawO2() {
+		background(171, 173, 132);
+		fill(45, 224, 237);
+		ellipse(500, 80, 100, 150);
+		fill(166, 161, 161);
+		ellipse(500, 120, 70, 70);
+		ellipse(50, 525, 100, 150);
+		ellipse(650, 525, 100, 150);
+		ellipse(350, 525, 100, 150);
+		rect(0, 250, 60, 20);
+		fill(0, 0, 0);
+		rect(60, 210, 20, 100);
+		fill(184, 82, 191);
+		textSize(30);
+		text("You are in oxygen", 200, 40);
+	}
+
+	private void drawMedbay() {
+		background(194, 188, 186);
+		fill(34, 131, 191);
+		rect(0, 80, 130, 100);
+		rect(0, 200, 130, 100);
+		rect(570, 80, 130, 100);
+		rect(570, 200, 130, 100);
+		fill(235, 239, 242);
+		rect(0, 80, 20, 100);
+		rect(0, 200, 20, 100);
+		rect(680, 80, 20, 100);
+		rect(680, 200, 20, 100);
+		fill(237, 250, 239);
+		ellipse(500, 400, 180, 180);
+		fill(65, 232, 93);
+		ellipse(500, 400, 140, 140);
+		fill(184, 82, 191);
+		textSize(30);
+		text("You are in medbay", 200, 40);
+	}
+
+	private void drawAdmin() {
+		background(156, 44, 44);
+		fill(51, 143, 58);
+		rect(200, 230, 300, 160);
+		fill(140, 156, 141);
+		rect(200, 230, 20, 160);
+		rect(480, 230, 20, 160);
+		fill(79, 232, 88);
+		rect(235, 230, 230, 160);
+		fill(184, 82, 191);
+		textSize(30);
+		text("You are in admin", 200, 40);
+	}
+
+	private void drawRightHall() {
+		background(227, 225, 218);
+		fill(184, 82, 191);
+		textSize(30);
+		text("You are in the right hallway", 200, 40);
+	}
+
+	private void drawCenterHall() {
+		background(227, 225, 218);
+		fill(184, 82, 191);
+		textSize(30);
+		text("You are in the center hallway", 200, 40);
+	}
+
+	private void drawUpperLeftHall() {
+		background(227, 225, 218);
+		fill(184, 82, 191);
+		textSize(30);
+		text("You are in the top left hallway", 200, 40);
+	}
+
+	private void drawWeapons() {
+		background(185, 186, 143);
+		fill(130, 157, 168);
+		arc(350, 300, 250, 250, 0, 360);
+		fill(35, 68, 117);
+		rect(300, 340, 100, 30);
+		rect(300, 240, 30, 120);
+		fill(41, 227, 84);
+		rect(440, 160, 135, 120);
+		fill(184, 82, 191);
+		textSize(30);
+		text("You are in weapons", 200, 40);
+	}
+
+	private void drawCaf() {
+		background(185, 186, 143);
+		fill(53, 158, 219);
+		arc(350, 300, 160, 160, 0, 360);
+		arc(100, 100, 160, 160, 0, 360);
+		arc(100, 500, 160, 160, 0, 360);
+		arc(600, 100, 160, 160, 0, 360);
+		arc(600, 500, 160, 160, 0, 360);
+		fill(219, 53, 53);
+		rect(335, 290, 30, 30);
+		textSize(30);
+		fill(184, 82, 191);
+		text("You are in the cafeteria", 200, 40);
 	}
 	
 	
@@ -1123,37 +1196,105 @@ public class AmongUsInProcessing extends PApplet
 	
 	public void keyPressed()
 	{
-		switch (key) {
-		case 'w':
-			player.setvY(-5);
-			break;
-		case 'a':
-			player.setvX(-5);
-			break;
-		case 's':
-			player.setvY(5);
-			break;
-		case 'd':
-			player.setvX(5);
-			break;
+		if (client != null) 
+		{
+			try {
+				switch (key) {
+				case 'w':
+					client.updateMovement(PacketTypes.MOVE_UP);
+					break;
+				case 'a':
+					client.updateMovement(PacketTypes.MOVE_LEFT);
+					break;
+				case 's':
+					client.updateMovement(PacketTypes.MOVE_RIGHT);
+					break;
+				case 'd':
+					client.updateMovement(PacketTypes.MOVE_DOWN);
+					break;
+				default:
+					break;
+				}
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		else if (server != null) 
+		{
+			try {
+				switch (key) {
+				case 'w':
+					server.updateMovement(PacketTypes.MOVE_UP);
+					break;
+				case 'a':
+					server.updateMovement(PacketTypes.MOVE_LEFT);
+					break;
+				case 's':
+					server.updateMovement(PacketTypes.MOVE_DOWN);
+					break;
+				case 'd':
+					server.updateMovement(PacketTypes.MOVE_RIGHT);
+					break;
+				default:
+					break;
+				}
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
 	public void keyReleased()
 	{
-		switch (key) {
-		case 'w':
-			player.setvY(0);
-			break;
-		case 'a':
-			player.setvX(0);
-			break;
-		case 's':
-			player.setvY(0);
-			break;
-		case 'd':
-			player.setvX(0);
-			break;
+		if (client != null) 
+		{
+			try {
+				switch (key) {
+				case 'w':
+					client.updateMovement(PacketTypes.END_MOVE_Y);
+					break;
+				case 'a':
+					client.updateMovement(PacketTypes.END_MOVE_X);
+					break;
+				case 's':
+					client.updateMovement(PacketTypes.END_MOVE_Y);
+					break;
+				case 'd':
+					client.updateMovement(PacketTypes.END_MOVE_X);
+					break;
+				default:
+					break;
+				}
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		else if (server != null) 
+		{
+			try {
+				switch (key) {
+				case 'w':
+					server.updateMovement(PacketTypes.END_MOVE_Y);
+					break;
+				case 'a':
+					server.updateMovement(PacketTypes.END_MOVE_X);
+					break;
+				case 's':
+					server.updateMovement(PacketTypes.END_MOVE_Y);
+					break;
+				case 'd':
+					server.updateMovement(PacketTypes.END_MOVE_X);
+					break;
+				default:
+					break;
+				}
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -1245,15 +1386,53 @@ public class AmongUsInProcessing extends PApplet
 				inStart = true;
 				ip = "";
 			}
+			if (inRect(mouseX, mouseY, 250, 550, 200, 100))
+			{
+				if (inJoin)
+				{
+					try 
+					{
+						ByteBuffer buf = ByteBuffer.allocate(4);
+						buf.putInt(Integer.parseInt(ip, 16));
+						client = new ClientThread(420, InetAddress.getByAddress(buf.array()));
+						client.start();
+						
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+				else 
+				{
+					try {
+						server = new ServerThread(420);
+						server.start();
+					} catch (SocketException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
 		}
 		else
 		{
 			if (player.getAmmo() != 0)
 			{
-				bullets.add(new Bullet(player.getX() + 165 * cos(player.getRotation()), player.getY() + 165 * sin(player.getRotation()), player.getRColor(), 
-						player.getGColor(), player.getBColor(), player.getRotation(), this));
-				
-				player.setAmmo(player.getAmmo() - 1);
+//				bullets.add(new Bullet(player.getX() + 165 * cos(player.getRotation()), player.getY() + 165 * sin(player.getRotation()), player.getRColor(), 
+//						player.getGColor(), player.getBColor(), player.getRotation(), 0, this));
+//				
+//				player.setAmmo(player.getAmmo() - 1);
+				try 
+				{
+					if (client != null)
+						client.shoot();
+					else
+						server.shot(state.getCurrentPlayerIndex());
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -1324,7 +1503,28 @@ public class AmongUsInProcessing extends PApplet
 	
 	public void rotatePlayer() 
 	{
-		player.setRotation(atan2(mouseY - player.getY(), mouseX - player.getX()));
+		state.getCurrentPlayer().setRotation(atan2(mouseY - player.getY(), mouseX - player.getX()));
+	}
+	
+	public void mouseMoved() {
+		if (client != null)
+		{
+			try {
+				client.updateRotataion(state.getCurrentPlayer().getRotation());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else if (server != null)
+		{
+			try {
+				server.updateRotation(state.getCurrentPlayerIndex(), state.getCurrentPlayer().getRotation());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public void drawHostScreen()
@@ -1403,19 +1603,6 @@ public class AmongUsInProcessing extends PApplet
 			else if (ip.length() >= 0 && ip.length() < 8)
 				ip += key;
 		}
-		
-//		int ipInt = Integer.parseInt(ip, 16);
-//		ByteBuffer buffer = ByteBuffer.allocate(4);
-//		buffer.putInt(ipInt);
-//		try 
-//		{
-//			System.out.println(Inet4Address.getByAddress(buffer.array()).getHostAddress());
-//		} 
-//		catch (UnknownHostException e) 
-//		{
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 	}
 	
 }
