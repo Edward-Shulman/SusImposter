@@ -16,14 +16,15 @@ public class Bullet
 	private int owner;
 	private Rooms room;
 	
-	public Bullet(float x, float y, int r, int g, int b, float rotation, int id, PApplet a)
+	public Bullet(float x, float y, int r, int g, int b, float rotation, int id, Rooms room, PApplet a)
 	{
-		this(x, y, a.color(r, g, b), rotation, 0, a); //TODO acutally assign id
+		this(x, y, a.color(r, g, b), rotation, id, room, a); //TODO acutally assign id
 	}
 	
-	public Bullet(float x, float y, int c, float rotation, int owner, PApplet a) {
+	public Bullet(float x, float y, int c, float rotation, int owner, Rooms room, PApplet a) {
 		this.x = x;
 		this.y = y;
+		this.room = room;
 		color = c;
 		velocity = PVector.fromAngle(rotation);
 		velocity.setMag(10);

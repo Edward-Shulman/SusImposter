@@ -146,6 +146,10 @@ public class ClientThread extends Thread
 	
 	private void updatePlayer(int id, byte[] buf) throws IOException {
 		//TODO inital index conflict
+		if (AmongUsInProcessing.state.getCurrentPlayerIndex() == 0) {
+			AmongUsInProcessing.state.addPlayer(new PlayerClient(buf, 0, buf.length, AmongUsInProcessing.state.getWindow()));
+			return;
+		}
 		if (id >= AmongUsInProcessing.state.getPlayerCount()) {
 			AmongUsInProcessing.state.addPlayer(new PlayerClient(buf, 0, buf.length, AmongUsInProcessing.state.getWindow()));
 			return;

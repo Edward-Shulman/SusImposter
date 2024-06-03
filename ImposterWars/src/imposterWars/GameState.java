@@ -9,7 +9,7 @@ public class GameState
 	private Vector<PlayerClient> players;
 	private Vector<Bullet> bullets;
 	private Vector<AmmoDrop> ammoDrops;
-	private int currentPlayerIndex;
+	 int currentPlayerIndex;
 	private PApplet a;
 	
 	public GameState(int currentPlayerIndex, PApplet a)
@@ -60,6 +60,10 @@ public class GameState
 		return ammoDrops;
 	}
 	
+	public void addAmmoDrop(AmmoDrop ad) {
+		ammoDrops.add(ad);
+	}
+	
 	public void pickUpAmmoDrop(int id, int ammoID)
 	{
 		PlayerClient p = players.get(id);
@@ -81,7 +85,7 @@ public class GameState
 	{
 		PlayerClient player = players.get(owner);
 		bullets.add(new Bullet(player.getX() + 165 * PApplet.cos(player.getRotation()), player.getY() + 165 * PApplet.sin(player.getRotation()), 
-				player.getRColor(), player.getGColor(), player.getBColor(), player.getRotation(), owner, a));
+				player.getRColor(), player.getGColor(), player.getBColor(), player.getRotation(), owner, player.getRoom(), a));
 	}
 	
 	public void setPlayer(int id, PlayerClient p) {

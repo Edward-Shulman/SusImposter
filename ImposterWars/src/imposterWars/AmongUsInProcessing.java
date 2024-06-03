@@ -22,7 +22,7 @@ public class AmongUsInProcessing extends PApplet
 	PlayerClient player;
 	ArrayList<Bullet> bullets;
 	static GameState state;
-	String ip;
+	private String ip;
 	private ClientThread client;
 	private ServerThread server;
 	
@@ -89,11 +89,7 @@ public class AmongUsInProcessing extends PApplet
 		if (inStart)
 			drawStartScreen();
 		
-		if(isColliding())
-		{
-			player.setX(400);
-			player.setY(400);
-		}
+		
 		
 		if(inEmptyRoom)
 		{
@@ -113,19 +109,6 @@ public class AmongUsInProcessing extends PApplet
 				
 			}
 		}
-		
-		if(inWinRoom)
-		{
-			background(0, 0, 0);
-			fill(184, 82, 191);
-			textSize(50);
-			text("ENDING IMPOSTER MODE", 30, 300);
-			elapsedTime = (millis() - startTime) / 1000;
-			centerX = 550;
-			centerY = 150;
-			
-			
-		}
 
 		if (inHost) 
 		{
@@ -137,7 +120,13 @@ public class AmongUsInProcessing extends PApplet
 		}
 		else if (!inStart)
 		{
-			switch (state.getCurrentPlayer().getRoom()) {
+			if(isColliding())
+			{
+				state.getCurrentPlayer().setX(400);
+				state.getCurrentPlayer().setY(400);
+			}
+			switch (state.getCurrentPlayer().getRoom()) 
+			{
 			case Admin:
 				drawAdmin();
 				break;
@@ -202,15 +191,17 @@ public class AmongUsInProcessing extends PApplet
 				break;
 			}
 			
-//			imposterSpawn();
 			int i = 0;
 			while (i < state.getAmmoDrops().size()) {
 				AmmoDrop ad = state.getAmmoDrops().get(i);
 				if (state.getCurrentPlayer().getRoom().equals(ad.getRoom())) 
 				{
 					ad.draw();
+					if (dist(ad.getX(), ad.getY(), state.getCurrentPlayer().getX(), state.getCurrentPlayer().getY()) < 130)
+						state.pickUpAmmoDrop(state.getCurrentPlayerIndex(), i);
+					else
+						i++;
 				}
-				i++;
 			}
 //			player.draw();
 			state.getCurrentPlayer().draw();
@@ -240,13 +231,15 @@ public class AmongUsInProcessing extends PApplet
 				if (b.getRoom().equals(state.getCurrentPlayer().getRoom()))
 				{
 					b.draw();
+					b.move();
 				}
 				i++;
 			}
 		}
 	}
 
-	private void drawReactor() {
+	private void drawReactor() 
+	{
 		background(102, 72, 212);
 		fill(44, 123, 163);
 		ellipse(50, 300, 175, 350);
@@ -259,7 +252,8 @@ public class AmongUsInProcessing extends PApplet
 		text("You are in reactor", 400, 40);
 	}
 
-	private void drawSecurity() {
+	private void drawSecurity()
+	{
 		background(41, 150, 79);
 		fill(153, 91, 64);
 		rect(600, 200, 100, 210);
@@ -278,7 +272,8 @@ public class AmongUsInProcessing extends PApplet
 		text("You are in security", 430, 40);
 	}
 
-	private void drawUpperEngine() {
+	private void drawUpperEngine() 
+	{
 		background(133, 113, 113);
 		fill(219, 133, 83);
 		rect(0, 150, 400, 250);
@@ -292,7 +287,8 @@ public class AmongUsInProcessing extends PApplet
 		text("You are in upper engine", 200, 40);
 	}
 
-	private void drawLowerEngine() {
+	private void drawLowerEngine() 
+	{
 		background(133, 113, 113);
 		fill(219, 133, 83);
 		rect(0, 150, 400, 250);
@@ -306,7 +302,8 @@ public class AmongUsInProcessing extends PApplet
 		text("You are in lower engine", 200, 40);
 	}
 
-	private void drawElectrical() {
+	private void drawElectrical() 
+	{
 		background(128, 111, 46);
 		fill(124, 133, 123);
 		rect(0, 250, 380, 100);
@@ -330,21 +327,24 @@ public class AmongUsInProcessing extends PApplet
 		text("You are in electrical", 200, 40);
 	}
 
-	private void drawLeftHall() {
+	private void drawLeftHall() 
+	{
 		background(133, 113, 113);
 		fill(184, 82, 191);
 		textSize(30);
 		text("You are in the left hallway", 200, 40);
 	}
 
-	private void drawBottomLeftHall() {
+	private void drawBottomLeftHall() 
+	{
 		background(227, 225, 218);
 		fill(184, 82, 191);
 		textSize(20);
 		text("You are in the bottom left hallway", 200, 40);
 	}
 
-	private void drawStorage() {
+	private void drawStorage() 
+	{
 		background(84, 84, 80);
 		fill(166, 161, 161);
 		rect(550, 540, 20, 60);
@@ -364,7 +364,8 @@ public class AmongUsInProcessing extends PApplet
 		text("You are in storage", 200, 40);
 	}
 
-	private void drawComms() {
+	private void drawComms() 
+	{
 		background(99, 99, 97);
 		fill(66, 168, 93);
 		rect(350, 500, 100, 30);
@@ -380,14 +381,16 @@ public class AmongUsInProcessing extends PApplet
 		text("You are in communications", 200, 40);
 	}
 
-	private void drawBottomRightHall() {
+	private void drawBottomRightHall() 
+	{
 		background(227, 225, 218);
 		fill(184, 82, 191);
 		textSize(20);
 		text("You are in the bottom right hallway", 200, 40);
 	}
 
-	private void drawShields() {
+	private void drawShields() 
+	{
 		background(185, 186, 143);
 		fill(0, 0, 0);
 		rect(100, 530, 75, 40);
@@ -408,7 +411,8 @@ public class AmongUsInProcessing extends PApplet
 		text("You are in shields", 200, 40);
 	}
 
-	private void drawNav() {
+	private void drawNav() 
+	{
 		background(163, 162, 157);
 		fill(35, 68, 117);
 		rect(480, 340, 100, 30);
@@ -425,7 +429,8 @@ public class AmongUsInProcessing extends PApplet
 		text("You are in navigation", 200, 40);
 	}
 
-	private void drawO2() {
+	private void drawO2() 
+	{
 		background(171, 173, 132);
 		fill(45, 224, 237);
 		ellipse(500, 80, 100, 150);
@@ -442,7 +447,8 @@ public class AmongUsInProcessing extends PApplet
 		text("You are in oxygen", 200, 40);
 	}
 
-	private void drawMedbay() {
+	private void drawMedbay() 
+	{
 		background(194, 188, 186);
 		fill(34, 131, 191);
 		rect(0, 80, 130, 100);
@@ -463,7 +469,8 @@ public class AmongUsInProcessing extends PApplet
 		text("You are in medbay", 200, 40);
 	}
 
-	private void drawAdmin() {
+	private void drawAdmin() 
+	{
 		background(156, 44, 44);
 		fill(51, 143, 58);
 		rect(200, 230, 300, 160);
@@ -477,28 +484,32 @@ public class AmongUsInProcessing extends PApplet
 		text("You are in admin", 200, 40);
 	}
 
-	private void drawRightHall() {
+	private void drawRightHall() 
+	{
 		background(227, 225, 218);
 		fill(184, 82, 191);
 		textSize(30);
 		text("You are in the right hallway", 200, 40);
 	}
 
-	private void drawCenterHall() {
+	private void drawCenterHall() 
+	{
 		background(227, 225, 218);
 		fill(184, 82, 191);
 		textSize(30);
 		text("You are in the center hallway", 200, 40);
 	}
 
-	private void drawUpperLeftHall() {
+	private void drawUpperLeftHall() 
+	{
 		background(227, 225, 218);
 		fill(184, 82, 191);
 		textSize(30);
 		text("You are in the top left hallway", 200, 40);
 	}
 
-	private void drawWeapons() {
+	private void drawWeapons() 
+	{
 		background(185, 186, 143);
 		fill(130, 157, 168);
 		arc(350, 300, 250, 250, 0, 360);
@@ -512,7 +523,8 @@ public class AmongUsInProcessing extends PApplet
 		text("You are in weapons", 200, 40);
 	}
 
-	private void drawCaf() {
+	private void drawCaf() 
+	{
 		background(185, 186, 143);
 		fill(53, 158, 219);
 		arc(350, 300, 160, 160, 0, 360);
@@ -530,394 +542,396 @@ public class AmongUsInProcessing extends PApplet
 	
 	public boolean isColliding()
 	{
-		if(player.getY() > 535 && inCaf)
+		//TODO networking with rooms
+		PlayerClient p = state.getCurrentPlayer();
+		if(p.getY() > 535 && p.getRoom().equals(Rooms.Caf))
 		{
 			inCaf = false;
 			inCenterHallway = true;
-			player.setRoom(Rooms.CenterHallway);
+			p.setRoom(Rooms.CenterHallway);
 			return true;
 		}
-		else if(player.getX() < 65 && inCaf)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Caf))
 		{
 			inCaf = false;
 			inUpperLeftHallway = true;
-			player.setRoom(Rooms.UpperLeftHallway);
+			p.setRoom(Rooms.UpperLeftHallway);
 			return true;
 		}
-		else if(player.getY() < 65 && inCaf)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Caf))
 		{
 			return true;
 		}
-		else if( player.getX() > 635 && inCaf)
+		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Caf))
 		{
 			inCaf = false;
 			inWeapons = true;
-			player.setRoom(Rooms.Weapons);
+			p.setRoom(Rooms.Weapons);
 			return true;
 		}
-		else if(player.getY() < 65 && inWeapons)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Weapons))
 			return true;
-		else if(player.getY() > 535 && inWeapons)
+		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Weapons))
 		{
 			inWeapons = false;
 			inRightHallway = true;
-			player.setRoom(Rooms.RightHallway);
+			p.setRoom(Rooms.RightHallway);
 			return true;
 		}
-		else if(player.getX() < 65 && inWeapons)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Weapons))
 		{
 			inCaf = true;
 			inWeapons = false;
-			player.setRoom(Rooms.Caf);
+			p.setRoom(Rooms.Caf);
 			return true;
 		}
-		else if( player.getX() > 635 && inWeapons)
+		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Weapons))
 			return true;
-		else if(player.getY() < 65 && inUpperLeftHallway)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.UpperLeftHallway))
 			return true;
-		else if(player.getY() > 535 && inUpperLeftHallway)
+		else if(p.getY() > 535 && p.getRoom().equals(Rooms.UpperLeftHallway))
 		{
 			inUpperLeftHallway = false;
 			inMedbay = true;
-			player.setRoom(Rooms.Medbay);
+			p.setRoom(Rooms.Medbay);
 			return true;
 		}
-		else if(player.getX() < 65 && inUpperLeftHallway)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.UpperLeftHallway))
 		{
 			inUpperLeftHallway = false;
 			inUpperEngine = true;
-			player.setRoom(Rooms.UpperEngine);
+			p.setRoom(Rooms.UpperEngine);
 			return true;
 		}
-		else if( player.getX() > 635 && inUpperLeftHallway)
+		else if( p.getX() > 635 && p.getRoom().equals(Rooms.UpperLeftHallway))
 		{
 			inCaf = true;
 			inUpperLeftHallway = false;
-			player.setRoom(Rooms.Caf);
+			p.setRoom(Rooms.Caf);
 			return true;
 		}
-		else if(player.getY() < 65 && inCenterHallway)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.CenterHallway))
 		{
 			inCaf = true;
 			inCenterHallway = false;
-			player.setRoom(Rooms.Caf);
+			p.setRoom(Rooms.Caf);
 			return true;
 		}
-		else if(player.getY() > 535 && inCenterHallway)
+		else if(p.getY() > 535 && p.getRoom().equals(Rooms.CenterHallway))
 		{
 			inCenterHallway = false;
 			inStorage = true;
-			player.setRoom(Rooms.Storage);
+			p.setRoom(Rooms.Storage);
 			return true;
 		}
-		else if(player.getX() < 65 && inCenterHallway)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.CenterHallway))
 			return true;
-		else if( player.getX() > 635 && inCenterHallway)
+		else if( p.getX() > 635 && p.getRoom().equals(Rooms.CenterHallway))
 		{
 			inCenterHallway = false;
 			inAdmin = true;
-			player.setRoom(Rooms.Admin);
+			p.setRoom(Rooms.Admin);
 			return true;
 		}
-		else if(player.getY() < 65 && inRightHallway)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.RightHallway))
 		{
 			inRightHallway = false;
 			inWeapons = true;
-			player.setRoom(Rooms.Weapons);
+			p.setRoom(Rooms.Weapons);
 			return true;
 		}
-		else if(player.getY() > 535 && inRightHallway)
+		else if(p.getY() > 535 && p.getRoom().equals(Rooms.RightHallway))
 		{
 			inRightHallway = false;
 			inShields = true;
-			player.setRoom(Rooms.Shields);
+			p.setRoom(Rooms.Shields);
 			return true;
 		}
-		else if(player.getX() < 65 && inRightHallway)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.RightHallway))
 		{
 			inRightHallway = false;
 			inOxygen = true;
-			player.setRoom(Rooms.Oxygen);
+			p.setRoom(Rooms.Oxygen);
 			return true;
 		}
-		else if( player.getX() > 635 && inRightHallway)
+		else if( p.getX() > 635 && p.getRoom().equals(Rooms.RightHallway))
 		{
 			inRightHallway = false;
 			inNavigation = true;
-			player.setRoom(Rooms.Navigation);
+			p.setRoom(Rooms.Navigation);
 			return true;
 		}
-		else if(player.getY() < 65 && inAdmin)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Admin))
 			return true;
-		else if(player.getY() > 535 && inAdmin)
+		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Admin))
 			return true;
-		else if(player.getX() < 65 && inAdmin)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Admin))
 		{
 			inAdmin = false;
 			inCenterHallway = true;
-			player.setRoom(Rooms.CenterHallway);
+			p.setRoom(Rooms.CenterHallway);
 			return true;
 		}
-		else if( player.getX() > 635 && inAdmin)
+		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Admin))
 			return true;
-		else if(player.getY() < 65 && inMedbay)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Medbay))
 		{
 			inMedbay = false;
 			inUpperLeftHallway = true;
-			player.setRoom(Rooms.UpperLeftHallway);
+			p.setRoom(Rooms.UpperLeftHallway);
 			return true;
 		}
-		else if(player.getY() > 535 && inMedbay)
+		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Medbay))
 			return true;
-		else if(player.getX() < 65 && inMedbay)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Medbay))
 			return true;
-		else if( player.getX() > 635 && inMedbay)
+		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Medbay))
 			return true;
-		else if(player.getY() < 65 && inOxygen)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Oxygen))
 			return true;
-		else if(player.getY() > 535 && inOxygen)
+		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Oxygen))
 			return true;
-		else if(player.getX() < 65 && inOxygen)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Oxygen))
 			return true;
-		else if( player.getX() > 635 && inOxygen)
+		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Oxygen))
 		{
 			inOxygen = false;
 			inRightHallway = true;
-			player.setRoom(Rooms.RightHallway);
+			p.setRoom(Rooms.RightHallway);
 			return true;
 		}
-		else if(player.getY() < 65 && inNavigation)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Navigation))
 			return true;
-		else if(player.getY() > 535 && inNavigation)
+		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Navigation))
 			return true;
-		else if(player.getX() < 65 && inNavigation)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Navigation))
 		{
 			inNavigation = false;
 			inRightHallway = true;
-			player.setRoom(Rooms.RightHallway);
+			p.setRoom(Rooms.RightHallway);
 			return true;
 		}
-		else if( player.getX() > 635 && inNavigation)
+		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Navigation))
 			return true;
-		else if(player.getY() < 65 && inShields)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Shields))
 		{
 			inShields = false;
 			inRightHallway = true;
-			player.setRoom(Rooms.RightHallway);
+			p.setRoom(Rooms.RightHallway);
 			return true;
 		}
-		else if(player.getY() > 535 && inShields)
+		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Shields))
 			return true;
-		else if(player.getX() < 65 && inShields)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Shields))
 		{
 			inShields = false;
 			inBottomRightHallway = true;
-			player.setRoom(Rooms.BottomRightHallway);
+			p.setRoom(Rooms.BottomRightHallway);
 			return true;
 		}
-		else if( player.getX() > 635 && inShields)
+		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Shields))
 			return true;
-		else if(player.getY() < 65 && inBottomRightHallway)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.BottomRightHallway))
 			return true;
-		else if(player.getY() > 535 && inBottomRightHallway)
+		else if(p.getY() > 535 && p.getRoom().equals(Rooms.BottomRightHallway))
 		{
 			inBottomRightHallway = false;
 			inComms = true;
-			player.setRoom(Rooms.Comms);
+			p.setRoom(Rooms.Comms);
 			return true;
 		}
-		else if(player.getX() < 65 && inBottomRightHallway)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.BottomRightHallway))
 		{
 			inBottomRightHallway = false;
 			inStorage = true;
-			player.setRoom(Rooms.Storage);
+			p.setRoom(Rooms.Storage);
 			return true;
 		}
-		else if( player.getX() > 635 && inBottomRightHallway)
+		else if( p.getX() > 635 && p.getRoom().equals(Rooms.BottomRightHallway))
 		{
 			inBottomRightHallway = false;
 			inShields = true;
-			player.setRoom(Rooms.Shields);
+			p.setRoom(Rooms.Shields);
 			return true;
 		}
-		else if(player.getY() < 65 && inComms)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Comms))
 		{
 			inComms = false;
 			inBottomRightHallway = true;
-			player.setRoom(Rooms.BottomRightHallway);
+			p.setRoom(Rooms.BottomRightHallway);
 			return true;
 		}
-		else if(player.getY() > 535 && inComms)
+		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Comms))
 			return true;
-		else if(player.getX() < 65 && inComms)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Comms))
 			return true;
-		else if( player.getX() > 635 && inComms)
+		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Comms))
 			return true;
-		else if(player.getY() < 65 && inStorage)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Storage))
 		{
 			inStorage = false;
 			inCenterHallway = true;
-			player.setRoom(Rooms.CenterHallway);
+			p.setRoom(Rooms.CenterHallway);
 			return true;
 		}
-		else if(player.getY() > 535 && inStorage)
+		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Storage))
 			return true;
-		else if(player.getX() < 65 && inStorage)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Storage))
 		{
 			inStorage = false;
 			inBottomLeftHallway = true;
-			player.setRoom(Rooms.BottomLeftHallway);
+			p.setRoom(Rooms.BottomLeftHallway);
 			return true;
 		}
-		else if(player.getX() > 635 && inStorage)
+		else if(p.getX() > 635 && p.getRoom().equals(Rooms.Storage))
 		{
 			inStorage = false;
 			inBottomRightHallway = true;
-			player.setRoom(Rooms.BottomRightHallway);
+			p.setRoom(Rooms.BottomRightHallway);
 			return true;
 		}
-		else if(player.getY() < 65 && inBottomLeftHallway)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.BottomLeftHallway))
 		{
 			inBottomLeftHallway = false;
 			inElectrical = true;
-			player.setRoom(Rooms.Electrical);
+			p.setRoom(Rooms.Electrical);
 			return true;
 		}
-		else if(player.getY() > 535 && inBottomLeftHallway)
+		else if(p.getY() > 535 && p.getRoom().equals(Rooms.BottomLeftHallway))
 			return true;
-		else if(player.getX() < 65 && inBottomLeftHallway)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.BottomLeftHallway))
 		{
 			inBottomLeftHallway = false;
 			inLowerEngine = true;
-			player.setRoom(Rooms.LowerEngine);
+			p.setRoom(Rooms.LowerEngine);
 			return true;
 		}
-		else if(player.getX() > 635 && inBottomLeftHallway)
+		else if(p.getX() > 635 && p.getRoom().equals(Rooms.BottomLeftHallway))
 		{
 			inBottomLeftHallway = false;
 			inStorage = true;
-			player.setRoom(Rooms.Storage);
+			p.setRoom(Rooms.Storage);
 			return true;
 		}
-		else if(player.getY() < 65 && inElectrical)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Electrical))
 			return true;
-		else if(player.getY() > 535 && inElectrical)
+		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Electrical))
 		{
 			inElectrical = false;
 			inBottomLeftHallway = true;
-			player.setRoom(Rooms.BottomLeftHallway);
+			p.setRoom(Rooms.BottomLeftHallway);
 			return true;
 		}
-		else if(player.getX() < 65 && inElectrical)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Electrical))
 			return true;
-		else if(player.getX() > 635 && inElectrical)
+		else if(p.getX() > 635 && p.getRoom().equals(Rooms.Electrical))
 			return true;
-		else if(player.getY() < 65 && inLowerEngine)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.LowerEngine))
 		{
 			inLowerEngine = false;
 			inLeftHallway = true;
-			player.setRoom(Rooms.LeftHallway);
+			p.setRoom(Rooms.LeftHallway);
 			return true;
 		}
-		else if(playerY > 535 && inLowerEngine)
+		else if(p.getY() > 535 && p.getRoom().equals(Rooms.LowerEngine))
 			return true;
-		else if(player.getX() < 65 && inLowerEngine)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.LowerEngine))
 			return true;
-		else if(player.getX() > 635 && inLowerEngine)
+		else if(p.getX() > 635 && p.getRoom().equals(Rooms.LowerEngine))
 		{
 			inLowerEngine = false;
 			inBottomLeftHallway = true;
-			player.setRoom(Rooms.BottomLeftHallway);
+			p.setRoom(Rooms.BottomLeftHallway);
 			return true;
 		}
-		else if(player.getY() < 65 && inLeftHallway)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.LeftHallway))
 		{
 			inLeftHallway = false;
 			inUpperEngine = true;
-			player.setRoom(Rooms.UpperEngine);
+			p.setRoom(Rooms.UpperEngine);
 			return true;
 		}
-		else if(player.getY() > 535 && inLeftHallway)
+		else if(p.getY() > 535 && p.getRoom().equals(Rooms.LeftHallway))
 		{
 			inLeftHallway = false;
 			inLowerEngine = true;
-			player.setRoom(Rooms.LowerEngine);
+			p.setRoom(Rooms.LowerEngine);
 			return true;
 		}
-		else if(player.getX() < 65 && inLeftHallway)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.LeftHallway))
 		{
 			inLeftHallway = false;
 			inReactor = true;
-			player.setRoom(Rooms.Reactor);
+			p.setRoom(Rooms.Reactor);
 			return true;
 		}
-		else if( player.getX() > 635 && inLeftHallway)
+		else if( p.getX() > 635 && p.getRoom().equals(Rooms.LeftHallway))
 		{
 			inLeftHallway = false;
 			inSecurity = true;
-			player.setRoom(Rooms.Security);
+			p.setRoom(Rooms.Security);
 			return true;
 		}
-		else if(player.getY() < 65 && inUpperEngine)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.UpperEngine))
 			return true;
-		else if(player.getY() > 535 && inUpperEngine)
+		else if(p.getY() > 535 && p.getRoom().equals(Rooms.UpperEngine))
 		{
 			inUpperEngine = false;
 			inLeftHallway = true;
-			player.setRoom(Rooms.LeftHallway);
+			p.setRoom(Rooms.LeftHallway);
 			return true;
 		}
-		else if(player.getX() < 65 && inUpperEngine)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.UpperEngine))
 			return true;
-		else if(player.getX() > 635 && inUpperEngine)
+		else if(p.getX() > 635 && p.getRoom().equals(Rooms.UpperEngine))
 		{
 			inUpperEngine = false;
 			inUpperLeftHallway = true;
-			player.setRoom(Rooms.UpperLeftHallway);
+			p.setRoom(Rooms.UpperLeftHallway);
 			return true;
 		}
-		else if(player.getY() < 65 && inSecurity)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Security))
 			return true;
-		else if(player.getY() > 535 && inSecurity)
+		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Security))
 			return true;
-		else if(player.getX() < 65 && inSecurity)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Security))
 		{
 			inSecurity = false;
 			inLeftHallway = true;
-			player.setRoom(Rooms.LeftHallway);
+			p.setRoom(Rooms.LeftHallway);
 			return true;
 		}
-		else if( player.getX() > 635 && inSecurity)
+		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Security))
 			return true;
-		else if(player.getY() < 65 && inReactor)
+		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Reactor))
 			return true;
-		else if(player.getY() > 535 && inReactor)
+		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Reactor))
 			return true;
-		else if(player.getX() < 65 && inReactor)
+		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Reactor))
 			return true;
-		else if(player.getX() > 635 && inReactor)
+		else if(p.getX() > 635 && p.getRoom().equals(Rooms.Reactor))
 		{
 			inReactor = false;
 			inLeftHallway = true;
-			player.setRoom(Rooms.LeftHallway);
+			p.setRoom(Rooms.LeftHallway);
 			return true;
 		}
-		else if(player.getY() < 65 && inEmptyRoom)
-			return true;
-		else if(player.getY() > 535 && inEmptyRoom)
-			return true;
-		else if(player.getX() < 65 && inEmptyRoom)
-			return true;
-		else if(player.getX() > 635 && inEmptyRoom)
-			return true;
-		else if(player.getY() < 65 && inWinRoom)
-			return true;
-		else if(player.getY() > 535 && inWinRoom)
-			return true;
-		else if(player.getX() < 65 && inWinRoom)
-			return true;
-		else if(player.getX() > 635 && inWinRoom)
-			return true;
+//		else if(p.getY() < 65 && inEmptyRoom)
+//			return true;
+//		else if(p.getY() > 535 && inEmptyRoom)
+//			return true;
+//		else if(p.getX() < 65 && inEmptyRoom)
+//			return true;
+//		else if(p.getX() > 635 && inEmptyRoom)
+//			return true;
+//		else if(p.getY() < 65 && inWinRoom)
+//			return true;
+//		else if(p.getY() > 535 && inWinRoom)
+//			return true;
+//		else if(p.getX() < 65 && inWinRoom)
+//			return true;
+//		else if(p.getX() > 635 && inWinRoom)
+//			return true;
 		else
 			return false;
 	}
@@ -1002,14 +1016,6 @@ public class AmongUsInProcessing extends PApplet
 		}
 	}
 	
-//	public void imposterMode()
-//	{
-//		int random = 0;
-//		for(int i = 0; i < 10; i++)
-//		{
-//			random = (int) (Math.random() * 20);
-//		}
-//	}
 
 	public void imposterSpawn()
 	{
@@ -1024,175 +1030,8 @@ public class AmongUsInProcessing extends PApplet
 					player.setAmmo(player.getAmmo() + 15);
 				}
 			}
-//			else if(inCenterHallway && ammoDrops[i].getRoom() == Rooms.CenterHallway)
-//			{
-//				ammoDrops[i].draw();
-//				if(dist(playerX, playerY, ammoDrops[i].getX(), ammoDrops[i].getY()) <= 130 && ! inStart)
-//					ammoDrops[i].centerX = 1000;
-//				imposterWin();
-//			}
-//			else if(inUpperLeftHallway && ammoDrops[i].getRoom() == Rooms.UpperLeftHallway) 
-//			{
-//				ammoDrops[i].draw();
-//				if(dist(playerX, playerY, ammoDrops[i].getX(), ammoDrops[i].getY()) <= 130 && ! inStart)
-//					ammoDrops[i].centerX = 1000;
-//				imposterWin();
-//			}
-//			else if(inWeapons && ammoDrops[i].getRoom() == Rooms.Weapons)
-//			{
-//				ammoDrops[i].draw();
-//				if(dist(playerX, playerY, ammoDrops[i].getX(), ammoDrops[i].getY()) <= 130 && ! inStart)
-//					ammoDrops[i].centerX = 1000;
-//				imposterWin();
-//			}
-//			else if(inMedbay && ammoDrops[i].getRoom() == Rooms.Medbay)
-//			{
-//				ammoDrops[i].draw();
-//				if(dist(playerX, playerY, ammoDrops[i].getX(), ammoDrops[i].getY()) <= 130 && ! inStart)
-//					ammoDrops[i].centerX = 1000;
-//				imposterWin();
-//			}
-//			else if(inAdmin && ammoDrops[i].getRoom() == Rooms.Admin)
-//			{
-//				ammoDrops[i].draw();
-//				if(dist(playerX, playerY, ammoDrops[i].getX(), ammoDrops[i].getY()) <= 130 && ! inStart)
-//					ammoDrops[i].centerX = 1000;
-//				imposterWin();
-//			}
-//			else if(inStorage && ammoDrops[i].getRoom() == Rooms.Storage) 
-//			{
-//				ammoDrops[i].draw();
-//				if(dist(playerX, playerY, ammoDrops[i].getX(), ammoDrops[i].getY()) <= 130 && ! inStart)
-//					ammoDrops[i].centerX = 1000;
-//				imposterWin();
-//			}
-//			else if(inRightHallway && ammoDrops[i].getRoom() == Rooms.RightHallway)
-//			{
-//				ammoDrops[i].draw();
-//				if(dist(playerX, playerY, ammoDrops[i].getX(), ammoDrops[i].getY()) <= 130 && ! inStart)
-//					ammoDrops[i].centerX = 1000;
-//				imposterWin();
-//			}
-//			else if(inNavigation && ammoDrops[i].getRoom() == Rooms.Navigation)
-//			{
-//				ammoDrops[i].draw();
-//				if(dist(playerX, playerY, ammoDrops[i].getX(), ammoDrops[i].getY()) <= 130 && ! inStart)
-//					ammoDrops[i].centerX = 1000;
-//				imposterWin();
-//			}
-//			else if(inOxygen && ammoDrops[i].getRoom() == Rooms.Oxygen)
-//			{
-//				ammoDrops[i].draw();
-//				if(dist(playerX, playerY, ammoDrops[i].getX(), ammoDrops[i].getY()) <= 130 && ! inStart)
-//					ammoDrops[i].centerX = 1000;
-//				imposterWin();
-//			}
-//			else if(inShields && ammoDrops[i].getRoom() == Rooms.Shields)
-//			{
-//				ammoDrops[i].draw();
-//				if(dist(playerX, playerY, ammoDrops[i].getX(), ammoDrops[i].getY()) <= 130 && ! inStart)
-//					ammoDrops[i].centerX = 1000;
-//				imposterWin();
-//			}
-//			else if(inBottomRightHallway && ammoDrops[i].getRoom() == Rooms.BottomRightHallway)
-//			{
-//				ammoDrops[i].draw();
-//				if(dist(playerX, playerY, ammoDrops[i].getX(), ammoDrops[i].getY()) <= 130 && ! inStart)
-//					ammoDrops[i].centerX = 1000;
-//				imposterWin();
-//			}
-//			else if(inComms && ammoDrops[i].getRoom() == Rooms.Comms)
-//			{
-//				ammoDrops[i].draw();
-//				if(dist(playerX, playerY, ammoDrops[i].getX(), ammoDrops[i].getY()) <= 130 && ! inStart)
-//					ammoDrops[i].centerX = 1000;
-//				imposterWin();
-//			}
-//			else if(inBottomLeftHallway && ammoDrops[i].getRoom() == Rooms.BottomLeftHallway)
-//			{
-//				ammoDrops[i].draw();
-//				if(dist(playerX, playerY, ammoDrops[i].getX(), ammoDrops[i].getY()) <= 130 && ! inStart)
-//					ammoDrops[i].centerX = 1000;
-//				imposterWin();
-//			}
-//			else if(inElectrical && ammoDrops[i].getRoom() == Rooms.Electrical)
-//			{
-//				ammoDrops[i].draw();
-//				if(dist(playerX, playerY, ammoDrops[i].getX(), ammoDrops[i].getY()) <= 130 && ! inStart)
-//					ammoDrops[i].centerX = 1000;
-//				imposterWin();
-//			}
-//			else if(inLowerEngine && ammoDrops[i].getRoom() == Rooms.LowerEngine)
-//			{
-//				ammoDrops[i].draw();
-//				if(dist(playerX, playerY, ammoDrops[i].getX(), ammoDrops[i].getY()) <= 130 && ! inStart)
-//					ammoDrops[i].centerX = 1000;
-//				imposterWin();
-//			}
-//			else if(inUpperEngine && ammoDrops[i].getRoom() == Rooms.UpperEngine)
-//			{
-//				ammoDrops[i].draw();
-//				if(dist(playerX, playerY, ammoDrops[i].getX(), ammoDrops[i].getY()) <= 130 && ! inStart)
-//					ammoDrops[i].centerX = 1000;
-//				imposterWin();
-//			}
-//			else if(inLeftHallway && ammoDrops[i].getRoom() == Rooms.LeftHallway) 
-//			{
-//				ammoDrops[i].draw();
-//				if(dist(playerX, playerY, ammoDrops[i].getX(), ammoDrops[i].getY()) <= 130 && ! inStart)
-//					ammoDrops[i].centerX = 1000;
-//				imposterWin();
-//			}
-//			else if(inReactor && ammoDrops[i].getRoom() == Rooms.Reactor)
-//			{
-//				ammoDrops[i].draw();
-//				if(dist(playerX, playerY, ammoDrops[i].getX(), ammoDrops[i].getY()) <= 130 && ! inStart)
-//					ammoDrops[i].centerX = 1000;
-//				imposterWin();
-//			}
-//			else if(inSecurity && ammoDrops[i].getRoom() == Rooms.Security)
-//			{
-//				ammoDrops[i].draw();
-//				if(dist(playerX, playerY, ammoDrops[i].getX(), ammoDrops[i].getY()) <= 130 && ! inStart)
-//					ammoDrops[i].centerX = 1000;
-//				imposterWin();
-//			}
 		}
-		
-		
 	}
-	
-//	public void imposterWin()
-//	{
-//		if(ammoDrops[0].getX() == 1000 && ammoDrops[1].getX() == 1000 && ammoDrops[2].getX() == 1000 && ammoDrops[3].getX() == 1000 && ammoDrops[4].getX() == 1000 && ammoDrops[5].getX() == 1000 && ammoDrops[6].getX() == 1000
-//		&& ammoDrops[7].getX() == 1000 && ammoDrops[8].getX() == 1000 && ammoDrops[9].getX() == 1000)
-//		{
-//			startTime = millis();
-//			elapsedTime = 0;
-//			inStart = false;
-//			inCaf = false;
-//			inCenterHallway = false;
-//			inUpperLeftHallway = false;
-//			inWeapons = false;
-//			inMedbay = false;
-//			inUpperEngine = false;
-//			inAdmin = false;
-//			inStorage = false;
-//			inRightHallway = false;
-//			inOxygen = false;
-//			inNavigation = false;
-//			inShields = false;
-//			inBottomRightHallway = false;
-//			inComms = false;
-//			inBottomLeftHallway = false;
-//			inElectrical = false;
-//			inLowerEngine = false;
-//			inLeftHallway = false;
-//			inReactor = false;
-//			inSecurity = false;
-//			inWinRoom = true;
-//		}
-//	}
 	
 	public void keyPressed()
 	{
@@ -1394,30 +1233,37 @@ public class AmongUsInProcessing extends PApplet
 					{
 						ByteBuffer buf = ByteBuffer.allocate(4);
 						buf.putInt(Integer.parseInt(ip, 16));
+						state = new GameState(0, this);
 						client = new ClientThread(420, InetAddress.getByAddress(buf.array()));
 						client.start();
-						
 					}
 					catch (Exception e)
 					{
 						e.printStackTrace();
 					}
+					inJoin = false;
 				}
 				else 
 				{
 					try {
 						server = new ServerThread(420);
 						server.start();
+						state = new GameState(0, this);
+						state.addPlayer(player);
+						for (int i = 0; i < 10; i++) {
+							state.addAmmoDrop(new AmmoDrop(this, Rooms.values()[(int) random(20)]));
+						}
 					} catch (SocketException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					inHost = false;
 				}
 			}
 		}
 		else
 		{
-			if (player.getAmmo() != 0)
+			if (state.getCurrentPlayer().getAmmo() != 0)
 			{
 //				bullets.add(new Bullet(player.getX() + 165 * cos(player.getRotation()), player.getY() + 165 * sin(player.getRotation()), player.getRColor(), 
 //						player.getGColor(), player.getBColor(), player.getRotation(), 0, this));
@@ -1492,13 +1338,14 @@ public class AmongUsInProcessing extends PApplet
 	
 	public void drawHUD()
 	{
-		fill(player.getRColor(), player.getGColor(), player.getBColor());
+		PlayerClient p = state.getCurrentPlayer();
+		fill(p.getRColor(), p.getGColor(), p.getBColor());
 		rect(0, 600, 700, 100);
 		fill(255);
 		textSize(30);
-		text("Kills: " + player.getKills(), 20, 640);
-		text("Health: " + player.getHealth(), 250, 640);
-		text("Ammo: " + player.getAmmo(), 460, 640);
+		text("Kills: " + p.getKills(), 20, 640);
+		text("Health: " + p.getHealth(), 250, 640);
+		text("Ammo: " + p.getAmmo(), 460, 640);
 	}
 	
 	public void rotatePlayer() 
