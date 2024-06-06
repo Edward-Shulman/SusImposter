@@ -67,7 +67,7 @@ public class PlayerClient
 	
 	public byte[] toBytes() throws IOException
 	{
-		ByteArrayOutputStream result = new ByteArrayOutputStream(44);
+		ByteArrayOutputStream result = new ByteArrayOutputStream(40);
 		DataOutputStream d = new DataOutputStream(result);
 		d.writeInt(room.getID());
 		d.writeFloat(x);

@@ -130,7 +130,7 @@ public class ClientThread extends Thread
 		Vector<PlayerClient> updated = new Vector<PlayerClient>(size);
 		for (int i = 0; i < size; i++) 
 		{
-			updated.add(new PlayerClient(recieve.readNBytes(44), 0, 44, AmongUsInProcessing.state.getWindow()));
+			updated.add(new PlayerClient(recieve.readNBytes(40), 0, 40, AmongUsInProcessing.state.getWindow()));
 		}
 		AmongUsInProcessing.state.players = updated;
 		AmongUsInProcessing.state.currentPlayerIndex = updated.size() - 1;
