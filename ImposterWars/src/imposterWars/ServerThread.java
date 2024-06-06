@@ -108,7 +108,8 @@ public class ServerThread extends Thread
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			DataOutputStream send = new DataOutputStream(baos);
 			send.write(PacketTypes.UPDATE_PLAYERS.getID());
-			AmongUsInProcessing.state.addPlayer(new PlayerClient(buf, 1, buf.length - 1, AmongUsInProcessing.state.getWindow()));
+			int nid = AmongUsInProcessing.state.addPlayer(new PlayerClient(buf, 1, buf.length - 1, AmongUsInProcessing.state.getWindow()));
+			clients.put(nid, addr);
 			send.writeInt(AmongUsInProcessing.state.getPlayerCount());
 			
 			for (int i = 0; i < AmongUsInProcessing.state.getPlayerCount(); i++)
@@ -137,6 +138,7 @@ public class ServerThread extends Thread
 	
 	private void playerXMovement(int id, float vX) throws IOException 
 	{
+		System.out.println(id + " " + vX);
 		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
 		p.setvX(vX);
 		PacketTypes response;
@@ -165,6 +167,7 @@ public class ServerThread extends Thread
 	
 	private void playerYMovement(int id, float vY) throws IOException 
 	{
+		System.out.println(id + " " + vY);
 		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
 		p.setvY(vY);
 		PacketTypes response;

@@ -195,6 +195,7 @@ public class AmongUsInProcessing extends PApplet
 				PlayerClient p = state.getPlayer(i);
 				if (i != state.getCurrentPlayerIndex() && p.getRoom().equals(state.getCurrentPlayer().getRoom())) {
 					p.draw();
+					p.move();
 				}
 			}
 			

@@ -132,6 +132,8 @@ public class ClientThread extends Thread
 		{
 			updated.add(new PlayerClient(recieve.readNBytes(44), 0, 44, AmongUsInProcessing.state.getWindow()));
 		}
+		AmongUsInProcessing.state.players = updated;
+		AmongUsInProcessing.state.currentPlayerIndex = updated.size() - 1;
 	}
 	
 	private void initConnection() throws IOException

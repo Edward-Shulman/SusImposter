@@ -6,7 +6,7 @@ import processing.core.PApplet;
 
 public class GameState
 {
-	private Vector<PlayerClient> players;
+	 Vector<PlayerClient> players;
 	private Vector<Bullet> bullets;
 	private Vector<AmmoDrop> ammoDrops;
 	 int currentPlayerIndex;
