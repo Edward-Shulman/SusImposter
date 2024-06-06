@@ -191,6 +191,13 @@ public class AmongUsInProcessing extends PApplet
 				break;
 			}
 			
+			for (int i = 0; i < state.getPlayerCount(); i++) {
+				PlayerClient p = state.getPlayer(i);
+				if (i != state.getCurrentPlayerIndex() && p.getRoom().equals(state.getCurrentPlayer().getRoom())) {
+					p.draw();
+				}
+			}
+			
 			int i = 0;
 			while (i < state.getAmmoDrops().size()) {
 				AmmoDrop ad = state.getAmmoDrops().get(i);
