@@ -47,6 +47,7 @@ public class PlayerClient
 		ByteArrayInputStream bais = new ByteArrayInputStream(buf, offset, len);
 		DataInputStream d = new DataInputStream(bais);
 		
+		this.a = a;
 		room = Rooms.values()[d.readInt()];
 		x = d.readFloat();
 		y = d.readFloat();
