@@ -16,7 +16,8 @@ public enum PacketTypes
 	UPDATE_AMMO_DROPS(10),
 	UPDATE_ROTATION(11),
 	UPDATE_HP(12),
-	UPDATE_PLAYER(13);
+	UPDATE_PLAYER(13),
+	UPDATE_PLAYERS(14);
 	
 	private PacketTypes(int id) 
 	{

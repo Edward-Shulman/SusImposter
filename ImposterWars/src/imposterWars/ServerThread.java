@@ -105,17 +105,21 @@ public class ServerThread extends Thread
 		if (buf[0] == Byte.MAX_VALUE)
 		{
 			System.out.println("New player joined");
-			ByteArrayOutputStream send = new ByteArrayOutputStream(42);
-			send.write(PacketTypes.UPDATE_PLAYER.getID());
-			int nid = AmongUsInProcessing.state.addPlayer(new PlayerClient(buf, 1, buf.length - 1, AmongUsInProcessing.state.getWindow()));
-			send.write(nid);
-			send.write(buf, 1, buf.length - 1);
-			for (Entry<Integer, InetSocketAddress> client : clients.entrySet()) 
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			DataOutputStream send = new DataOutputStream(baos);
+			send.write(PacketTypes.UPDATE_PLAYERS.getID());
+			AmongUsInProcessing.state.addPlayer(new PlayerClient(buf, 1, buf.length - 1, AmongUsInProcessing.state.getWindow()));
+			send.writeInt(AmongUsInProcessing.state.getPlayerCount());
+			
+			for (int i = 0; i < AmongUsInProcessing.state.getPlayerCount(); i++)
 			{
-				DatagramPacket sendPacket = new DatagramPacket(send.toByteArray(), send.size(), client.getValue());
+				send.write(AmongUsInProcessing.state.getPlayer(i).toBytes());
+			}
+			for (Entry<Integer, InetSocketAddress> client : clients.entrySet())
+			{
+				DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), baos.size(), client.getValue());
 				socket.send(sendPacket);
 			}
-			clients.put(nid, addr);
 			return;
 		}
 		

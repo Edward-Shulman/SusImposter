@@ -93,6 +93,9 @@ public class ClientThread extends Thread
 				case UPDATE_ROTATION:
 					updateRotation(recieve.read(), recieve.readFloat());
 					break;
+				case UPDATE_PLAYERS:
+					setPlayers(recieve.readNBytes(recievePacket.getLength() - 1));
+					break;
 				default:
 					break;
 				
@@ -117,6 +120,18 @@ public class ClientThread extends Thread
 			e.printStackTrace();
 		}
 		socket.close();
+	}
+	
+	private void setPlayers(byte[] buf) throws IOException 
+	{
+		ByteArrayInputStream bais = new ByteArrayInputStream(buf);
+		DataInputStream recieve = new DataInputStream(bais);
+		int size = recieve.readInt();
+		Vector<PlayerClient> updated = new Vector<PlayerClient>(size);
+		for (int i = 0; i < size; i++) 
+		{
+			updated.add(new PlayerClient(recieve.readNBytes(44), 0, 44, AmongUsInProcessing.state.getWindow()));
+		}
 	}
 	
 	private void initConnection() throws IOException
