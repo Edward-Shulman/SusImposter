@@ -202,6 +202,8 @@ public class AmongUsInProcessing extends PApplet
 					else
 						i++;
 				}
+				else
+					i++;
 			}
 //			player.draw();
 			state.getCurrentPlayer().draw();
@@ -1232,8 +1234,9 @@ public class AmongUsInProcessing extends PApplet
 					try 
 					{
 						ByteBuffer buf = ByteBuffer.allocate(4);
-						buf.putInt(Integer.parseInt(ip, 16));
+						buf.putInt((int) Long.parseLong(ip, 16));
 						state = new GameState(0, this);
+						state.addPlayer(player);
 						client = new ClientThread(420, InetAddress.getByAddress(buf.array()));
 						client.start();
 					}
@@ -1246,13 +1249,13 @@ public class AmongUsInProcessing extends PApplet
 				else 
 				{
 					try {
-						server = new ServerThread(420);
-						server.start();
 						state = new GameState(0, this);
 						state.addPlayer(player);
 						for (int i = 0; i < 10; i++) {
 							state.addAmmoDrop(new AmmoDrop(this, Rooms.values()[(int) random(20)]));
 						}
+						server = new ServerThread(420);
+						server.start();
 					} catch (SocketException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

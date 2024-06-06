@@ -125,7 +125,7 @@ public class ClientThread extends Thread
 		send.write(PacketTypes.UPDATE_CONNECTION.getID());
 		send.write(Byte.MAX_VALUE);
 		send.write(AmongUsInProcessing.state.getCurrentPlayer().toBytes());
-		DatagramPacket sendPacket = new DatagramPacket(send.toByteArray(), 46, serverAddr);
+		DatagramPacket sendPacket = new DatagramPacket(send.toByteArray(), send.size(), serverAddr);
 		socket.send(sendPacket);
 	}
 	
