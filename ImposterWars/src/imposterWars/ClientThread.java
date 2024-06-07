@@ -269,4 +269,13 @@ public class ClientThread extends Thread
 		socket.send(sendPacket);
 	}
 
+	public void networkRoom(Rooms room) throws IOException {
+		ByteArrayOutputStream send = new ByteArrayOutputStream(3);
+		send.write(PacketTypes.UPDATE_ROOM.getID());
+		send.write(AmongUsInProcessing.state.getCurrentPlayerIndex());
+		send.write(room.getID());
+		
+		DatagramPacket sendPacket = new DatagramPacket(send.toByteArray(), 3, serverAddr);
+		socket.send(sendPacket);
+	}
 }

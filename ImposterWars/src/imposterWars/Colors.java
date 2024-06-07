@@ -51,7 +51,7 @@ public enum Colors
 			return Orange;
 		else if (r == 5 && g == 240 && b == 44)
 			return Lime;
-		else if (r == 65 && b == 240 && g == 237)
+		else if (r == 65 && g == 240 && b == 237)
 			return Cyan; 
 		else if (r == 139 && g == 40 && b ==209)
 			return Purple;

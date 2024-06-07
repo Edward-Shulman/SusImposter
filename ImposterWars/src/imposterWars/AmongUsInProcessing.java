@@ -196,6 +196,7 @@ public class AmongUsInProcessing extends PApplet
 				if (i != state.getCurrentPlayerIndex() && p.getRoom().equals(state.getCurrentPlayer().getRoom())) {
 					p.draw();
 					p.move();
+					
 				}
 			}
 			
@@ -558,14 +559,14 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inCaf = false;
 			inCenterHallway = true;
-			p.setRoom(Rooms.CenterHallway);
+			networkRoom(Rooms.CenterHallway);
 			return true;
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Caf))
 		{
 			inCaf = false;
 			inUpperLeftHallway = true;
-			p.setRoom(Rooms.UpperLeftHallway);
+			networkRoom(Rooms.UpperLeftHallway);
 			return true;
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Caf))
@@ -576,7 +577,7 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inCaf = false;
 			inWeapons = true;
-			p.setRoom(Rooms.Weapons);
+			networkRoom(Rooms.Weapons);
 			return true;
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Weapons))
@@ -585,14 +586,14 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inWeapons = false;
 			inRightHallway = true;
-			p.setRoom(Rooms.RightHallway);
+			networkRoom(Rooms.RightHallway);
 			return true;
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Weapons))
 		{
 			inCaf = true;
 			inWeapons = false;
-			p.setRoom(Rooms.Caf);
+			networkRoom(Rooms.Caf);
 			return true;
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Weapons))
@@ -603,35 +604,35 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inUpperLeftHallway = false;
 			inMedbay = true;
-			p.setRoom(Rooms.Medbay);
+			networkRoom(Rooms.Medbay);
 			return true;
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.UpperLeftHallway))
 		{
 			inUpperLeftHallway = false;
 			inUpperEngine = true;
-			p.setRoom(Rooms.UpperEngine);
+			networkRoom(Rooms.UpperEngine);
 			return true;
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.UpperLeftHallway))
 		{
 			inCaf = true;
 			inUpperLeftHallway = false;
-			p.setRoom(Rooms.Caf);
+			networkRoom(Rooms.Caf);
 			return true;
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.CenterHallway))
 		{
 			inCaf = true;
 			inCenterHallway = false;
-			p.setRoom(Rooms.Caf);
+			networkRoom(Rooms.Caf);
 			return true;
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.CenterHallway))
 		{
 			inCenterHallway = false;
 			inStorage = true;
-			p.setRoom(Rooms.Storage);
+			networkRoom(Rooms.Storage);
 			return true;
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.CenterHallway))
@@ -640,35 +641,35 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inCenterHallway = false;
 			inAdmin = true;
-			p.setRoom(Rooms.Admin);
+			networkRoom(Rooms.Admin);
 			return true;
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.RightHallway))
 		{
 			inRightHallway = false;
 			inWeapons = true;
-			p.setRoom(Rooms.Weapons);
+			networkRoom(Rooms.Weapons);
 			return true;
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.RightHallway))
 		{
 			inRightHallway = false;
 			inShields = true;
-			p.setRoom(Rooms.Shields);
+			networkRoom(Rooms.Shields);
 			return true;
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.RightHallway))
 		{
 			inRightHallway = false;
 			inOxygen = true;
-			p.setRoom(Rooms.Oxygen);
+			networkRoom(Rooms.Oxygen);
 			return true;
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.RightHallway))
 		{
 			inRightHallway = false;
 			inNavigation = true;
-			p.setRoom(Rooms.Navigation);
+			networkRoom(Rooms.Navigation);
 			return true;
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Admin))
@@ -679,7 +680,7 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inAdmin = false;
 			inCenterHallway = true;
-			p.setRoom(Rooms.CenterHallway);
+			networkRoom(Rooms.CenterHallway);
 			return true;
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Admin))
@@ -688,7 +689,7 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inMedbay = false;
 			inUpperLeftHallway = true;
-			p.setRoom(Rooms.UpperLeftHallway);
+			networkRoom(Rooms.UpperLeftHallway);
 			return true;
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Medbay))
@@ -707,7 +708,7 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inOxygen = false;
 			inRightHallway = true;
-			p.setRoom(Rooms.RightHallway);
+			networkRoom(Rooms.RightHallway);
 			return true;
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Navigation))
@@ -718,7 +719,7 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inNavigation = false;
 			inRightHallway = true;
-			p.setRoom(Rooms.RightHallway);
+			networkRoom(Rooms.RightHallway);
 			return true;
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Navigation))
@@ -727,7 +728,7 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inShields = false;
 			inRightHallway = true;
-			p.setRoom(Rooms.RightHallway);
+			networkRoom(Rooms.RightHallway);
 			return true;
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Shields))
@@ -736,7 +737,7 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inShields = false;
 			inBottomRightHallway = true;
-			p.setRoom(Rooms.BottomRightHallway);
+			networkRoom(Rooms.BottomRightHallway);
 			return true;
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Shields))
@@ -747,28 +748,28 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inBottomRightHallway = false;
 			inComms = true;
-			p.setRoom(Rooms.Comms);
+			networkRoom(Rooms.Comms);
 			return true;
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.BottomRightHallway))
 		{
 			inBottomRightHallway = false;
 			inStorage = true;
-			p.setRoom(Rooms.Storage);
+			networkRoom(Rooms.Storage);
 			return true;
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.BottomRightHallway))
 		{
 			inBottomRightHallway = false;
 			inShields = true;
-			p.setRoom(Rooms.Shields);
+			networkRoom(Rooms.Shields);
 			return true;
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Comms))
 		{
 			inComms = false;
 			inBottomRightHallway = true;
-			p.setRoom(Rooms.BottomRightHallway);
+			networkRoom(Rooms.BottomRightHallway);
 			return true;
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Comms))
@@ -781,7 +782,7 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inStorage = false;
 			inCenterHallway = true;
-			p.setRoom(Rooms.CenterHallway);
+			networkRoom(Rooms.CenterHallway);
 			return true;
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Storage))
@@ -790,21 +791,21 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inStorage = false;
 			inBottomLeftHallway = true;
-			p.setRoom(Rooms.BottomLeftHallway);
+			networkRoom(Rooms.BottomLeftHallway);
 			return true;
 		}
 		else if(p.getX() > 635 && p.getRoom().equals(Rooms.Storage))
 		{
 			inStorage = false;
 			inBottomRightHallway = true;
-			p.setRoom(Rooms.BottomRightHallway);
+			networkRoom(Rooms.BottomRightHallway);
 			return true;
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.BottomLeftHallway))
 		{
 			inBottomLeftHallway = false;
 			inElectrical = true;
-			p.setRoom(Rooms.Electrical);
+			networkRoom(Rooms.Electrical);
 			return true;
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.BottomLeftHallway))
@@ -813,14 +814,14 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inBottomLeftHallway = false;
 			inLowerEngine = true;
-			p.setRoom(Rooms.LowerEngine);
+			networkRoom(Rooms.LowerEngine);
 			return true;
 		}
 		else if(p.getX() > 635 && p.getRoom().equals(Rooms.BottomLeftHallway))
 		{
 			inBottomLeftHallway = false;
 			inStorage = true;
-			p.setRoom(Rooms.Storage);
+			networkRoom(Rooms.Storage);
 			return true;
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Electrical))
@@ -829,7 +830,7 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inElectrical = false;
 			inBottomLeftHallway = true;
-			p.setRoom(Rooms.BottomLeftHallway);
+			networkRoom(Rooms.BottomLeftHallway);
 			return true;
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Electrical))
@@ -840,7 +841,7 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inLowerEngine = false;
 			inLeftHallway = true;
-			p.setRoom(Rooms.LeftHallway);
+			networkRoom(Rooms.LeftHallway);
 			return true;
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.LowerEngine))
@@ -851,35 +852,35 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inLowerEngine = false;
 			inBottomLeftHallway = true;
-			p.setRoom(Rooms.BottomLeftHallway);
+			networkRoom(Rooms.BottomLeftHallway);
 			return true;
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.LeftHallway))
 		{
 			inLeftHallway = false;
 			inUpperEngine = true;
-			p.setRoom(Rooms.UpperEngine);
+			networkRoom(Rooms.UpperEngine);
 			return true;
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.LeftHallway))
 		{
 			inLeftHallway = false;
 			inLowerEngine = true;
-			p.setRoom(Rooms.LowerEngine);
+			networkRoom(Rooms.LowerEngine);
 			return true;
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.LeftHallway))
 		{
 			inLeftHallway = false;
 			inReactor = true;
-			p.setRoom(Rooms.Reactor);
+			networkRoom(Rooms.Reactor);
 			return true;
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.LeftHallway))
 		{
 			inLeftHallway = false;
 			inSecurity = true;
-			p.setRoom(Rooms.Security);
+			networkRoom(Rooms.Security);
 			return true;
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.UpperEngine))
@@ -888,7 +889,7 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inUpperEngine = false;
 			inLeftHallway = true;
-			p.setRoom(Rooms.LeftHallway);
+			networkRoom(Rooms.LeftHallway);
 			return true;
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.UpperEngine))
@@ -897,7 +898,7 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inUpperEngine = false;
 			inUpperLeftHallway = true;
-			p.setRoom(Rooms.UpperLeftHallway);
+			networkRoom(Rooms.UpperLeftHallway);
 			return true;
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Security))
@@ -908,7 +909,7 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inSecurity = false;
 			inLeftHallway = true;
-			p.setRoom(Rooms.LeftHallway);
+			networkRoom(Rooms.LeftHallway);
 			return true;
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Security))
@@ -923,7 +924,7 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inReactor = false;
 			inLeftHallway = true;
-			p.setRoom(Rooms.LeftHallway);
+			networkRoom(Rooms.LeftHallway);
 			return true;
 		}
 //		else if(p.getY() < 65 && inEmptyRoom)
@@ -944,6 +945,25 @@ public class AmongUsInProcessing extends PApplet
 //			return true;
 		else
 			return false;
+	}
+	
+	private void networkRoom(Rooms room) {
+		if (server != null) {
+			try {
+				server.updateRoom(state.getCurrentPlayerIndex(), room);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else if (client != null) {
+			try {
+				client.networkRoom(room);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void changeColor()

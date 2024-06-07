@@ -195,7 +195,7 @@ public class ServerThread extends Thread
 		}
 	}
 	
-	private void updateRoom(int id, Rooms room) throws IOException 
+	public void updateRoom(int id, Rooms room) throws IOException 
 	{
 		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
 		p.setRoom(room);
