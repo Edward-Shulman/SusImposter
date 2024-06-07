@@ -187,6 +187,7 @@ public class ClientThread extends Thread
 		for (int i = 0; i < size; i++) {
 			bullets.add(new Bullet(read.readNBytes(21), AmongUsInProcessing.state.getWindow()));
 		}
+		AmongUsInProcessing.state.bullets = bullets;
 	}
 	
 	private void updateRoom(int id, Rooms room) {

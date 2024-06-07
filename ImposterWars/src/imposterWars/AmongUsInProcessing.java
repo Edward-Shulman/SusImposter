@@ -1056,10 +1056,10 @@ public class AmongUsInProcessing extends PApplet
 					client.updateMovement(PacketTypes.MOVE_LEFT);
 					break;
 				case 's':
-					client.updateMovement(PacketTypes.MOVE_RIGHT);
+					client.updateMovement(PacketTypes.MOVE_DOWN);
 					break;
 				case 'd':
-					client.updateMovement(PacketTypes.MOVE_DOWN);
+					client.updateMovement(PacketTypes.MOVE_RIGHT);
 					break;
 				default:
 					break;

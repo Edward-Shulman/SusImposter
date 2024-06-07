@@ -104,7 +104,8 @@ public class ServerThread extends Thread
 	{
 		if (buf[0] == Byte.MAX_VALUE)
 		{
-			System.out.println("New player joined");
+			System.out.println("New player joined (" + addr.getAddress().toString() + ":" + addr.getPort()
+				+ ")");
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			DataOutputStream send = new DataOutputStream(baos);
 			send.write(PacketTypes.UPDATE_PLAYERS.getID());
