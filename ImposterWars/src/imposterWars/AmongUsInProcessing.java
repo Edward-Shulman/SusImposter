@@ -124,6 +124,15 @@ public class AmongUsInProcessing extends PApplet
 			{
 				state.getCurrentPlayer().setX(400);
 				state.getCurrentPlayer().setY(400);
+				if (server != null)
+				{
+					try {
+						server.refreshPlayer(state.getCurrentPlayerIndex());
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 			switch (state.getCurrentPlayer().getRoom()) 
 			{
@@ -927,36 +936,25 @@ public class AmongUsInProcessing extends PApplet
 			networkRoom(Rooms.LeftHallway);
 			return true;
 		}
-//		else if(p.getY() < 65 && inEmptyRoom)
-//			return true;
-//		else if(p.getY() > 535 && inEmptyRoom)
-//			return true;
-//		else if(p.getX() < 65 && inEmptyRoom)
-//			return true;
-//		else if(p.getX() > 635 && inEmptyRoom)
-//			return true;
-//		else if(p.getY() < 65 && inWinRoom)
-//			return true;
-//		else if(p.getY() > 535 && inWinRoom)
-//			return true;
-//		else if(p.getX() < 65 && inWinRoom)
-//			return true;
-//		else if(p.getX() > 635 && inWinRoom)
-//			return true;
 		else
 			return false;
 	}
 	
-	private void networkRoom(Rooms room) {
-		if (server != null) {
-			try {
+	private void networkRoom(Rooms room) 
+	{
+		if (server != null) 
+		{
+			try 
+			{
 				server.updateRoom(state.getCurrentPlayerIndex(), room);
-			} catch (IOException e) {
+			} catch (IOException e) 
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		else if (client != null) {
+		else if (client != null)
+		{
 			try {
 				client.networkRoom(room);
 			} catch (IOException e) {

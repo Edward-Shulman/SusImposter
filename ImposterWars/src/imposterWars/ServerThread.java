@@ -289,4 +289,17 @@ public class ServerThread extends Thread
 			socket.send(sendPacket);
 		}
 	}
+	
+	public void refreshPlayer(int id) throws IOException
+	{
+		ByteArrayOutputStream send = new ByteArrayOutputStream();
+		send.write(PacketTypes.UPDATE_PLAYER.getID());
+		send.write(AmongUsInProcessing.state.getPlayer(id).toBytes());
+		
+		for (Entry<Integer, InetSocketAddress> client : clients.entrySet())
+		{
+			DatagramPacket sendPacket = new DatagramPacket(send.toByteArray(), send.size(), client.getValue());
+			socket.send(sendPacket);
+		}
+	}
 }
