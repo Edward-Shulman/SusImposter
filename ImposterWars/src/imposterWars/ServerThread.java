@@ -199,8 +199,8 @@ public class ServerThread extends Thread
 	{
 		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
 		p.setRoom(room);
-		p.setX(id);
-		p.setY(id);
+		p.setX(400);
+		p.setY(400);
 		
 		ByteArrayOutputStream send = new ByteArrayOutputStream();
 		send.write(PacketTypes.UPDATE_ROOM.getID());
