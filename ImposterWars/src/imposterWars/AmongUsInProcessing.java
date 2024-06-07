@@ -547,7 +547,7 @@ public class AmongUsInProcessing extends PApplet
 	}
 	
 	
-	public boolean isColliding(int id)
+	public void isColliding(int id)
 	{
 		//TODO networking with rooms
 		PlayerClient p = state.getPlayer(id);
@@ -555,396 +555,343 @@ public class AmongUsInProcessing extends PApplet
 		{
 			inCaf = false;
 			inCenterHallway = true;
-			networkRoom(Rooms.CenterHallway);
-			return true;
+			networkRoom(id, Rooms.CenterHallway);
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Caf))
 		{
 			inCaf = false;
 			inUpperLeftHallway = true;
-			networkRoom(Rooms.UpperLeftHallway);
-			return true;
+			networkRoom(id, Rooms.UpperLeftHallway);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Caf))
 		{
-			return true;
+			networkRoom(id, Rooms.Caf);
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Caf))
 		{
 			inCaf = false;
 			inWeapons = true;
-			networkRoom(Rooms.Weapons);
-			return true;
+			networkRoom(id, Rooms.Weapons);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Weapons))
-			return true;
+			networkRoom(id, Rooms.Weapons);
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Weapons))
 		{
 			inWeapons = false;
 			inRightHallway = true;
-			networkRoom(Rooms.RightHallway);
-			return true;
+			networkRoom(id, Rooms.RightHallway);
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Weapons))
 		{
 			inCaf = true;
 			inWeapons = false;
-			networkRoom(Rooms.Caf);
-			return true;
+			networkRoom(id, Rooms.Caf);
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Weapons))
-			return true;
+			networkRoom(id, Rooms.Weapons);
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.UpperLeftHallway))
-			return true;
+			networkRoom(id, Rooms.UpperLeftHallway);
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.UpperLeftHallway))
 		{
 			inUpperLeftHallway = false;
 			inMedbay = true;
-			networkRoom(Rooms.Medbay);
-			return true;
+			networkRoom(id, Rooms.Medbay);
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.UpperLeftHallway))
 		{
 			inUpperLeftHallway = false;
 			inUpperEngine = true;
-			networkRoom(Rooms.UpperEngine);
-			return true;
+			networkRoom(id, Rooms.UpperEngine);
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.UpperLeftHallway))
 		{
 			inCaf = true;
 			inUpperLeftHallway = false;
-			networkRoom(Rooms.Caf);
-			return true;
+			networkRoom(id, Rooms.Caf);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.CenterHallway))
 		{
 			inCaf = true;
 			inCenterHallway = false;
-			networkRoom(Rooms.Caf);
-			return true;
+			networkRoom(id, Rooms.Caf);
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.CenterHallway))
 		{
 			inCenterHallway = false;
 			inStorage = true;
-			networkRoom(Rooms.Storage);
-			return true;
+			networkRoom(id, Rooms.Storage);
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.CenterHallway))
-			return true;
+			networkRoom(id, Rooms.CenterHallway);
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.CenterHallway))
 		{
 			inCenterHallway = false;
 			inAdmin = true;
-			networkRoom(Rooms.Admin);
-			return true;
+			networkRoom(id, Rooms.Admin);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.RightHallway))
 		{
 			inRightHallway = false;
 			inWeapons = true;
-			networkRoom(Rooms.Weapons);
-			return true;
+			networkRoom(id, Rooms.Weapons);
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.RightHallway))
 		{
 			inRightHallway = false;
 			inShields = true;
-			networkRoom(Rooms.Shields);
-			return true;
+			networkRoom(id, Rooms.Shields);
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.RightHallway))
 		{
 			inRightHallway = false;
 			inOxygen = true;
-			networkRoom(Rooms.Oxygen);
-			return true;
+			networkRoom(id, Rooms.Oxygen);
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.RightHallway))
 		{
 			inRightHallway = false;
 			inNavigation = true;
-			networkRoom(Rooms.Navigation);
-			return true;
+			networkRoom(id, Rooms.Navigation);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Admin))
-			return true;
+			networkRoom(id, Rooms.Admin);
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Admin))
-			return true;
+			networkRoom(id, Rooms.Admin);
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Admin))
 		{
 			inAdmin = false;
 			inCenterHallway = true;
-			networkRoom(Rooms.CenterHallway);
-			return true;
+			networkRoom(id, Rooms.CenterHallway);
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Admin))
-			return true;
+			networkRoom(id, Rooms.Admin);
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Medbay))
 		{
 			inMedbay = false;
 			inUpperLeftHallway = true;
-			networkRoom(Rooms.UpperLeftHallway);
-			return true;
+			networkRoom(id, Rooms.UpperLeftHallway);
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Medbay))
-			return true;
+			networkRoom(id, Rooms.Medbay);
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Medbay))
-			return true;
+			networkRoom(id, Rooms.Medbay);
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Medbay))
-			return true;
+			networkRoom(id, Rooms.Medbay);
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Oxygen))
-			return true;
+			networkRoom(id, Rooms.Oxygen);
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Oxygen))
-			return true;
+			networkRoom(id, Rooms.Oxygen);
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Oxygen))
-			return true;
+			networkRoom(id, Rooms.Oxygen);
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Oxygen))
 		{
 			inOxygen = false;
 			inRightHallway = true;
-			networkRoom(Rooms.RightHallway);
-			return true;
+			networkRoom(id, Rooms.RightHallway);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Navigation))
-			return true;
+			networkRoom(id, Rooms.Navigation);
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Navigation))
-			return true;
+			networkRoom(id, Rooms.Navigation);
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Navigation))
 		{
 			inNavigation = false;
 			inRightHallway = true;
-			networkRoom(Rooms.RightHallway);
-			return true;
+			networkRoom(id, Rooms.RightHallway);
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Navigation))
-			return true;
+			networkRoom(id, Rooms.Navigation);
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Shields))
 		{
 			inShields = false;
 			inRightHallway = true;
-			networkRoom(Rooms.RightHallway);
-			return true;
+			networkRoom(id, Rooms.RightHallway);
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Shields))
-			return true;
+			networkRoom(id, Rooms.Shields);
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Shields))
 		{
 			inShields = false;
 			inBottomRightHallway = true;
-			networkRoom(Rooms.BottomRightHallway);
-			return true;
+			networkRoom(id, Rooms.BottomRightHallway);
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Shields))
-			return true;
+			networkRoom(id, Rooms.Shields);
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.BottomRightHallway))
-			return true;
+			networkRoom(id, Rooms.BottomRightHallway);
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.BottomRightHallway))
 		{
 			inBottomRightHallway = false;
 			inComms = true;
-			networkRoom(Rooms.Comms);
-			return true;
+			networkRoom(id, Rooms.Comms);
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.BottomRightHallway))
 		{
 			inBottomRightHallway = false;
 			inStorage = true;
-			networkRoom(Rooms.Storage);
-			return true;
+			networkRoom(id, Rooms.Storage);
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.BottomRightHallway))
 		{
 			inBottomRightHallway = false;
 			inShields = true;
-			networkRoom(Rooms.Shields);
-			return true;
+			networkRoom(id, Rooms.Shields);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Comms))
 		{
 			inComms = false;
 			inBottomRightHallway = true;
-			networkRoom(Rooms.BottomRightHallway);
-			return true;
+			networkRoom(id, Rooms.BottomRightHallway);
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Comms))
-			return true;
+			networkRoom(id, Rooms.Comms);
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Comms))
-			return true;
+			networkRoom(id, Rooms.Comms);
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Comms))
-			return true;
+			networkRoom(id, Rooms.Comms);
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Storage))
 		{
 			inStorage = false;
 			inCenterHallway = true;
-			networkRoom(Rooms.CenterHallway);
-			return true;
+			networkRoom(id, Rooms.CenterHallway);
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Storage))
-			return true;
+			networkRoom(id, Rooms.Storage);
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Storage))
 		{
 			inStorage = false;
 			inBottomLeftHallway = true;
-			networkRoom(Rooms.BottomLeftHallway);
-			return true;
+			networkRoom(id, Rooms.BottomLeftHallway);
 		}
 		else if(p.getX() > 635 && p.getRoom().equals(Rooms.Storage))
 		{
 			inStorage = false;
 			inBottomRightHallway = true;
-			networkRoom(Rooms.BottomRightHallway);
-			return true;
+			networkRoom(id, Rooms.BottomRightHallway);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.BottomLeftHallway))
 		{
 			inBottomLeftHallway = false;
 			inElectrical = true;
-			networkRoom(Rooms.Electrical);
-			return true;
+			networkRoom(id, Rooms.Electrical);
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.BottomLeftHallway))
-			return true;
+			networkRoom(id, Rooms.BottomLeftHallway);
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.BottomLeftHallway))
 		{
 			inBottomLeftHallway = false;
 			inLowerEngine = true;
-			networkRoom(Rooms.LowerEngine);
-			return true;
+			networkRoom(id, Rooms.LowerEngine);
 		}
 		else if(p.getX() > 635 && p.getRoom().equals(Rooms.BottomLeftHallway))
 		{
 			inBottomLeftHallway = false;
 			inStorage = true;
-			networkRoom(Rooms.Storage);
-			return true;
+			networkRoom(id, Rooms.Storage);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Electrical))
-			return true;
+			networkRoom(id, Rooms.Electrical);
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Electrical))
 		{
 			inElectrical = false;
 			inBottomLeftHallway = true;
-			networkRoom(Rooms.BottomLeftHallway);
-			return true;
+			networkRoom(id, Rooms.BottomLeftHallway);
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Electrical))
-			return true;
+			networkRoom(id, Rooms.Electrical);
 		else if(p.getX() > 635 && p.getRoom().equals(Rooms.Electrical))
-			return true;
+			networkRoom(id, Rooms.Electrical);
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.LowerEngine))
 		{
 			inLowerEngine = false;
 			inLeftHallway = true;
-			networkRoom(Rooms.LeftHallway);
-			return true;
+			networkRoom(id, Rooms.LeftHallway);
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.LowerEngine))
-			return true;
+			networkRoom(id, Rooms.LowerEngine);
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.LowerEngine))
-			return true;
+			networkRoom(id, Rooms.LowerEngine);
 		else if(p.getX() > 635 && p.getRoom().equals(Rooms.LowerEngine))
 		{
 			inLowerEngine = false;
 			inBottomLeftHallway = true;
-			networkRoom(Rooms.BottomLeftHallway);
-			return true;
+			networkRoom(id, Rooms.BottomLeftHallway);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.LeftHallway))
 		{
 			inLeftHallway = false;
 			inUpperEngine = true;
-			networkRoom(Rooms.UpperEngine);
-			return true;
+			networkRoom(id, Rooms.UpperEngine);
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.LeftHallway))
 		{
 			inLeftHallway = false;
 			inLowerEngine = true;
-			networkRoom(Rooms.LowerEngine);
-			return true;
+			networkRoom(id, Rooms.LowerEngine);
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.LeftHallway))
 		{
 			inLeftHallway = false;
 			inReactor = true;
-			networkRoom(Rooms.Reactor);
-			return true;
+			networkRoom(id, Rooms.Reactor);
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.LeftHallway))
 		{
 			inLeftHallway = false;
 			inSecurity = true;
-			networkRoom(Rooms.Security);
-			return true;
+			networkRoom(id, Rooms.Security);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.UpperEngine))
-			return true;
+			networkRoom(id, Rooms.UpperEngine);
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.UpperEngine))
 		{
 			inUpperEngine = false;
 			inLeftHallway = true;
-			networkRoom(Rooms.LeftHallway);
-			return true;
+			networkRoom(id, Rooms.LeftHallway);
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.UpperEngine))
-			return true;
+			networkRoom(id, Rooms.UpperEngine);
 		else if(p.getX() > 635 && p.getRoom().equals(Rooms.UpperEngine))
 		{
 			inUpperEngine = false;
 			inUpperLeftHallway = true;
-			networkRoom(Rooms.UpperLeftHallway);
-			return true;
+			networkRoom(id, Rooms.UpperLeftHallway);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Security))
-			return true;
+			networkRoom(id, Rooms.Security);
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Security))
-			return true;
+			networkRoom(id, Rooms.Security);
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Security))
 		{
 			inSecurity = false;
 			inLeftHallway = true;
-			networkRoom(Rooms.LeftHallway);
-			return true;
+			networkRoom(id, Rooms.LeftHallway);
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Security))
-			return true;
+			networkRoom(id, Rooms.Security);
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Reactor))
-			return true;
+			networkRoom(id, Rooms.Reactor);
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Reactor))
-			return true;
+			networkRoom(id, Rooms.Reactor);
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Reactor))
-			return true;
+			networkRoom(id, Rooms.Reactor);
 		else if(p.getX() > 635 && p.getRoom().equals(Rooms.Reactor))
 		{
 			inReactor = false;
 			inLeftHallway = true;
-			networkRoom(Rooms.LeftHallway);
-			return true;
+			networkRoom(id, Rooms.LeftHallway);
 		}
-		else
-			return false;
 	}
 	
-	private void networkRoom(Rooms room) 
+	private void networkRoom(int id, Rooms room) 
 	{
 		if (server != null) 
 		{
 			try 
 			{
-				server.updateRoom(state.getCurrentPlayerIndex(), room);
+				server.updateRoom(id, room);
 			} catch (IOException e) 
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		else if (client != null)
-		{
-			try {
-				client.networkRoom(room);
-			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
