@@ -193,6 +193,8 @@ public class ClientThread extends Thread
 	private void updateRoom(int id, Rooms room) {
 		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
 		p.setRoom(room);
+		p.setX(400);
+		p.setY(400);
 	}
 	
 	private void updateRotation(int id, float rot) throws IOException 

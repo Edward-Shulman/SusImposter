@@ -120,20 +120,6 @@ public class AmongUsInProcessing extends PApplet
 		}
 		else if (!inStart)
 		{
-			if(isColliding())
-			{
-				state.getCurrentPlayer().setX(400);
-				state.getCurrentPlayer().setY(400);
-				if (server != null)
-				{
-					try {
-						server.refreshPlayer(state.getCurrentPlayerIndex());
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
 			switch (state.getCurrentPlayer().getRoom()) 
 			{
 			case Admin:
@@ -202,6 +188,7 @@ public class AmongUsInProcessing extends PApplet
 			
 			for (int i = 0; i < state.getPlayerCount(); i++) {
 				PlayerClient p = state.getPlayer(i);
+				isColliding(i);
 				if (i != state.getCurrentPlayerIndex() && p.getRoom().equals(state.getCurrentPlayer().getRoom())) {
 					p.draw();
 					p.move();
@@ -560,10 +547,10 @@ public class AmongUsInProcessing extends PApplet
 	}
 	
 	
-	public boolean isColliding()
+	public boolean isColliding(int id)
 	{
 		//TODO networking with rooms
-		PlayerClient p = state.getCurrentPlayer();
+		PlayerClient p = state.getPlayer(id);
 		if(p.getY() > 535 && p.getRoom().equals(Rooms.Caf))
 		{
 			inCaf = false;
