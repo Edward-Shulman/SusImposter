@@ -199,7 +199,8 @@ public class AmongUsInProcessing extends PApplet
 			}
 			
 			int i = 0;
-			while (i < state.getAmmoDrops().size()) {
+			while (i < state.getAmmoDrops().size()) 
+			{
 				AmmoDrop ad = state.getAmmoDrops().get(i);
 				if (state.getCurrentPlayer().getRoom().equals(ad.getRoom())) 
 				{
@@ -211,6 +212,7 @@ public class AmongUsInProcessing extends PApplet
 							if (dist(ad.getX(), ad.getY(), state.getPlayer(j).getX(), state.getPlayer(j).getY()) < 130)
 							{
 								state.pickUpAmmoDrop(j, i);
+								i--;
 								try 
 								{
 									server.updateAmmoDrops();
@@ -223,11 +225,8 @@ public class AmongUsInProcessing extends PApplet
 							}
 						}
 					}
-					else
-						i++;
 				}
-				else
-					i++;
+				i++;
 			}
 			drawHUD();
 			rotatePlayer();
