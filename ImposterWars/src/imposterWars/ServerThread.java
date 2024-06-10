@@ -122,6 +122,7 @@ public class ServerThread extends Thread
 				DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), baos.size(), client.getValue());
 				socket.send(sendPacket);
 			}
+			updateAmmoDrops();
 			return;
 		}
 		
@@ -302,6 +303,25 @@ public class ServerThread extends Thread
 		for (Entry<Integer, InetSocketAddress> client : clients.entrySet())
 		{
 			DatagramPacket sendPacket = new DatagramPacket(send.toByteArray(), send.size(), client.getValue());
+			socket.send(sendPacket);
+		}
+	}
+	
+	public void updateAmmoDrops() throws IOException 
+	{
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		DataOutputStream send = new DataOutputStream(baos);
+		
+		send.write(PacketTypes.UPDATE_AMMO_DROPS.getID());
+		send.writeInt(AmongUsInProcessing.state.ammoDrops.size());
+		for (int i = 0; i < send.size(); i++)
+		{
+			send.write(AmongUsInProcessing.state.ammoDrops.get(i).toBytes());
+		}
+		
+		for (Entry<Integer, InetSocketAddress> client : clients.entrySet())
+		{
+			DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), baos.size(), client.getValue());
 			socket.send(sendPacket);
 		}
 	}

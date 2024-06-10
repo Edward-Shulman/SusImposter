@@ -204,8 +204,25 @@ public class AmongUsInProcessing extends PApplet
 				if (state.getCurrentPlayer().getRoom().equals(ad.getRoom())) 
 				{
 					ad.draw();
-					if (dist(ad.getX(), ad.getY(), state.getCurrentPlayer().getX(), state.getCurrentPlayer().getY()) < 130)
-						state.pickUpAmmoDrop(state.getCurrentPlayerIndex(), i);
+					if (server != null) 
+					{
+						for (int j = 0; j < state.players.size(); j++) 
+						{
+							if (dist(ad.getX(), ad.getY(), state.getPlayer(j).getX(), state.getPlayer(j).getY()) < 130)
+							{
+								state.pickUpAmmoDrop(j, i);
+								try 
+								{
+									server.updateAmmoDrops();
+								} 
+								catch (IOException e)
+								{
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						}
+					}
 					else
 						i++;
 				}
