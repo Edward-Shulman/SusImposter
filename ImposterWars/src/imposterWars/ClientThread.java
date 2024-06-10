@@ -31,9 +31,11 @@ public class ClientThread extends Thread
 	@Override
 	public void run() 
 	{
-		try {
+		try 
+		{
 			initConnection();
-		} catch (IOException e) {
+		} catch (IOException e) 
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -146,13 +148,15 @@ public class ClientThread extends Thread
 		socket.send(sendPacket);
 	}
 	
-	private void updateAmmoDrops(byte[] buf) throws IOException {
+	private void updateAmmoDrops(byte[] buf) throws IOException
+	{
 		ByteArrayInputStream bais = new ByteArrayInputStream(buf);
 		DataInputStream read = new DataInputStream(bais);
 		int size = read.readInt();
 		Vector<AmmoDrop> ammoDrops = AmongUsInProcessing.state.getAmmoDrops();
 		ammoDrops.clear();
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < size; i++)
+		{
 			ammoDrops.add(new AmmoDrop(AmongUsInProcessing.state.getWindow(), read.readNBytes(9)));
 		}
 	}
@@ -161,36 +165,42 @@ public class ClientThread extends Thread
 		AmongUsInProcessing.state.removePlayer(id);
 	}
 	
-	private void updatePlayer(int id, byte[] buf) throws IOException {
+	private void updatePlayer(int id, byte[] buf) throws IOException 
+	{
 		//TODO inital index conflict
 		if (AmongUsInProcessing.state.getCurrentPlayerIndex() == 0) {
 			AmongUsInProcessing.state.addPlayer(new PlayerClient(buf, 0, buf.length, AmongUsInProcessing.state.getWindow()));
 			return;
 		}
-		if (id >= AmongUsInProcessing.state.getPlayerCount()) {
+		if (id >= AmongUsInProcessing.state.getPlayerCount()) 
+		{
 			AmongUsInProcessing.state.addPlayer(new PlayerClient(buf, 0, buf.length, AmongUsInProcessing.state.getWindow()));
 			return;
 		}
 		AmongUsInProcessing.state.setPlayer(id, new PlayerClient(buf, 0, buf.length, AmongUsInProcessing.state.getWindow()));
 	}
 	
-	private void updateHP(int id, int hp) {
+	private void updateHP(int id, int hp) 
+	{
 		AmongUsInProcessing.state.getPlayer(id).setHealth(hp);
 	}
 	
-	private void updateProjectiles(byte[] buf) throws IOException {
+	private void updateProjectiles(byte[] buf) throws IOException 
+	{
 		ByteArrayInputStream bais = new ByteArrayInputStream(buf);
 		DataInputStream read = new DataInputStream(bais);
 		int size = read.readInt();
 		Vector<Bullet> bullets = AmongUsInProcessing.state.getBullets();
 		bullets.clear();
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < size; i++) 
+		{
 			bullets.add(new Bullet(read.readNBytes(21), AmongUsInProcessing.state.getWindow()));
 		}
 		AmongUsInProcessing.state.bullets = bullets;
 	}
 	
-	private void updateRoom(int id, Rooms room) {
+	private void updateRoom(int id, Rooms room) 
+	{
 		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
 		p.setRoom(room);
 		p.setX(400);
@@ -219,7 +229,8 @@ public class ClientThread extends Thread
 		connected = false;
 	}
 	
-	public void shoot() throws IOException {
+	public void shoot() throws IOException 
+	{
 		byte[] shoot = new byte[2];
 		shoot[0] = PacketTypes.SHOOT.getID();
 		shoot[1] = (byte) AmongUsInProcessing.state.getCurrentPlayerIndex();
@@ -271,7 +282,8 @@ public class ClientThread extends Thread
 		socket.send(sendPacket);
 	}
 
-	public void networkRoom(Rooms room) throws IOException {
+	public void networkRoom(Rooms room) throws IOException 
+	{
 		ByteArrayOutputStream send = new ByteArrayOutputStream(3);
 		send.write(PacketTypes.UPDATE_ROOM.getID());
 		send.write(AmongUsInProcessing.state.getCurrentPlayerIndex());

@@ -218,10 +218,11 @@ public class ServerThread extends Thread
 		AmongUsInProcessing.state.addBullet(id);
 		AmongUsInProcessing.state.getCurrentPlayer().setAmmo(AmongUsInProcessing.state.getCurrentPlayer().getAmmo() - 1);
 		Vector<Bullet> bullets = AmongUsInProcessing.state.getBullets();
-		ByteArrayOutputStream send = new ByteArrayOutputStream(21 * bullets.size() + 5);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(21 * bullets.size() + 5);
+		DataOutputStream send = new DataOutputStream(baos);
 		
 		send.write(PacketTypes.UPDATE_PROJECTILES.getID());
-		send.write(bullets.size());
+		send.writeInt(bullets.size());
 		for (Bullet b : bullets) 
 		{
 			send.write(b.toBytes());
@@ -229,7 +230,7 @@ public class ServerThread extends Thread
 		
 		for (Entry<Integer, InetSocketAddress> client : clients.entrySet()) 
 		{
-			DatagramPacket sendPacket = new DatagramPacket(send.toByteArray(), send.size(), client.getValue());
+			DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), send.size(), client.getValue());
 			socket.send(sendPacket);
 		}
 	}
