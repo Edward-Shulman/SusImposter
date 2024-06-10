@@ -192,7 +192,7 @@ public class AmongUsInProcessing extends PApplet
 				p.move();
 				if(server != null)
 					isColliding(i);
-				if(i != state.getCurrentPlayerIndex() && p.getRoom().equals(state.getCurrentPlayer().getRoom()))
+				if(p.getRoom().equals(state.getCurrentPlayer().getRoom()))
 				{
 					p.draw();
 				}
