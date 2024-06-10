@@ -212,11 +212,7 @@ public class AmongUsInProcessing extends PApplet
 				else
 					i++;
 			}
-//			player.draw();
-			state.getCurrentPlayer().draw();
 			drawHUD();
-//			player.move();
-			state.getCurrentPlayer().move();
 			rotatePlayer();
 			
 			i = 0;
