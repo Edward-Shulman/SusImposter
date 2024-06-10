@@ -243,6 +243,7 @@ public class ClientThread extends Thread
 		byte[] shoot = new byte[2];
 		shoot[0] = PacketTypes.SHOOT.getID();
 		shoot[1] = (byte) AmongUsInProcessing.state.getCurrentPlayerIndex();
+		AmongUsInProcessing.state.getCurrentPlayer().setAmmo(AmongUsInProcessing.state.getCurrentPlayer().getAmmo() - 1);
 		DatagramPacket send = new DatagramPacket(shoot, 2, serverAddr);
 		socket.send(send);
 	}

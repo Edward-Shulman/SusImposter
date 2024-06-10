@@ -216,7 +216,7 @@ public class ServerThread extends Thread
 	public void shot(int id) throws IOException 
 	{
 		AmongUsInProcessing.state.addBullet(id);
-		AmongUsInProcessing.state.getCurrentPlayer().setAmmo(AmongUsInProcessing.state.getCurrentPlayer().getAmmo() - 1);
+		AmongUsInProcessing.state.getPlayer(id).setAmmo(AmongUsInProcessing.state.getCurrentPlayer().getAmmo() - 1);
 		Vector<Bullet> bullets = AmongUsInProcessing.state.getBullets();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream(21 * bullets.size() + 5);
 		DataOutputStream send = new DataOutputStream(baos);
