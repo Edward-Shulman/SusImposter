@@ -1399,8 +1399,6 @@ public class AmongUsInProcessing extends PApplet
 		textSize(40);
 		fill(240);
 		text("<-----", 16, 47);
-		
-		
 	}
 	
 	public void keyTyped()

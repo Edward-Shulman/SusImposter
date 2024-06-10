@@ -190,7 +190,8 @@ public class PlayerClient
 		this.vY = vY;
 	}
 	
-	public void move() {
+	public void move()
+	{
 		x += vX;
 		y += vY;
 	}

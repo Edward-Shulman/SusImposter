@@ -15,7 +15,8 @@ public enum Colors
 	Brown(110, 82, 38, "assets/realbrown.png"),
 	Black(41, 41, 38, "assets/realblack.png");
 	
-	private Colors(int r, int g, int b, String file) {
+	private Colors(int r, int g, int b, String file) 
+	{
 		this.file = file;
 		this.r = r;
 		this.g = g;
@@ -25,20 +26,28 @@ public enum Colors
 	private String file;
 	private int r, g, b;
 	
-	public String getFile() {
+	public String getFile() 
+	{
 		return file;
 	}
-	public int getR() {
+	
+	public int getR()
+	{
 		return r;
 	}
-	public int getG() {
+	
+	public int getG() 
+	{
 		return g;
 	}
-	public int getB() {
+	
+	public int getB() 
+	{
 		return b;
 	}
 	
-	public static Colors getByRGB(int r, int g, int b) {
+	public static Colors getByRGB(int r, int g, int b)
+	{
 		if (r == 247 && g == 37 && b == 37)
 			return Red;
 		else if (r == 28 && g == 45 && b == 232)

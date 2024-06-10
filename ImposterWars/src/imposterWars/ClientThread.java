@@ -10,6 +10,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
+import java.nio.BufferUnderflowException;
 import java.util.Map.Entry;
 import java.util.Vector;
 
@@ -161,7 +162,8 @@ public class ClientThread extends Thread
 		}
 	}
 	
-	private void updateConnection(int id) {
+	private void updateConnection(int id) 
+	{
 		AmongUsInProcessing.state.removePlayer(id);
 	}
 	
@@ -192,9 +194,16 @@ public class ClientThread extends Thread
 		int size = read.readInt();
 		Vector<Bullet> bullets = AmongUsInProcessing.state.getBullets();
 		bullets.clear();
-		for (int i = 0; i < size; i++) 
+		try 
 		{
-			bullets.add(new Bullet(read.readNBytes(21), AmongUsInProcessing.state.getWindow()));
+			for (int i = 0; i < size; i++) 
+			{
+				bullets.add(new Bullet(read.readNBytes(21), AmongUsInProcessing.state.getWindow()));
+			}
+		}
+		catch (BufferUnderflowException e) 
+		{
+			System.out.println(size + "dog");
 		}
 		AmongUsInProcessing.state.bullets = bullets;
 	}
