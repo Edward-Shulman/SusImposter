@@ -1222,15 +1222,19 @@ public class AmongUsInProcessing extends PApplet
 				}
 				else 
 				{
-					try {
+					try 
+					{
 						state = new GameState(0, this);
 						state.addPlayer(player);
-						for (int i = 0; i < 10; i++) {
+						for (int i = 0; i < 10; i++) 
+						{
 							state.addAmmoDrop(new AmmoDrop(this, Rooms.values()[(int) random(20)]));
 						}
 						server = new ServerThread(420);
 						server.start();
-					} catch (SocketException e) {
+					} 
+					catch (SocketException e) 
+					{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
