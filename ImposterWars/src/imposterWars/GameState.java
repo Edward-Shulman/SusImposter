@@ -21,11 +21,13 @@ public class GameState
 		this.a = a;
 	}
 	
-	public int getPlayerCount() {
+	public int getPlayerCount() 
+	{
 		return players.size();
 	}
 	
-	public PApplet getWindow() {
+	public PApplet getWindow()
+	{
 		return a;
 	}
 	
@@ -60,7 +62,8 @@ public class GameState
 		return ammoDrops;
 	}
 	
-	public void addAmmoDrop(AmmoDrop ad) {
+	public void addAmmoDrop(AmmoDrop ad)
+	{
 		ammoDrops.add(ad);
 	}
 	
@@ -88,7 +91,8 @@ public class GameState
 				player.getRColor(), player.getGColor(), player.getBColor(), player.getRotation(), owner, player.getRoom(), a));
 	}
 	
-	public void setPlayer(int id, PlayerClient p) {
+	public void setPlayer(int id, PlayerClient p) 
+	{
 		players.set(id, p);
 	}
 }

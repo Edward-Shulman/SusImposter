@@ -21,7 +21,8 @@ public class Bullet
 		this(x, y, a.color(r, g, b), rotation, id, room, a); //TODO acutally assign id
 	}
 	
-	public Bullet(float x, float y, int c, float rotation, int owner, Rooms room, PApplet a) {
+	public Bullet(float x, float y, int c, float rotation, int owner, Rooms room, PApplet a)
+	{
 		this.x = x;
 		this.y = y;
 		this.room = room;
@@ -31,7 +32,8 @@ public class Bullet
 		this.a = a;
 	}
 	
-	public Bullet(byte[] buffer, PApplet a) {
+	public Bullet(byte[] buffer, PApplet a) 
+	{
 		ByteBuffer buf = ByteBuffer.wrap(buffer);
 		x = buf.getFloat();
 		y = buf.getFloat();
@@ -40,6 +42,7 @@ public class Bullet
 		velocity.setMag(10);
 		owner = buf.getInt();
 		room = Rooms.values()[buf.get()];
+		this.a = a;
 	}
 	
 	public void draw()
@@ -52,17 +55,20 @@ public class Bullet
 		a.popMatrix();
 	}
 	
-	public boolean move() {
+	public boolean move()
+	{
 		x += velocity.x;
 		y += velocity.y;
 		return x >= 0 && x <= 700 && y >= 0 && y <= 600;
 	}
 
-	public int getOwner() {
+	public int getOwner()
+	{
 		return owner;
 	}
 	
-	public byte[] toBytes() {
+	public byte[] toBytes()
+	{
 		ByteArrayOutputStream result = new ByteArrayOutputStream(21);
 		DataOutputStream d = new DataOutputStream(result);
 		try {
@@ -78,7 +84,8 @@ public class Bullet
 		return result.toByteArray();
 	}
 
-	public Rooms getRoom() {
+	public Rooms getRoom() 
+	{
 		return room;
 	}
 	
