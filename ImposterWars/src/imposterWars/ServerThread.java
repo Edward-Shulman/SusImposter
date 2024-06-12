@@ -343,7 +343,7 @@ public class ServerThread extends Thread
 		if (p.getHealth() <= 0) {
 			p.setHealth(100);
 			p.setAmmo(15);
-			updatedRoom = (int) (Math.random() * 21);
+			updatedRoom = (int) (Math.random() * 20);
 			p.setRoom(Rooms.values()[updatedRoom]);
 			p.setX(400);
 			p.setY(400);
