@@ -1,23 +1,26 @@
 package imposterWars;
 
 import java.util.Vector;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.UUID;
+
 import processing.core.PApplet;
 
 public class GameState
 {
-	Hashtable<Integer, PlayerClient> players;
+	HashMap<UUID, PlayerClient> players;
 	Vector<Bullet> bullets;
 	Vector<AmmoDrop> ammoDrops;
-	int currentPlayerIndex;
+	UUID currentPlayerIndex;
 	private PApplet a;
 	
-	public GameState(int currentPlayerIndex, PApplet a)
+	public GameState(PlayerClient initPlayer, PApplet a)
 	{
-		players = new Hashtable<>();
+		players = new HashMap<>();
 		bullets = new Vector<>();
 		ammoDrops = new Vector<>();
-		this.currentPlayerIndex = currentPlayerIndex;
+		this.currentPlayerIndex = UUID.randomUUID();
+		players.put(currentPlayerIndex, initPlayer);
 		this.a = a;
 	}
 	
@@ -31,18 +34,19 @@ public class GameState
 		return a;
 	}
 	
-	public PlayerClient getPlayer(int id)
+	public PlayerClient getPlayer(UUID id)
 	{
 		return players.get(id);
 	}
 	
-	public int addPlayer(PlayerClient p)
+	public UUID addPlayer(PlayerClient p)
 	{
-		players.put(players.size(), p);
-		return players.size() - 1;
+		UUID id = UUID.randomUUID();
+		players.put(id, p);
+		return id;
 	}
 	
-	public void removePlayer(int id) 
+	public void removePlayer(UUID id) 
 	{
 		players.remove(id);
 	}
@@ -67,14 +71,14 @@ public class GameState
 		ammoDrops.add(ad);
 	}
 	
-	public void pickUpAmmoDrop(int id, int ammoID)
+	public void pickUpAmmoDrop(UUID id, int ammoID)
 	{
 		PlayerClient p = players.get(id);
 		p.setAmmo(p.getAmmo() + 15);
 		ammoDrops.remove(ammoID);
 	}
 
-	public int getCurrentPlayerIndex()
+	public UUID getCurrentPlayerUUID()
 	{
 		return currentPlayerIndex;
 	}
@@ -84,14 +88,14 @@ public class GameState
 		return players.get(currentPlayerIndex);
 	}
 	
-	public void addBullet(int owner) 
+	public void addBullet(UUID owner) 
 	{
 		PlayerClient player = players.get(owner);
 		bullets.add(new Bullet(player.getX() + 165 * PApplet.cos(player.getRotation()), player.getY() + 165 * PApplet.sin(player.getRotation()), 
 				player.getRColor(), player.getGColor(), player.getBColor(), player.getRotation(), owner, player.getRoom(), a));
 	}
 	
-	public void setPlayer(int id, PlayerClient p) 
+	public void setPlayer(UUID id, PlayerClient p) 
 	{
 		players.put(id, p);
 	}

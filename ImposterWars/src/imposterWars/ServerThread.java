@@ -9,8 +9,10 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.Vector;
 
 public class ServerThread extends Thread 
@@ -18,7 +20,7 @@ public class ServerThread extends Thread
 
 	private DatagramSocket socket;
 	private boolean connected;
-	private Hashtable<Integer, InetSocketAddress> clients;
+	private Hashtable<UUID, InetSocketAddress> clients;
 	
 	public ServerThread(int port) throws SocketException 
 	{
@@ -54,31 +56,31 @@ public class ServerThread extends Thread
 					playerConnectionUpdate(recieve.readNBytes(recievePacket.getLength() - 1), new InetSocketAddress(recievePacket.getAddress(), recievePacket.getPort()));
 					break;
 				case END_MOVE_Y:
-					playerYMovement(recieve.read(), 0);
+					playerYMovement(new UUID(recieve.readLong(), recieve.readLong()), 0);
 					break;
 				case END_MOVE_X:
-					playerXMovement(recieve.read(), 0);
+					playerXMovement(new UUID(recieve.readLong(), recieve.readLong()), 0);
 					break;
 				case MOVE_DOWN:
-					playerYMovement(recieve.read(), 5);
+					playerYMovement(new UUID(recieve.readLong(), recieve.readLong()), 5);
 					break;
 				case MOVE_LEFT:
-					playerXMovement(recieve.read(), -5);
+					playerXMovement(new UUID(recieve.readLong(), recieve.readLong()), -5);
 					break;
 				case MOVE_RIGHT:
-					playerXMovement(recieve.read(), 5);
+					playerXMovement(new UUID(recieve.readLong(), recieve.readLong()), 5);
 					break;
 				case MOVE_UP:
-					playerYMovement(recieve.read(), -5);
+					playerYMovement(new UUID(recieve.readLong(), recieve.readLong()), -5);
 					break;
 				case SHOOT:
-					shot(recieve.read());
+					shot(new UUID(recieve.readLong(), recieve.readLong()));
 					break;
 				case UPDATE_ROTATION:
-					updateRotation(recieve.read(), recieve.readFloat());
+					updateRotation(new UUID(recieve.readLong(), recieve.readLong()), recieve.readFloat());
 					break;
 				case UPDATE_ROOM:
-					updateRoom(recieve.read(), Rooms.values()[recieve.read()]);
+					updateRoom(new UUID(recieve.readLong(), recieve.readLong()), Rooms.values()[recieve.read()]);
 					break;
 				default:
 					break;
@@ -100,43 +102,46 @@ public class ServerThread extends Thread
 	
 	private void playerConnectionUpdate(byte[] buf, InetSocketAddress addr) throws IOException
 	{
-		if (buf[0] == Byte.MAX_VALUE)
+		ByteArrayInputStream bais = new ByteArrayInputStream(buf);
+		UUID id = UUID.nameUUIDFromBytes(bais.readNBytes(16));
+		if (!AmongUsInProcessing.state.players.containsKey(id))
 		{
 			System.out.println("New player joined (" + addr.getAddress().toString() + ":" + addr.getPort()
 				+ ")");
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			DataOutputStream send = new DataOutputStream(baos);
 			send.write(PacketTypes.UPDATE_PLAYERS.getID());
-			int nid = AmongUsInProcessing.state.addPlayer(new PlayerClient(buf, 1, buf.length - 1, AmongUsInProcessing.state.getWindow()));
+			UUID nid = AmongUsInProcessing.state.addPlayer(new PlayerClient(buf, 1, buf.length - 1, AmongUsInProcessing.state.getWindow()));
 			clients.put(nid, addr);
 			send.writeInt(AmongUsInProcessing.state.getPlayerCount());
 			
-			for (int i = 0; i < AmongUsInProcessing.state.getPlayerCount(); i++)
+			var players = AmongUsInProcessing.state.players.values().iterator();
+			while (players.hasNext())
 			{
-				send.write(AmongUsInProcessing.state.getPlayer(i).toBytes());
+				send.write(players.next().toBytes());
 			}
-			for (Entry<Integer, InetSocketAddress> client : clients.entrySet())
+			for (Entry<UUID, InetSocketAddress> client : clients.entrySet())
 			{
 				DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), baos.size(), client.getValue());
 				socket.send(sendPacket);
 			}
-			updateAmmoDrops(-1);
+			updateAmmoDrops(new UUID(0, 0));
 			return;
 		}
 		
-		AmongUsInProcessing.state.removePlayer(buf[0]);
+		AmongUsInProcessing.state.removePlayer(id);
 		ByteArrayOutputStream send = new ByteArrayOutputStream(2);
 		send.write(PacketTypes.UPDATE_CONNECTION.getID());
 		send.write(buf[0]);
-		clients.remove(Integer.valueOf(buf[0]));
-		for (Entry<Integer, InetSocketAddress> client : clients.entrySet())
+		clients.remove(id);
+		for (Entry<UUID, InetSocketAddress> client : clients.entrySet())
 		{
 			DatagramPacket sendPacket = new DatagramPacket(send.toByteArray(), send.size(), client.getValue());
 			socket.send(sendPacket);
 		}
 	}
 	
-	private void playerXMovement(int id, float vX) throws IOException 
+	private void playerXMovement(UUID id, float vX) throws IOException 
 	{
 		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
 		p.setvX(vX);
@@ -154,17 +159,19 @@ public class ServerThread extends Thread
 			response = PacketTypes.MOVE_LEFT;
 		}
 		
-		for (Entry<Integer, InetSocketAddress> client : clients.entrySet()) 
+		for (Entry<UUID, InetSocketAddress> client : clients.entrySet()) 
 		{
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			baos.write(response.getID());
-			baos.write(id);
+			DataOutputStream send = new DataOutputStream(baos);
+			send.write(response.getID());
+			send.writeLong(id.getMostSignificantBits());
+			send.writeLong(id.getLeastSignificantBits());
 			DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), baos.size(), client.getValue());
 			socket.send(sendPacket);
 		}
 	}
 	
-	private void playerYMovement(int id, float vY) throws IOException 
+	private void playerYMovement(UUID id, float vY) throws IOException 
 	{
 		System.out.println(id + " " + vY);
 		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
@@ -183,35 +190,39 @@ public class ServerThread extends Thread
 			response = PacketTypes.MOVE_UP;
 		}
 		
-		for (Entry<Integer, InetSocketAddress> client : clients.entrySet()) 
+		for (Entry<UUID, InetSocketAddress> client : clients.entrySet()) 
 		{
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			baos.write(response.getID());
-			baos.write(id);
+			DataOutputStream send = new DataOutputStream(baos);
+			send.write(response.getID());
+			send.writeLong(id.getMostSignificantBits());
+			send.writeLong(id.getLeastSignificantBits());
 			DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), baos.size(), client.getValue());
 			socket.send(sendPacket);
 		}
 	}
 	
-	public void updateRoom(int id, Rooms room) throws IOException 
+	public void updateRoom(UUID id, Rooms room) throws IOException 
 	{
 		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
 		p.setRoom(room);
 		p.setX(400);
 		p.setY(400);
 		
-		ByteArrayOutputStream send = new ByteArrayOutputStream();
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		DataOutputStream send = new DataOutputStream(baos);
 		send.write(PacketTypes.UPDATE_ROOM.getID());
-		send.write(id);
+		send.writeLong(id.getMostSignificantBits());
+		send.writeLong(id.getLeastSignificantBits());
 		send.write(room.getID());
-		for (Entry<Integer, InetSocketAddress> client : clients.entrySet()) 
+		for (Entry<UUID, InetSocketAddress> client : clients.entrySet()) 
 		{
-			DatagramPacket sendPacket = new DatagramPacket(send.toByteArray(), send.size(), client.getValue());
+			DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), baos.size(), client.getValue());
 			socket.send(sendPacket);
 		}
 	}
 	
-	public void shot(int id) throws IOException 
+	public void shot(UUID id) throws IOException 
 	{
 		AmongUsInProcessing.state.addBullet(id);
 		AmongUsInProcessing.state.getPlayer(id).setAmmo(AmongUsInProcessing.state.getCurrentPlayer().getAmmo() - 1);
@@ -230,23 +241,24 @@ public class ServerThread extends Thread
 			send.write(b.toBytes());
 		}
 		
-		for (Entry<Integer, InetSocketAddress> client : clients.entrySet()) 
+		for (Entry<UUID, InetSocketAddress> client : clients.entrySet()) 
 		{
 			DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), send.size(), client.getValue());
 			socket.send(sendPacket);
 		}
 	}
 	
-	public void updateRotation(int id, float rot) throws IOException 
+	public void updateRotation(UUID id, float rot) throws IOException 
 	{
 		AmongUsInProcessing.state.getPlayer(id).setRotation(rot);
 		
 		ByteArrayOutputStream send = new ByteArrayOutputStream();
 		DataOutputStream d = new DataOutputStream(send);
 		d.write(PacketTypes.UPDATE_ROTATION.getID());
-		d.write(id);
+		d.writeLong(id.getMostSignificantBits());
+		d.writeLong(id.getLeastSignificantBits());
 		d.writeFloat(rot);
-		for (Entry<Integer, InetSocketAddress> client : clients.entrySet()) 
+		for (Entry<UUID, InetSocketAddress> client : clients.entrySet()) 
 		{
 			DatagramPacket sendPacket = new DatagramPacket(send.toByteArray(), send.size(), client.getValue());
 			socket.send(sendPacket);
@@ -255,10 +267,11 @@ public class ServerThread extends Thread
 
 	public void updateMovement(PacketTypes movement) throws IOException
 	{
-		ByteArrayOutputStream baos = new ByteArrayOutputStream(6);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(18);
 		DataOutputStream send = new DataOutputStream(baos);
 		send.write(movement.getID());
-		send.write(AmongUsInProcessing.state.getCurrentPlayerIndex());
+		send.writeLong(AmongUsInProcessing.state.getCurrentPlayerUUID().getMostSignificantBits());
+		send.writeLong(AmongUsInProcessing.state.getCurrentPlayerUUID().getLeastSignificantBits());
 		switch (movement) {
 		case END_MOVE_X:
 			AmongUsInProcessing.state.getCurrentPlayer().setvX(0);
@@ -288,47 +301,48 @@ public class ServerThread extends Thread
 			break;
 		
 		}
-		for (Entry<Integer, InetSocketAddress> client : clients.entrySet()) 
+		for (Entry<UUID, InetSocketAddress> client : clients.entrySet()) 
 		{
-			DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), 6, client.getValue());
+			DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), 18, client.getValue());
 			socket.send(sendPacket);
 		}
 	}
 	
-	public void refreshPlayer(int id) throws IOException
+	public void refreshPlayer(UUID id) throws IOException
 	{
 		ByteArrayOutputStream send = new ByteArrayOutputStream();
 		send.write(PacketTypes.UPDATE_PLAYER.getID());
 		send.write(AmongUsInProcessing.state.getPlayer(id).toBytes());
 		
-		for (Entry<Integer, InetSocketAddress> client : clients.entrySet())
+		for (Entry<UUID, InetSocketAddress> client : clients.entrySet())
 		{
 			DatagramPacket sendPacket = new DatagramPacket(send.toByteArray(), send.size(), client.getValue());
 			socket.send(sendPacket);
 		}
 	}
 	
-	public void updateAmmoDrops(int id) throws IOException 
+	public void updateAmmoDrops(UUID id) throws IOException 
 	{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		DataOutputStream send = new DataOutputStream(baos);
 		
 		send.write(PacketTypes.UPDATE_AMMO_DROPS.getID());
-		send.writeShort(id);
+		send.writeLong(id.getMostSignificantBits());
+		send.writeLong(id.getLeastSignificantBits());
 		send.writeInt(AmongUsInProcessing.state.ammoDrops.size());
 		for (int i = 0; i < AmongUsInProcessing.state.ammoDrops.size(); i++)
 		{
 			send.write(AmongUsInProcessing.state.ammoDrops.get(i).toBytes());
 		}
 		
-		for (Entry<Integer, InetSocketAddress> client : clients.entrySet())
+		for (Entry<UUID, InetSocketAddress> client : clients.entrySet())
 		{
 			DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), baos.size(), client.getValue());
 			socket.send(sendPacket);
 		}
 	}
 
-	public void registerHit(int id, int bid) throws IOException
+	public void registerHit(UUID id, int bid) throws IOException
 	{
 		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
 		Bullet b = AmongUsInProcessing.state.bullets.get(bid);
@@ -352,10 +366,11 @@ public class ServerThread extends Thread
 		AmongUsInProcessing.state.removeBullet(bid);
 		
 		send.write(PacketTypes.REGISTER_HIT.getID());
-		send.write(id);
+		send.writeLong(id.getMostSignificantBits());
+		send.writeLong(id.getLeastSignificantBits());
 		send.writeInt(bid);
 		send.write(updatedRoom);
-		for (Entry<Integer, InetSocketAddress> client : clients.entrySet()) {
+		for (Entry<UUID, InetSocketAddress> client : clients.entrySet()) {
 			DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), baos.size(), client.getValue());
 			socket.send(sendPacket);
 		}

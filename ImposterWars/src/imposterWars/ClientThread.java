@@ -11,7 +11,8 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.nio.BufferUnderflowException;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.UUID;
 import java.util.Vector;
 
 public class ClientThread extends Thread 
@@ -57,43 +58,43 @@ public class ClientThread extends Thread
 				switch (PacketTypes.values()[recieve.read()]) 
 				{
 				case END_MOVE_X:
-					playerXMovement(recieve.read(), 0);
+					playerXMovement(new UUID(recieve.readLong(), recieve.readLong()), 0);
 					break;
 				case END_MOVE_Y:
-					playerYMovement(recieve.read(), 0);
+					playerYMovement(new UUID(recieve.readLong(), recieve.readLong()), 0);
 					break;
 				case MOVE_DOWN:
-					playerYMovement(recieve.read(), 5);
+					playerYMovement(new UUID(recieve.readLong(), recieve.readLong()), 5);
 					break;
 				case MOVE_LEFT:
-					playerXMovement(recieve.read(), -5);
+					playerXMovement(new UUID(recieve.readLong(), recieve.readLong()), -5);
 					break;
 				case MOVE_RIGHT:
-					playerXMovement(recieve.read(), 5);
+					playerXMovement(new UUID(recieve.readLong(), recieve.readLong()), 5);
 					break;
 				case MOVE_UP:
-					playerYMovement(recieve.read(), -5);
+					playerYMovement(new UUID(recieve.readLong(), recieve.readLong()), -5);
 					break;
 				case UPDATE_AMMO_DROPS:
 					updateAmmoDrops(recieve.readNBytes(recievePacket.getLength() - 1));
 					break;
 				case UPDATE_CONNECTION:
-					updateConnection(recieve.read());
+					updateConnection(new UUID(recieve.readLong(), recieve.readLong()));
 					break;
 				case REGISTER_HIT:
-					registerHit(recieve.read(), recieve.readInt(), recieve.read());
+					registerHit(new UUID(recieve.readLong(), recieve.readLong()), recieve.readInt(), recieve.read());
 					break;
 				case UPDATE_PLAYER:
-					updatePlayer(recieve.read(), recieve.readNBytes(recievePacket.getLength() - 2));
+					updatePlayer(new UUID(recieve.readLong(), recieve.readLong()), recieve.readNBytes(recievePacket.getLength() - 17));
 					break;
 				case UPDATE_PROJECTILES:
 					updateProjectiles(recieve.readNBytes(recievePacket.getLength() - 1));
 					break;
 				case UPDATE_ROOM:
-					updateRoom(recieve.read(), Rooms.values()[recieve.read()]);
+					updateRoom(new UUID(recieve.readLong(), recieve.readLong()), Rooms.values()[recieve.read()]);
 					break;
 				case UPDATE_ROTATION:
-					updateRotation(recieve.read(), recieve.readFloat());
+					updateRotation(new UUID(recieve.readLong(), recieve.readLong()), recieve.readFloat());
 					break;
 				case UPDATE_PLAYERS:
 					setPlayers(recieve.readNBytes(recievePacket.getLength() - 1));
@@ -108,10 +109,17 @@ public class ClientThread extends Thread
 				e.printStackTrace();
 			}
 		}
-		ByteArrayOutputStream dcStream = new ByteArrayOutputStream(2);
-		dcStream.write(PacketTypes.UPDATE_CONNECTION.getID());
-		dcStream.write(AmongUsInProcessing.state.getCurrentPlayerIndex());
-		DatagramPacket dcPacket = new DatagramPacket(dcStream.toByteArray(), 2, serverAddr);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(17);
+		DataOutputStream dcStream = new DataOutputStream(baos);
+		try {
+			dcStream.write(PacketTypes.UPDATE_CONNECTION.getID());
+			dcStream.writeLong(AmongUsInProcessing.state.getCurrentPlayerUUID().getMostSignificantBits());
+			dcStream.writeLong(AmongUsInProcessing.state.getCurrentPlayerUUID().getLeastSignificantBits());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		DatagramPacket dcPacket = new DatagramPacket(baos.toByteArray(), 2, serverAddr);
 		try 
 		{
 			socket.send(dcPacket);
@@ -128,22 +136,23 @@ public class ClientThread extends Thread
 		ByteArrayInputStream bais = new ByteArrayInputStream(buf);
 		DataInputStream recieve = new DataInputStream(bais);
 		int size = recieve.readInt();
-		Hashtable<Integer, PlayerClient> updated = new Hashtable<>(size);
+		HashMap<UUID, PlayerClient> updated = new HashMap<>(size);
 		for (int i = 0; i < size; i++) 
 		{
-			updated.put(i, new PlayerClient(recieve.readNBytes(40), 0, 40, AmongUsInProcessing.state.getWindow()));
+			updated.put(new UUID(recieve.readLong(), recieve.readLong()), new PlayerClient(recieve.readNBytes(40), 0, 40, AmongUsInProcessing.state.getWindow()));
 		}
 		AmongUsInProcessing.state.players = updated;
-		AmongUsInProcessing.state.currentPlayerIndex = updated.size() - 1;
 	}
 	
 	private void initConnection() throws IOException
 	{
-		ByteArrayOutputStream send = new ByteArrayOutputStream(46);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(61);
+		DataOutputStream send = new DataOutputStream(baos);
 		send.write(PacketTypes.UPDATE_CONNECTION.getID());
-		send.write(Byte.MAX_VALUE);
+		send.writeLong(AmongUsInProcessing.state.getCurrentPlayerUUID().getMostSignificantBits());
+		send.writeLong(AmongUsInProcessing.state.getCurrentPlayerUUID().getLeastSignificantBits());
 		send.write(AmongUsInProcessing.state.getCurrentPlayer().toBytes());
-		DatagramPacket sendPacket = new DatagramPacket(send.toByteArray(), send.size(), serverAddr);
+		DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), baos.size(), serverAddr);
 		socket.send(sendPacket);
 	}
 	
@@ -151,8 +160,8 @@ public class ClientThread extends Thread
 	{
 		ByteArrayInputStream bais = new ByteArrayInputStream(buf);
 		DataInputStream read = new DataInputStream(bais);
-		short pickupID = read.readShort();
-		if (pickupID > -1) {
+		UUID pickupID = new UUID(read.readLong(), read.readLong());
+		if (pickupID.getMostSignificantBits() != 0 && pickupID.getLeastSignificantBits() != 0) {
 			PlayerClient p = AmongUsInProcessing.state.getPlayer(pickupID);
 			p.setAmmo(p.getAmmo() + 15);
 		}
@@ -165,26 +174,17 @@ public class ClientThread extends Thread
 		}
 	}
 	
-	private void updateConnection(int id) 
+	private void updateConnection(UUID id) 
 	{
 		AmongUsInProcessing.state.removePlayer(id);
 	}
 	
-	private void updatePlayer(int id, byte[] buf) throws IOException 
+	private void updatePlayer(UUID id, byte[] buf) throws IOException 
 	{
-		if (AmongUsInProcessing.state.getCurrentPlayerIndex() == 0) {
-			AmongUsInProcessing.state.addPlayer(new PlayerClient(buf, 0, buf.length, AmongUsInProcessing.state.getWindow()));
-			return;
-		}
-		if (id >= AmongUsInProcessing.state.getPlayerCount()) 
-		{
-			AmongUsInProcessing.state.addPlayer(new PlayerClient(buf, 0, buf.length, AmongUsInProcessing.state.getWindow()));
-			return;
-		}
 		AmongUsInProcessing.state.setPlayer(id, new PlayerClient(buf, 0, buf.length, AmongUsInProcessing.state.getWindow()));
 	}
 	
-	private void registerHit(int id, int bid, int kRoom) 
+	private void registerHit(UUID id, int bid, int kRoom) 
 	{
 		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
 		Bullet b = AmongUsInProcessing.state.bullets.get(bid);
@@ -227,7 +227,7 @@ public class ClientThread extends Thread
 		AmongUsInProcessing.state.bullets = bullets;
 	}
 	
-	private void updateRoom(int id, Rooms room) 
+	private void updateRoom(UUID id, Rooms room) 
 	{
 		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
 		p.setRoom(room);
@@ -235,18 +235,18 @@ public class ClientThread extends Thread
 		p.setY(400);
 	}
 	
-	private void updateRotation(int id, float rot) throws IOException 
+	private void updateRotation(UUID id, float rot) throws IOException 
 	{
 		AmongUsInProcessing.state.getPlayer(id).setRotation(rot);
 	}
 	
-	private void playerXMovement(int id, float vX) throws IOException 
+	private void playerXMovement(UUID id, float vX) throws IOException 
 	{
 		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
 		p.setvX(vX);
 	}
 	
-	private void playerYMovement(int id, float vY) throws IOException 
+	private void playerYMovement(UUID id, float vY) throws IOException 
 	{
 		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
 		p.setvY(vY);
@@ -259,20 +259,23 @@ public class ClientThread extends Thread
 	
 	public void shoot() throws IOException 
 	{
-		byte[] shoot = new byte[2];
-		shoot[0] = PacketTypes.SHOOT.getID();
-		shoot[1] = (byte) AmongUsInProcessing.state.getCurrentPlayerIndex();
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(17);
+		DataOutputStream send = new DataOutputStream(baos);
+		send.write(PacketTypes.SHOOT.getID());
+		send.writeLong(AmongUsInProcessing.state.getCurrentPlayerUUID().getMostSignificantBits());
+		send.writeLong(AmongUsInProcessing.state.getCurrentPlayerUUID().getLeastSignificantBits());
 		AmongUsInProcessing.state.getCurrentPlayer().setAmmo(AmongUsInProcessing.state.getCurrentPlayer().getAmmo() - 1);
-		DatagramPacket send = new DatagramPacket(shoot, 2, serverAddr);
-		socket.send(send);
+		DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), 2, serverAddr);
+		socket.send(sendPacket);
 	}
 	
 	public void updateRotataion(float rot) throws IOException
 	{
-		ByteArrayOutputStream baos = new ByteArrayOutputStream(6);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(21);
 		DataOutputStream send = new DataOutputStream(baos);
 		send.write(PacketTypes.UPDATE_ROTATION.getID());
-		send.write(AmongUsInProcessing.state.getCurrentPlayerIndex());
+		send.writeLong(AmongUsInProcessing.state.getCurrentPlayerUUID().getMostSignificantBits());
+		send.writeLong(AmongUsInProcessing.state.getCurrentPlayerUUID().getLeastSignificantBits());
 		send.writeFloat(rot);
 		DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), 6, serverAddr);
 		socket.send(sendPacket);
@@ -280,10 +283,11 @@ public class ClientThread extends Thread
 	
 	public void updateMovement(PacketTypes movement) throws IOException
 	{
-		ByteArrayOutputStream baos = new ByteArrayOutputStream(6);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(21);
 		DataOutputStream send = new DataOutputStream(baos);
 		send.write(movement.getID());
-		send.write(AmongUsInProcessing.state.getCurrentPlayerIndex());
+		send.writeLong(AmongUsInProcessing.state.getCurrentPlayerUUID().getMostSignificantBits());
+		send.writeLong(AmongUsInProcessing.state.getCurrentPlayerUUID().getLeastSignificantBits());
 		switch (movement) {
 		case END_MOVE_X:
 			send.writeFloat(0);
@@ -313,12 +317,14 @@ public class ClientThread extends Thread
 
 	public void networkRoom(Rooms room) throws IOException 
 	{
-		ByteArrayOutputStream send = new ByteArrayOutputStream(3);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(18);
+		DataOutputStream send = new DataOutputStream(baos);
 		send.write(PacketTypes.UPDATE_ROOM.getID());
-		send.write(AmongUsInProcessing.state.getCurrentPlayerIndex());
+		send.writeLong(AmongUsInProcessing.state.getCurrentPlayerUUID().getMostSignificantBits());
+		send.writeLong(AmongUsInProcessing.state.getCurrentPlayerUUID().getLeastSignificantBits());
 		send.write(room.getID());
 		
-		DatagramPacket sendPacket = new DatagramPacket(send.toByteArray(), 3, serverAddr);
+		DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), 3, serverAddr);
 		socket.send(sendPacket);
 	}
 }

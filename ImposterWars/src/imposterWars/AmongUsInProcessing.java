@@ -7,7 +7,7 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.net.SocketException;
-
+import java.util.UUID;
 import processing.core.PApplet;
 
 public class AmongUsInProcessing extends PApplet
@@ -135,12 +135,12 @@ public class AmongUsInProcessing extends PApplet
 				break;
 			}
 			
-			for (int i = 0; i < state.getPlayerCount(); i++) 
+			for (var pEntry : state.players.entrySet()) 
 			{
-				PlayerClient p = state.getPlayer(i);
+				PlayerClient p = pEntry.getValue();
 				p.move();
 				if(server != null || inPractice)
-					isColliding(i);
+					isColliding(pEntry.getKey());
 				if(p.getRoom().equals(state.getCurrentPlayer().getRoom()))
 				{
 					p.draw();
@@ -157,16 +157,16 @@ public class AmongUsInProcessing extends PApplet
 				}
 				if (server != null) 
 				{
-					for (int j = 0; j < state.players.size(); j++) 
+					for (var pEntry : state.players.entrySet()) 
 					{
-						PlayerClient p = state.getPlayer(j);
+						PlayerClient p = pEntry.getValue();
 						if (dist(ad.getX(), ad.getY(), p.getX(), p.getY()) < 130 && p.getRoom().equals(ad.getRoom()))
 						{
-							state.pickUpAmmoDrop(j, i);
+							state.pickUpAmmoDrop(pEntry.getKey(), i);
 							i--;
 							try 
 							{
-								server.updateAmmoDrops(j);
+								server.updateAmmoDrops(pEntry.getKey());
 							} 
 							catch (IOException e)
 							{
@@ -178,7 +178,7 @@ public class AmongUsInProcessing extends PApplet
 				}
 				else if (inPractice && dist(ad.getX(), ad.getY(), state.getCurrentPlayer().getX(), state.getCurrentPlayer().getY()) < 130) 
 				{
-					state.pickUpAmmoDrop(0, i);
+					state.pickUpAmmoDrop(state.getCurrentPlayerUUID(), i);
 					i--;
 				}
 
@@ -223,15 +223,17 @@ public class AmongUsInProcessing extends PApplet
 							}
 						}
 					}
-					for (int j = 0; j < state.getPlayerCount(); j++) 
+					var pIterator = state.players.entrySet().iterator();
+					while (pIterator.hasNext()) 
 					{
-						PlayerClient p = state.getPlayer(j);
-						if (p.getRoom().equals(b.getRoom()) && b.getOwner() != j && dist(b.getX(), b.getY(), p.getX(), p.getY()) < 65) 
+						var pEntry = pIterator.next();
+						PlayerClient p = pEntry.getValue();
+						if (p.getRoom().equals(b.getRoom()) && !b.getOwner().equals(pEntry.getKey()) && dist(b.getX(), b.getY(), p.getX(), p.getY()) < 65) 
 						{
 							if (server != null) 
 							{
 								try {
-									server.registerHit(j, i);
+									server.registerHit(pEntry.getKey(), i);
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
@@ -244,7 +246,7 @@ public class AmongUsInProcessing extends PApplet
 									PlayerClient killer = state.getPlayer(b.getOwner());
 									killfeed = new Killfeed(Colors.getByRGB(killer.getRColor(), killer.getGColor(), killer.getBColor()), 
 											Colors.getByRGB(p.getRColor(), p.getGColor(), p.getBColor()), millis(), this);
-									state.removePlayer(j);
+									pIterator.remove();
 									killer.incrementKills();
 								}
 								else 
@@ -565,7 +567,7 @@ public class AmongUsInProcessing extends PApplet
 	}
 	
 	
-	public void isColliding(int id)
+	public void isColliding(UUID id)
 	{
 		PlayerClient p = state.getPlayer(id);
 		if(p.getY() > 535 && p.getRoom().equals(Rooms.Caf))
@@ -816,7 +818,7 @@ public class AmongUsInProcessing extends PApplet
 		}
 	}
 	
-	private void networkRoom(int id, Rooms room) 
+	private void networkRoom(UUID id, Rooms room) 
 	{
 		if (server != null) 
 		{
@@ -1068,8 +1070,7 @@ public class AmongUsInProcessing extends PApplet
 			}
 			if (inRect(mouseX, mouseY, 525, 600, 150, 75))
 			{
-				state = new GameState(0, this);
-				state.addPlayer(player);
+				state = new GameState(player, this);
 				for (int i = 0; i < 10; i++)
 				{
 					PlayerClient p = new PlayerClient(Colors.values()[(int) random(11)], this);
@@ -1169,10 +1170,10 @@ public class AmongUsInProcessing extends PApplet
 					if (client != null)
 						client.shoot();
 					else if (server != null)
-						server.shot(state.getCurrentPlayerIndex());
+						server.shot(state.getCurrentPlayerUUID());
 					else 
 					{
-						state.addBullet(0);
+						state.addBullet(state.getCurrentPlayerUUID());
 						state.getCurrentPlayer().setAmmo(state.getCurrentPlayer().getAmmo() - 1);
 					}
 				}
@@ -1186,8 +1187,7 @@ public class AmongUsInProcessing extends PApplet
 	private void hostStart() {
 		try 
 		{
-			state = new GameState(0, this);
-			state.addPlayer(player);
+			state = new GameState(player, this);
 			for (int i = 0; i < 10; i++) 
 			{
 				state.addAmmoDrop(new AmmoDrop(this, Rooms.values()[(int) random(20)]));
@@ -1207,8 +1207,7 @@ public class AmongUsInProcessing extends PApplet
 		{
 			ByteBuffer buf = ByteBuffer.allocate(4);
 			buf.putInt((int) Long.parseLong(ip, 16));
-			state = new GameState(0, this);
-			state.addPlayer(player);
+			state = new GameState(player, this);
 			client = new ClientThread(420, InetAddress.getByAddress(buf.array()));
 			client.start();
 		}
@@ -1301,7 +1300,7 @@ public class AmongUsInProcessing extends PApplet
 		else if (server != null)
 		{
 			try {
-				server.updateRotation(state.getCurrentPlayerIndex(), state.getCurrentPlayer().getRotation());
+				server.updateRotation(state.getCurrentPlayerUUID(), state.getCurrentPlayer().getRotation());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

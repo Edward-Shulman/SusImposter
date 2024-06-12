@@ -3,6 +3,7 @@ package imposterWars;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.nio.ByteBuffer;
+import java.util.UUID;
 
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -13,15 +14,15 @@ public class Bullet
 	private int color;
 	private PVector velocity;
 	private PApplet a;
-	private int owner;
+	private UUID owner;
 	private Rooms room;
 	
-	public Bullet(float x, float y, int r, int g, int b, float rotation, int id, Rooms room, PApplet a)
+	public Bullet(float x, float y, int r, int g, int b, float rotation, UUID id, Rooms room, PApplet a)
 	{
 		this(x, y, a.color(r, g, b), rotation, id, room, a);
 	}
 	
-	public Bullet(float x, float y, int c, float rotation, int owner, Rooms room, PApplet a)
+	public Bullet(float x, float y, int c, float rotation, UUID owner, Rooms room, PApplet a)
 	{
 		this.x = x;
 		this.y = y;
@@ -41,7 +42,7 @@ public class Bullet
 		color = buf.getInt();
 		velocity = PVector.fromAngle(buf.getFloat());
 		velocity.setMag(10);
-		owner = buf.getInt();
+		owner = new UUID(buf.getLong(), buf.getLong());
 		room = Rooms.values()[buf.get()];
 		this.a = a;
 	}
@@ -63,21 +64,22 @@ public class Bullet
 		return x >= 0 && x <= 700 && y >= 0 && y <= 600;
 	}
 
-	public int getOwner()
+	public UUID getOwner()
 	{
 		return owner;
 	}
 	
 	public byte[] toBytes()
 	{
-		ByteArrayOutputStream result = new ByteArrayOutputStream(21);
+		ByteArrayOutputStream result = new ByteArrayOutputStream(33);
 		DataOutputStream d = new DataOutputStream(result);
 		try {
 			d.writeFloat(x);
 			d.writeFloat(y);
 			d.writeInt(color);
 			d.writeFloat(velocity.heading());
-			d.writeInt(owner);
+			d.writeLong(owner.getMostSignificantBits());
+			d.writeLong(owner.getLeastSignificantBits());
 			d.write(room.getID());
 		} catch (Exception e) {
 			e.printStackTrace();
