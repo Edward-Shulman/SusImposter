@@ -82,7 +82,7 @@ public class ClientThread extends Thread
 					updateConnection(recieve.read());
 					break;
 				case REGISTER_HIT:
-					updateHP(recieve.read(), recieve.readInt());
+					registerHit(recieve.read(), recieve.readInt(), recieve.readBoolean());
 					break;
 				case UPDATE_PLAYER:
 					updatePlayer(recieve.read(), recieve.readNBytes(recievePacket.getLength() - 2));
@@ -181,9 +181,26 @@ public class ClientThread extends Thread
 		AmongUsInProcessing.state.setPlayer(id, new PlayerClient(buf, 0, buf.length, AmongUsInProcessing.state.getWindow()));
 	}
 	
-	private void updateHP(int id, int hp) 
+	private void registerHit(int id, int bid, boolean killed) 
 	{
-		AmongUsInProcessing.state.getPlayer(id).setHealth(hp);
+		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
+		Bullet b = AmongUsInProcessing.state.bullets.get(bid);
+
+		if (killed) {
+			p.setHealth(100);
+			p.setAmmo(15);
+			p.setRoom(Rooms.Caf);
+			p.setX(400);
+			p.setY(400);
+			PlayerClient killer = AmongUsInProcessing.state.getPlayer(b.getOwner());
+			killer.incrementKills();
+			AmongUsInProcessing.killfeed = new Killfeed(Colors.getByRGB(killer.getRColor(), killer.getGColor(), killer.getBColor(),
+				), Colors.getByRGB(p.getRColor(), p.getGColor(), p.getBColor()), AmongUsInProcessing.state.getWindow());
+		}
+		else {
+			p.setHealth(p.getHealth() - 10);
+		}
+		AmongUsInProcessing.state.bullets.remove(bid);
 	}
 	
 	private void updateProjectiles(byte[] buf) throws IOException 

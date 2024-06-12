@@ -26,7 +26,7 @@ public class AmongUsInProcessing extends PApplet
 	private ClientThread client;
 	private ServerThread server;
 	private boolean inPractice;
-	private Killfeed killfeed;
+	Killfeed killfeed;
 	
 	public static void main(String[] args)
 	{
@@ -284,7 +284,7 @@ public class AmongUsInProcessing extends PApplet
 						{
 							if (server != null) 
 							{
-								
+								server.registerHit(j, i);
 							}
 							else
 							{

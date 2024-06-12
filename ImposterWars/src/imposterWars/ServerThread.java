@@ -344,4 +344,36 @@ public class ServerThread extends Thread
 			socket.send(sendPacket);
 		}
 	}
+
+	public void registerHit(int id, int bid) throws IOException
+	{
+		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
+		Bullet b = AmongUsInProcessing.state.bullets.get(bid);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		DataOutputStream send = new DataOutputStream(baos);
+		
+		p.setHeath(p.getHealth() - 10);
+		boolean killed = p.getHealth() <= 0;
+		if (killed) {
+			p.setHealth(100);
+			p.setAmmo(15);
+			p.setRoom(Rooms.Caf);
+			p.setX(400);
+			p.setY(400);
+			PlayerClient killer = AmongUsInProcessing.state.getPlayer(b.getOwner());
+			killer.incrementKills();
+			AmongUsInProcessing.killfeed = new Killfeed(Colors.getByRGB(killer.getRColor(), killer.getGColor(), killer.getBColor(),
+				), Colors.getByRGB(p.getRColor(), p.getGColor(), p.getBColor()), AmongUsInProcessing.state.getWindow());
+		}
+		AmongUsInProcessing.state.remove(bid);
+		
+		send.write(PacketTypes.REGISTER_HIT.getID());
+		send.write(id);
+		send.writeInt(bid);
+		send.writeBoolean(killed);
+		for (Entry<Integer, InetSocketAddress> client : clients.entrySet()) {
+			DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), baos.size(), client.getValue());
+			socket.send(sendPacket);
+		}
+	}
 }
