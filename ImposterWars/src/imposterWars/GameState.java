@@ -38,7 +38,7 @@ public class GameState
 	
 	public int addPlayer(PlayerClient p)
 	{
-		players.put(players.size() - 1, p);
+		players.put(players.size(), p);
 		return players.size() - 1;
 	}
 	
