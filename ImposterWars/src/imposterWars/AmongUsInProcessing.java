@@ -207,34 +207,34 @@ public class AmongUsInProcessing extends PApplet
 				if (state.getCurrentPlayer().getRoom().equals(ad.getRoom())) 
 				{
 					ad.draw();
-					if (server != null) 
+				}
+				if (server != null) 
+				{
+					for (int j = 0; j < state.players.size(); j++) 
 					{
-						for (int j = 0; j < state.players.size(); j++) 
+						PlayerClient p = state.getPlayer(j);
+						if (dist(ad.getX(), ad.getY(), p.getX(), p.getY()) < 130 && p.getRoom().equals(ad.getRoom()))
 						{
-							if (dist(ad.getX(), ad.getY(), state.getPlayer(j).getX(), state.getPlayer(j).getY()) < 130)
+							state.pickUpAmmoDrop(j, i);
+							i--;
+							try 
 							{
-								state.pickUpAmmoDrop(j, i);
-								i--;
-								try 
-								{
-									server.updateAmmoDrops();
-								} 
-								catch (IOException e)
-								{
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								break;
+								server.updateAmmoDrops(j);
+							} 
+							catch (IOException e)
+							{
+								e.printStackTrace();
 							}
+							break;
 						}
 					}
-					else if (inPractice && dist(ad.getX(), ad.getY(), state.getCurrentPlayer().getX(), state.getCurrentPlayer().getY()) < 130) 
-					{
-						state.pickUpAmmoDrop(0, i);
-						i--;
-					}
-						
 				}
+				else if (inPractice && dist(ad.getX(), ad.getY(), state.getCurrentPlayer().getX(), state.getCurrentPlayer().getY()) < 130) 
+				{
+					state.pickUpAmmoDrop(0, i);
+					i--;
+				}
+
 				i++;
 			}
 			drawHUD();
@@ -272,7 +272,6 @@ public class AmongUsInProcessing extends PApplet
 							try {
 								server.refreshBullets();
 							} catch (IOException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 						}
@@ -287,7 +286,6 @@ public class AmongUsInProcessing extends PApplet
 								try {
 									server.registerHit(j, i);
 								} catch (IOException e) {
-									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
 							}
@@ -964,7 +962,6 @@ public class AmongUsInProcessing extends PApplet
 				server.updateRoom(id, room);
 			} catch (IOException e) 
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -1370,7 +1367,6 @@ public class AmongUsInProcessing extends PApplet
 		} 
 		catch (SocketException e) 
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		inHost = false;
@@ -1469,7 +1465,6 @@ public class AmongUsInProcessing extends PApplet
 			try {
 				client.updateRotataion(state.getCurrentPlayer().getRotation());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -1478,7 +1473,6 @@ public class AmongUsInProcessing extends PApplet
 			try {
 				server.updateRotation(state.getCurrentPlayerIndex(), state.getCurrentPlayer().getRotation());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

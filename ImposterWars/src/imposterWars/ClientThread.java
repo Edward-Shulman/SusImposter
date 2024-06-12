@@ -151,6 +151,11 @@ public class ClientThread extends Thread
 	{
 		ByteArrayInputStream bais = new ByteArrayInputStream(buf);
 		DataInputStream read = new DataInputStream(bais);
+		short pickupID = read.readShort();
+		if (pickupID > -1) {
+			PlayerClient p = AmongUsInProcessing.state.getPlayer(pickupID);
+			p.setAmmo(p.getAmmo() + 15);
+		}
 		int size = read.readInt();
 		Vector<AmmoDrop> ammoDrops = AmongUsInProcessing.state.getAmmoDrops();
 		ammoDrops.clear();
