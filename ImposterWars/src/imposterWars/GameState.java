@@ -1,12 +1,12 @@
 package imposterWars;
 
 import java.util.Vector;
-
+import java.util.Hashtable;
 import processing.core.PApplet;
 
 public class GameState
 {
-	Vector<PlayerClient> players;
+	Hashtable<Integer, PlayerClient> players;
 	Vector<Bullet> bullets;
 	Vector<AmmoDrop> ammoDrops;
 	int currentPlayerIndex;
@@ -14,7 +14,7 @@ public class GameState
 	
 	public GameState(int currentPlayerIndex, PApplet a)
 	{
-		players = new Vector<>();
+		players = new Hashtable<>();
 		bullets = new Vector<>();
 		ammoDrops = new Vector<>();
 		this.currentPlayerIndex = currentPlayerIndex;
@@ -38,7 +38,7 @@ public class GameState
 	
 	public int addPlayer(PlayerClient p)
 	{
-		players.add(p);
+		players.put(players.size() - 1, p);
 		return players.size() - 1;
 	}
 	
@@ -93,6 +93,6 @@ public class GameState
 	
 	public void setPlayer(int id, PlayerClient p) 
 	{
-		players.set(id, p);
+		players.put(id, p);
 	}
 }

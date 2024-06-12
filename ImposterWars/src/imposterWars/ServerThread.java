@@ -9,9 +9,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Vector;
 
@@ -140,7 +138,6 @@ public class ServerThread extends Thread
 	
 	private void playerXMovement(int id, float vX) throws IOException 
 	{
-		System.out.println(id + " " + vX);
 		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
 		p.setvX(vX);
 		PacketTypes response;

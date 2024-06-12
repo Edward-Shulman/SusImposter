@@ -11,6 +11,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.nio.BufferUnderflowException;
+import java.util.Hashtable;
 import java.util.Map.Entry;
 import java.util.Vector;
 
@@ -128,10 +129,10 @@ public class ClientThread extends Thread
 		ByteArrayInputStream bais = new ByteArrayInputStream(buf);
 		DataInputStream recieve = new DataInputStream(bais);
 		int size = recieve.readInt();
-		Vector<PlayerClient> updated = new Vector<PlayerClient>(size);
+		Hashtable<Integer, PlayerClient> updated = new Hashtable<>(size);
 		for (int i = 0; i < size; i++) 
 		{
-			updated.add(new PlayerClient(recieve.readNBytes(40), 0, 40, AmongUsInProcessing.state.getWindow()));
+			updated.put(i, new PlayerClient(recieve.readNBytes(40), 0, 40, AmongUsInProcessing.state.getWindow()));
 		}
 		AmongUsInProcessing.state.players = updated;
 		AmongUsInProcessing.state.currentPlayerIndex = updated.size() - 1;
