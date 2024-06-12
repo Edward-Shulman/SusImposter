@@ -26,6 +26,7 @@ public class Bullet
 		this.x = x;
 		this.y = y;
 		this.room = room;
+		this.owner = owner;
 		color = c;
 		velocity = PVector.fromAngle(rotation);
 		velocity.setMag(10);

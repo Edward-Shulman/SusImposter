@@ -280,7 +280,7 @@ public class AmongUsInProcessing extends PApplet
 					for (int j = 0; j < state.getPlayerCount(); j++) 
 					{
 						PlayerClient p = state.getPlayer(j);
-						if (p.getRoom().equals(b.getRoom()) && dist(b.getX(), b.getY(), p.getX(), p.getY()) < 65) 
+						if (p.getRoom().equals(b.getRoom()) && b.getOwner() != j && dist(b.getX(), b.getY(), p.getX(), p.getY()) < 65) 
 						{
 							if (server != null) 
 							{
