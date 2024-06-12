@@ -12,7 +12,6 @@ import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.nio.BufferUnderflowException;
 import java.util.Hashtable;
-import java.util.Map.Entry;
 import java.util.Vector;
 
 public class ClientThread extends Thread 

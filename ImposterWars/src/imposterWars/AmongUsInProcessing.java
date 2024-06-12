@@ -6,7 +6,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.net.InetSocketAddress;
 import java.net.SocketException;
 
 import processing.core.PApplet;
@@ -14,10 +13,9 @@ import processing.core.PApplet;
 public class AmongUsInProcessing extends PApplet
 {
 	
-	private int playerX, playerY, centerX, centerY, score, playerRed, playerGreen, playerBlue, startTime, elapsedTime;
-	private boolean keyRight, keyLeft, keyUp, keyDown;
-	private boolean inStart, inCaf, inCenterHallway, inUpperLeftHallway, inWeapons, inMedbay, inAdmin, inStorage, inRightHallway, inOxygen, inNavigation, inShields, inBottomRightHallway;
-	private boolean inComms, inBottomLeftHallway, inElectrical, inUpperEngine, inLowerEngine, inLeftHallway, inReactor, inSecurity, inEmptyRoom, inWinRoom, inHost, inJoin;
+	private int playerX, playerY;
+	private boolean inStart;
+	private boolean inHost, inJoin;
 	AmmoDrop[] ammoDrops;
 	PlayerClient player;
 	ArrayList<Bullet> bullets;
@@ -43,37 +41,7 @@ public class AmongUsInProcessing extends PApplet
 		player = new PlayerClient(Colors.Red, this);
 		playerX = 400;
 		playerY = 400;
-		playerRed = 247;
-		playerGreen = 37;
-		playerBlue = 37;
-		keyRight = false;
-		keyLeft = false;
-		keyUp = false;
-		keyDown = false;
-		score = 0;
 		inStart = true;
-		inCaf = false;
-		inCenterHallway = false;
-		inUpperLeftHallway = false;
-		inWeapons = false;
-		inMedbay = false;
-		inUpperEngine = false;
-		inAdmin = false;
-		inStorage = false;
-		inRightHallway = false;
-		inOxygen = false;
-		inNavigation = false;
-		inShields = false;
-		inBottomRightHallway = false;
-		inComms = false;
-		inBottomLeftHallway = false;
-		inElectrical = false;
-		inLowerEngine = false;
-		inLeftHallway = false;
-		inReactor = false;
-		inSecurity = false;
-		inEmptyRoom = false;
-		elapsedTime = 0;
 		bullets = new ArrayList<>();
 		ammoDrops = new AmmoDrop[10];
 		for (int i = 0; i < 10; i++)
@@ -90,27 +58,6 @@ public class AmongUsInProcessing extends PApplet
 		
 		if (inStart)
 			drawStartScreen();
-		
-		
-		
-		if(inEmptyRoom)
-		{
-			centerX = 1000;
-			score = 0;
-			inCaf = false;
-			background(0, 0, 0);
-			fill(184, 82, 191);
-			textSize(50);
-			text("ENTERING IMPOSTER MODE", 20, 300);
-			elapsedTime = (millis() - startTime) / 1000;
-			
-			if(elapsedTime >= 5)
-			{
-				inEmptyRoom = false;
-				inCaf = true;
-				
-			}
-		}
 
 		if (inHost) 
 		{
@@ -623,14 +570,10 @@ public class AmongUsInProcessing extends PApplet
 		PlayerClient p = state.getPlayer(id);
 		if(p.getY() > 535 && p.getRoom().equals(Rooms.Caf))
 		{
-			inCaf = false;
-			inCenterHallway = true;
 			networkRoom(id, Rooms.CenterHallway);
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Caf))
 		{
-			inCaf = false;
-			inUpperLeftHallway = true;
 			networkRoom(id, Rooms.UpperLeftHallway);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Caf))
@@ -639,22 +582,16 @@ public class AmongUsInProcessing extends PApplet
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Caf))
 		{
-			inCaf = false;
-			inWeapons = true;
 			networkRoom(id, Rooms.Weapons);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Weapons))
 			networkRoom(id, Rooms.Weapons);
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Weapons))
 		{
-			inWeapons = false;
-			inRightHallway = true;
 			networkRoom(id, Rooms.RightHallway);
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Weapons))
 		{
-			inCaf = true;
-			inWeapons = false;
 			networkRoom(id, Rooms.Caf);
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Weapons))
@@ -663,64 +600,44 @@ public class AmongUsInProcessing extends PApplet
 			networkRoom(id, Rooms.UpperLeftHallway);
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.UpperLeftHallway))
 		{
-			inUpperLeftHallway = false;
-			inMedbay = true;
 			networkRoom(id, Rooms.Medbay);
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.UpperLeftHallway))
 		{
-			inUpperLeftHallway = false;
-			inUpperEngine = true;
 			networkRoom(id, Rooms.UpperEngine);
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.UpperLeftHallway))
 		{
-			inCaf = true;
-			inUpperLeftHallway = false;
 			networkRoom(id, Rooms.Caf);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.CenterHallway))
 		{
-			inCaf = true;
-			inCenterHallway = false;
 			networkRoom(id, Rooms.Caf);
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.CenterHallway))
 		{
-			inCenterHallway = false;
-			inStorage = true;
 			networkRoom(id, Rooms.Storage);
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.CenterHallway))
 			networkRoom(id, Rooms.CenterHallway);
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.CenterHallway))
 		{
-			inCenterHallway = false;
-			inAdmin = true;
 			networkRoom(id, Rooms.Admin);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.RightHallway))
 		{
-			inRightHallway = false;
-			inWeapons = true;
 			networkRoom(id, Rooms.Weapons);
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.RightHallway))
 		{
-			inRightHallway = false;
-			inShields = true;
 			networkRoom(id, Rooms.Shields);
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.RightHallway))
 		{
-			inRightHallway = false;
-			inOxygen = true;
 			networkRoom(id, Rooms.Oxygen);
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.RightHallway))
 		{
-			inRightHallway = false;
-			inNavigation = true;
 			networkRoom(id, Rooms.Navigation);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Admin))
@@ -729,16 +646,12 @@ public class AmongUsInProcessing extends PApplet
 			networkRoom(id, Rooms.Admin);
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Admin))
 		{
-			inAdmin = false;
-			inCenterHallway = true;
 			networkRoom(id, Rooms.CenterHallway);
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Admin))
 			networkRoom(id, Rooms.Admin);
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Medbay))
 		{
-			inMedbay = false;
-			inUpperLeftHallway = true;
 			networkRoom(id, Rooms.UpperLeftHallway);
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Medbay))
@@ -755,8 +668,6 @@ public class AmongUsInProcessing extends PApplet
 			networkRoom(id, Rooms.Oxygen);
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Oxygen))
 		{
-			inOxygen = false;
-			inRightHallway = true;
 			networkRoom(id, Rooms.RightHallway);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Navigation))
@@ -765,24 +676,18 @@ public class AmongUsInProcessing extends PApplet
 			networkRoom(id, Rooms.Navigation);
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Navigation))
 		{
-			inNavigation = false;
-			inRightHallway = true;
 			networkRoom(id, Rooms.RightHallway);
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Navigation))
 			networkRoom(id, Rooms.Navigation);
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Shields))
 		{
-			inShields = false;
-			inRightHallway = true;
 			networkRoom(id, Rooms.RightHallway);
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Shields))
 			networkRoom(id, Rooms.Shields);
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Shields))
 		{
-			inShields = false;
-			inBottomRightHallway = true;
 			networkRoom(id, Rooms.BottomRightHallway);
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Shields))
@@ -791,26 +696,18 @@ public class AmongUsInProcessing extends PApplet
 			networkRoom(id, Rooms.BottomRightHallway);
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.BottomRightHallway))
 		{
-			inBottomRightHallway = false;
-			inComms = true;
 			networkRoom(id, Rooms.Comms);
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.BottomRightHallway))
 		{
-			inBottomRightHallway = false;
-			inStorage = true;
 			networkRoom(id, Rooms.Storage);
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.BottomRightHallway))
 		{
-			inBottomRightHallway = false;
-			inShields = true;
 			networkRoom(id, Rooms.Shields);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Comms))
 		{
-			inComms = false;
-			inBottomRightHallway = true;
 			networkRoom(id, Rooms.BottomRightHallway);
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Comms))
@@ -821,50 +718,36 @@ public class AmongUsInProcessing extends PApplet
 			networkRoom(id, Rooms.Comms);
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Storage))
 		{
-			inStorage = false;
-			inCenterHallway = true;
 			networkRoom(id, Rooms.CenterHallway);
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Storage))
 			networkRoom(id, Rooms.Storage);
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Storage))
 		{
-			inStorage = false;
-			inBottomLeftHallway = true;
 			networkRoom(id, Rooms.BottomLeftHallway);
 		}
 		else if(p.getX() > 635 && p.getRoom().equals(Rooms.Storage))
 		{
-			inStorage = false;
-			inBottomRightHallway = true;
 			networkRoom(id, Rooms.BottomRightHallway);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.BottomLeftHallway))
 		{
-			inBottomLeftHallway = false;
-			inElectrical = true;
 			networkRoom(id, Rooms.Electrical);
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.BottomLeftHallway))
 			networkRoom(id, Rooms.BottomLeftHallway);
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.BottomLeftHallway))
 		{
-			inBottomLeftHallway = false;
-			inLowerEngine = true;
 			networkRoom(id, Rooms.LowerEngine);
 		}
 		else if(p.getX() > 635 && p.getRoom().equals(Rooms.BottomLeftHallway))
 		{
-			inBottomLeftHallway = false;
-			inStorage = true;
 			networkRoom(id, Rooms.Storage);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Electrical))
 			networkRoom(id, Rooms.Electrical);
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.Electrical))
 		{
-			inElectrical = false;
-			inBottomLeftHallway = true;
 			networkRoom(id, Rooms.BottomLeftHallway);
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Electrical))
@@ -873,8 +756,6 @@ public class AmongUsInProcessing extends PApplet
 			networkRoom(id, Rooms.Electrical);
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.LowerEngine))
 		{
-			inLowerEngine = false;
-			inLeftHallway = true;
 			networkRoom(id, Rooms.LeftHallway);
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.LowerEngine))
@@ -883,48 +764,34 @@ public class AmongUsInProcessing extends PApplet
 			networkRoom(id, Rooms.LowerEngine);
 		else if(p.getX() > 635 && p.getRoom().equals(Rooms.LowerEngine))
 		{
-			inLowerEngine = false;
-			inBottomLeftHallway = true;
 			networkRoom(id, Rooms.BottomLeftHallway);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.LeftHallway))
 		{
-			inLeftHallway = false;
-			inUpperEngine = true;
 			networkRoom(id, Rooms.UpperEngine);
 		}
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.LeftHallway))
 		{
-			inLeftHallway = false;
-			inLowerEngine = true;
 			networkRoom(id, Rooms.LowerEngine);
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.LeftHallway))
 		{
-			inLeftHallway = false;
-			inReactor = true;
 			networkRoom(id, Rooms.Reactor);
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.LeftHallway))
 		{
-			inLeftHallway = false;
-			inSecurity = true;
 			networkRoom(id, Rooms.Security);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.UpperEngine))
 			networkRoom(id, Rooms.UpperEngine);
 		else if(p.getY() > 535 && p.getRoom().equals(Rooms.UpperEngine))
 		{
-			inUpperEngine = false;
-			inLeftHallway = true;
 			networkRoom(id, Rooms.LeftHallway);
 		}
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.UpperEngine))
 			networkRoom(id, Rooms.UpperEngine);
 		else if(p.getX() > 635 && p.getRoom().equals(Rooms.UpperEngine))
 		{
-			inUpperEngine = false;
-			inUpperLeftHallway = true;
 			networkRoom(id, Rooms.UpperLeftHallway);
 		}
 		else if(p.getY() < 65 && p.getRoom().equals(Rooms.Security))
@@ -933,8 +800,6 @@ public class AmongUsInProcessing extends PApplet
 			networkRoom(id, Rooms.Security);
 		else if(p.getX() < 65 && p.getRoom().equals(Rooms.Security))
 		{
-			inSecurity = false;
-			inLeftHallway = true;
 			networkRoom(id, Rooms.LeftHallway);
 		}
 		else if( p.getX() > 635 && p.getRoom().equals(Rooms.Security))
@@ -947,8 +812,6 @@ public class AmongUsInProcessing extends PApplet
 			networkRoom(id, Rooms.Reactor);
 		else if(p.getX() > 635 && p.getRoom().equals(Rooms.Reactor))
 		{
-			inReactor = false;
-			inLeftHallway = true;
 			networkRoom(id, Rooms.LeftHallway);
 		}
 	}
@@ -978,79 +841,46 @@ public class AmongUsInProcessing extends PApplet
 	{
 		if(dist(playerX, playerY, 55, 75) <= 70) //red
 		{
-			playerRed = 247;
-			playerGreen = 37;
-			playerBlue = 37;
 		}
 		
 		if(dist(playerX, playerY, 205, 55) <= 70) //blue
 		{
-			playerRed = 28;
-			playerGreen = 45;
-			playerBlue = 232;
 		}
 		
 		if(dist(playerX, playerY, 355, 55) <= 70) //green
 		{
-			playerRed = 53;
-			playerGreen = 92;
-			playerBlue = 54;
 		}
 		
 		if(dist(playerX, playerY, 505, 55) <= 70) //pink
 		{
-			playerRed = 240;
-			playerGreen = 101;
-			playerBlue = 228;
 		}
 		
 		if(dist(playerX, playerY, 625, 55) <= 70) //orange
 		{
-			playerRed = 242;
-			playerGreen = 168;
-			playerBlue = 7;
 		}
 		
 		if(dist(playerX, playerY, 55, 305) <= 70) //lime
 		{
-			playerRed = 5;
-			playerGreen = 240;
-			playerBlue = 44;
 		}
 		
 		if(dist(playerX, playerY, 55, 515) <= 70) //purple
 		{
-			playerRed = 139;
-			playerGreen = 40;
-			playerBlue = 209;
 		}
 		
 		if(dist(playerX, playerY, 625, 305) <= 70) //brown
 		{
-			playerRed = 110;
-			playerGreen = 82;
-			playerBlue = 38;
 		}
 		
 		if(dist(playerX, playerY, 625, 515) <= 70) //cyan
 		{
-			playerRed = 65;
-			playerGreen = 240;
-			playerBlue = 237;
 		}
 		
 		if(dist(playerX, playerY, 205, 515) <= 70) //yellow
 		{
-			playerRed = 242;
-			playerGreen = 250;
-			playerBlue = 10;
 		}
 		
 		if(dist(playerX, playerY, 505, 515) <= 70) //black
 		{
-			playerRed = 41;
-			playerGreen = 41;
-			playerBlue = 38;
 		}
 	}
 	
