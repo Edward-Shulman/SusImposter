@@ -32,6 +32,8 @@ public class AmmoDrop
 		centerX = buf.getFloat();
 		centerY = buf.getFloat();
 		room = Rooms.values()[buf.get()];
+		img = p.loadImage("assets/real2.png");
+		img.resize(75, 0);
 	}
 	
 	public byte[] toBytes() throws IOException {
