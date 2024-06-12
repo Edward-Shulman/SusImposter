@@ -339,11 +339,12 @@ public class ServerThread extends Thread
 		DataOutputStream send = new DataOutputStream(baos);
 		
 		p.setHealth(p.getHealth() - 10);
-		boolean killed = p.getHealth() <= 0;
-		if (killed) {
+		int updatedRoom = Byte.MAX_VALUE;
+		if (p.getHealth() <= 0) {
 			p.setHealth(100);
 			p.setAmmo(15);
-			p.setRoom(Rooms.Caf);
+			updatedRoom = (int) (Math.random() * 21);
+			p.setRoom(Rooms.values()[updatedRoom]);
 			p.setX(400);
 			p.setY(400);
 			PlayerClient killer = AmongUsInProcessing.state.getPlayer(b.getOwner());
@@ -356,7 +357,7 @@ public class ServerThread extends Thread
 		send.write(PacketTypes.REGISTER_HIT.getID());
 		send.write(id);
 		send.writeInt(bid);
-		send.writeBoolean(killed);
+		send.write(updatedRoom);
 		for (Entry<Integer, InetSocketAddress> client : clients.entrySet()) {
 			DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), baos.size(), client.getValue());
 			socket.send(sendPacket);

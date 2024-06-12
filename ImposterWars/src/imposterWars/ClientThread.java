@@ -81,7 +81,7 @@ public class ClientThread extends Thread
 					updateConnection(recieve.read());
 					break;
 				case REGISTER_HIT:
-					registerHit(recieve.read(), recieve.readInt(), recieve.readBoolean());
+					registerHit(recieve.read(), recieve.readInt(), recieve.read());
 					break;
 				case UPDATE_PLAYER:
 					updatePlayer(recieve.read(), recieve.readNBytes(recievePacket.getLength() - 2));
@@ -184,15 +184,15 @@ public class ClientThread extends Thread
 		AmongUsInProcessing.state.setPlayer(id, new PlayerClient(buf, 0, buf.length, AmongUsInProcessing.state.getWindow()));
 	}
 	
-	private void registerHit(int id, int bid, boolean killed) 
+	private void registerHit(int id, int bid, int kRoom) 
 	{
 		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
 		Bullet b = AmongUsInProcessing.state.bullets.get(bid);
 
-		if (killed) {
+		if (kRoom != Byte.MAX_VALUE) {
 			p.setHealth(100);
 			p.setAmmo(15);
-			p.setRoom(Rooms.Caf);
+			p.setRoom(Rooms.values()[kRoom]);
 			p.setX(400);
 			p.setY(400);
 			PlayerClient killer = AmongUsInProcessing.state.getPlayer(b.getOwner());
