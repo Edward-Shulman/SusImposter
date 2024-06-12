@@ -36,7 +36,7 @@ public class PlayerClient
 		y = 300;
 		setvX(0);
 		setvY(0);
-		setHealth(99);
+		setHealth(100);
 		rotation = 0;
 		weapon = a.loadImage(color.getFile());
 		weapon.resize(100, 0);

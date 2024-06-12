@@ -218,6 +218,25 @@ public class ServerThread extends Thread
 	{
 		AmongUsInProcessing.state.addBullet(id);
 		AmongUsInProcessing.state.getPlayer(id).setAmmo(AmongUsInProcessing.state.getCurrentPlayer().getAmmo() - 1);
+		refreshBullets();
+	}
+	
+	public void registerHit(int id, int bid) 
+	{
+		//TODO network hitreg
+		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
+		p.setHealth(p.getHealth() - 10);
+		AmongUsInProcessing.state.bullets.remove(bid);
+		
+		if (p.getHealth() <= 0) {
+			
+			return;
+		}
+		
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	}
+
+	public void refreshBullets() throws IOException {
 		Vector<Bullet> bullets = AmongUsInProcessing.state.getBullets();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream(21 * bullets.size() + 5);
 		DataOutputStream send = new DataOutputStream(baos);
@@ -314,7 +333,7 @@ public class ServerThread extends Thread
 		
 		send.write(PacketTypes.UPDATE_AMMO_DROPS.getID());
 		send.writeInt(AmongUsInProcessing.state.ammoDrops.size());
-		for (int i = 0; i < send.size(); i++)
+		for (int i = 0; i < AmongUsInProcessing.state.ammoDrops.size(); i++)
 		{
 			send.write(AmongUsInProcessing.state.ammoDrops.get(i).toBytes());
 		}

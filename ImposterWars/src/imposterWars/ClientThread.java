@@ -81,7 +81,7 @@ public class ClientThread extends Thread
 				case UPDATE_CONNECTION:
 					updateConnection(recieve.read());
 					break;
-				case UPDATE_HP:
+				case REGISTER_HIT:
 					updateHP(recieve.read(), recieve.readInt());
 					break;
 				case UPDATE_PLAYER:
@@ -169,7 +169,6 @@ public class ClientThread extends Thread
 	
 	private void updatePlayer(int id, byte[] buf) throws IOException 
 	{
-		//TODO inital index conflict
 		if (AmongUsInProcessing.state.getCurrentPlayerIndex() == 0) {
 			AmongUsInProcessing.state.addPlayer(new PlayerClient(buf, 0, buf.length, AmongUsInProcessing.state.getWindow()));
 			return;

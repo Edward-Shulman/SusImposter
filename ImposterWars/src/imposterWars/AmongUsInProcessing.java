@@ -25,6 +25,8 @@ public class AmongUsInProcessing extends PApplet
 	private String ip;
 	private ClientThread client;
 	private ServerThread server;
+	private boolean inPractice;
+	private Killfeed killfeed;
 	
 	public static void main(String[] args)
 	{
@@ -190,7 +192,7 @@ public class AmongUsInProcessing extends PApplet
 			{
 				PlayerClient p = state.getPlayer(i);
 				p.move();
-				if(server != null)
+				if(server != null || inPractice)
 					isColliding(i);
 				if(p.getRoom().equals(state.getCurrentPlayer().getRoom()))
 				{
@@ -222,9 +224,16 @@ public class AmongUsInProcessing extends PApplet
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
+								break;
 							}
 						}
 					}
+					else if (inPractice && dist(ad.getX(), ad.getY(), state.getCurrentPlayer().getX(), state.getCurrentPlayer().getY()) < 130) 
+					{
+						state.pickUpAmmoDrop(0, i);
+						i--;
+					}
+						
 				}
 				i++;
 			}
@@ -249,14 +258,59 @@ public class AmongUsInProcessing extends PApplet
 			while (i < state.getBullets().size()) 
 			{
 				Bullet b = state.getBullets().get(i);
+				b.move();
 				if (b.getRoom().equals(state.getCurrentPlayer().getRoom()))
 				{
 					b.draw();
-					b.move();
+				}
+				if (server != null || inPractice) {
+					if (!inRect(b.getX(), b.getY(), 0, 0, 700, 600)) 
+					{
+						state.bullets.remove(i);
+						if (server != null) 
+						{
+							try {
+								server.refreshBullets();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+					for (int j = 0; j < state.getPlayerCount(); j++) 
+					{
+						PlayerClient p = state.getPlayer(j);
+						if (p.getRoom().equals(b.getRoom()) && b.getOwner() != j && dist(b.getX(), b.getY(), p.getX(), p.getY()) < 65) 
+						{
+							if (server != null) 
+							{
+								
+							}
+							else
+							{
+								p.setHealth(p.getHealth() - 10);
+								if (p.getHealth() <= 10) 
+								{
+									PlayerClient killer = state.getPlayer(b.getOwner());
+									killfeed = new Killfeed(Colors.getByRGB(killer.getRColor(), killer.getGColor(), killer.getBColor()), 
+											Colors.getByRGB(p.getRColor(), p.getGColor(), p.getBColor()), millis(), this);
+									state.removePlayer(j);
+									killer.incrementKills();
+								}
+								else 
+								{
+									state.removeBullet(i);
+								}
+							}
+						}
+					}
 				}
 				i++;
 			}
 		}
+		
+		if (killfeed != null)
+			killfeed.draw();
 	}
 
 	private void drawReactor() 
@@ -563,7 +617,6 @@ public class AmongUsInProcessing extends PApplet
 	
 	public void isColliding(int id)
 	{
-		//TODO networking with rooms
 		PlayerClient p = state.getPlayer(id);
 		if(p.getY() > 535 && p.getRoom().equals(Rooms.Caf))
 		{
@@ -910,6 +963,13 @@ public class AmongUsInProcessing extends PApplet
 				e.printStackTrace();
 			}
 		}
+		else if (inPractice) 
+		{
+			PlayerClient p = state.getCurrentPlayer();
+			p.setRoom(room);
+			p.setX(400);
+			p.setY(400);
+		}
 	}
 
 	public void changeColor()
@@ -1059,6 +1119,25 @@ public class AmongUsInProcessing extends PApplet
 				e.printStackTrace();
 			}
 		}
+		else if (inPractice) 
+		{
+			switch (key) {
+			case 'w':
+				state.getCurrentPlayer().setvY(-5);
+				break;
+			case 'a':
+				state.getCurrentPlayer().setvX(-5);
+				break;
+			case 's':
+				state.getCurrentPlayer().setvY(5);
+				break;
+			case 'd':
+				state.getCurrentPlayer().setvX(5);
+				break;
+			default:
+				break;
+			}
+		}
 	}
 	
 	public void keyReleased()
@@ -1111,6 +1190,25 @@ public class AmongUsInProcessing extends PApplet
 				e.printStackTrace();
 			}
 		}
+		else if (inPractice) 
+		{
+			switch (key) {
+			case 'w':
+				state.getCurrentPlayer().setvY(0);
+				break;
+			case 'a':
+				state.getCurrentPlayer().setvX(0);
+				break;
+			case 's':
+				state.getCurrentPlayer().setvY(0);
+				break;
+			case 'd':
+				state.getCurrentPlayer().setvX(0);
+				break;
+			default:
+				break;
+			}
+		}
 	}
 	
 	public void mouseClicked()
@@ -1136,7 +1234,24 @@ public class AmongUsInProcessing extends PApplet
 				inJoin = true;
 				inStart = false;
 			}
-			
+			if (inRect(mouseX, mouseY, 525, 600, 150, 75))
+			{
+				state = new GameState(0, this);
+				state.addPlayer(player);
+				for (int i = 0; i < 10; i++)
+				{
+					PlayerClient p = new PlayerClient(Colors.values()[(int) random(11)], this);
+					p.setRoom(Rooms.values()[(int) random(20)]);
+					p.setX(random(130, 570));
+					p.setY(random(130, 470));
+					p.setRotation(random(TWO_PI));
+					state.addPlayer(p);
+					AmmoDrop ad = new AmmoDrop(this, Rooms.values()[(int) random(20)]);
+					state.addAmmoDrop(ad);
+				}
+				inPractice = true;
+				inStart = false;
+			}
 			if (inRect(mouseX, mouseY, 20, 40, 70, 70))
 			{
 				player.setColor(Colors.Red);
@@ -1205,40 +1320,11 @@ public class AmongUsInProcessing extends PApplet
 			{
 				if (inJoin)
 				{
-					try 
-					{
-						ByteBuffer buf = ByteBuffer.allocate(4);
-						buf.putInt((int) Long.parseLong(ip, 16));
-						state = new GameState(0, this);
-						state.addPlayer(player);
-						client = new ClientThread(420, InetAddress.getByAddress(buf.array()));
-						client.start();
-					}
-					catch (Exception e)
-					{
-						e.printStackTrace();
-					}
-					inJoin = false;
+					joinStart();
 				}
 				else 
 				{
-					try 
-					{
-						state = new GameState(0, this);
-						state.addPlayer(player);
-						for (int i = 0; i < 10; i++) 
-						{
-							state.addAmmoDrop(new AmmoDrop(this, Rooms.values()[(int) random(20)]));
-						}
-						server = new ServerThread(420);
-						server.start();
-					} 
-					catch (SocketException e) 
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					inHost = false;
+					hostStart();
 				}
 			}
 		}
@@ -1246,22 +1332,60 @@ public class AmongUsInProcessing extends PApplet
 		{
 			if (state.getCurrentPlayer().getAmmo() != 0)
 			{
-//				bullets.add(new Bullet(player.getX() + 165 * cos(player.getRotation()), player.getY() + 165 * sin(player.getRotation()), player.getRColor(), 
-//						player.getGColor(), player.getBColor(), player.getRotation(), 0, this));
-//				
-//				player.setAmmo(player.getAmmo() - 1);
 				try 
 				{
 					if (client != null)
 						client.shoot();
-					else
+					else if (server != null)
 						server.shot(state.getCurrentPlayerIndex());
+					else 
+					{
+						state.addBullet(0);
+						state.getCurrentPlayer().setAmmo(state.getCurrentPlayer().getAmmo() - 1);
+					}
 				}
 				catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 		}
+	}
+
+	private void hostStart() {
+		try 
+		{
+			state = new GameState(0, this);
+			state.addPlayer(player);
+			for (int i = 0; i < 10; i++) 
+			{
+				state.addAmmoDrop(new AmmoDrop(this, Rooms.values()[(int) random(20)]));
+			}
+			server = new ServerThread(420);
+			server.start();
+		} 
+		catch (SocketException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		inHost = false;
+	}
+
+	private void joinStart() {
+		try 
+		{
+			ByteBuffer buf = ByteBuffer.allocate(4);
+			buf.putInt((int) Long.parseLong(ip, 16));
+			state = new GameState(0, this);
+			state.addPlayer(player);
+			client = new ClientThread(420, InetAddress.getByAddress(buf.array()));
+			client.start();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		inJoin = false;
 	}
 	
 	public boolean inRect(float x, float y, float rX, float rY, float w, float h)
@@ -1426,9 +1550,13 @@ public class AmongUsInProcessing extends PApplet
 				if (!ip.isEmpty())
 					ip = ip.substring(0, ip.length() - 1);
 			}
+			else if (key == ENTER)
+				joinStart();
 			else if (ip.length() >= 0 && ip.length() < 8)
 				ip += key;
 		}
+		else if (inHost && key == ENTER)
+			hostStart();
 	}
 	
 }

@@ -18,7 +18,7 @@ public class Bullet
 	
 	public Bullet(float x, float y, int r, int g, int b, float rotation, int id, Rooms room, PApplet a)
 	{
-		this(x, y, a.color(r, g, b), rotation, id, room, a); //TODO acutally assign id
+		this(x, y, a.color(r, g, b), rotation, id, room, a);
 	}
 	
 	public Bullet(float x, float y, int c, float rotation, int owner, Rooms room, PApplet a)
@@ -87,6 +87,22 @@ public class Bullet
 	public Rooms getRoom() 
 	{
 		return room;
+	}
+
+	public float getX() {
+		return x;
+	}
+
+	public void setX(float x) {
+		this.x = x;
+	}
+
+	public float getY() {
+		return y;
+	}
+
+	public void setY(float y) {
+		this.y = y;
 	}
 	
 }
