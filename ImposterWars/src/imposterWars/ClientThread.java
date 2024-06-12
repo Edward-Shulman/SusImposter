@@ -194,8 +194,8 @@ public class ClientThread extends Thread
 			p.setY(400);
 			PlayerClient killer = AmongUsInProcessing.state.getPlayer(b.getOwner());
 			killer.incrementKills();
-			AmongUsInProcessing.killfeed = new Killfeed(Colors.getByRGB(killer.getRColor(), killer.getGColor(), killer.getBColor(),
-				), Colors.getByRGB(p.getRColor(), p.getGColor(), p.getBColor()), AmongUsInProcessing.state.getWindow());
+			AmongUsInProcessing.killfeed = new Killfeed(Colors.getByRGB(killer.getRColor(), killer.getGColor(), killer.getBColor()
+				), Colors.getByRGB(p.getRColor(), p.getGColor(), p.getBColor()), AmongUsInProcessing.state.getWindow().millis(), AmongUsInProcessing.state.getWindow());
 		}
 		else {
 			p.setHealth(p.getHealth() - 10);
