@@ -220,21 +220,6 @@ public class ServerThread extends Thread
 		AmongUsInProcessing.state.getPlayer(id).setAmmo(AmongUsInProcessing.state.getCurrentPlayer().getAmmo() - 1);
 		refreshBullets();
 	}
-	
-	public void registerHit(int id, int bid) 
-	{
-		//TODO network hitreg
-		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
-		p.setHealth(p.getHealth() - 10);
-		AmongUsInProcessing.state.bullets.remove(bid);
-		
-		if (p.getHealth() <= 0) {
-			
-			return;
-		}
-		
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	}
 
 	public void refreshBullets() throws IOException {
 		Vector<Bullet> bullets = AmongUsInProcessing.state.getBullets();
@@ -352,7 +337,7 @@ public class ServerThread extends Thread
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		DataOutputStream send = new DataOutputStream(baos);
 		
-		p.setHeath(p.getHealth() - 10);
+		p.setHealth(p.getHealth() - 10);
 		boolean killed = p.getHealth() <= 0;
 		if (killed) {
 			p.setHealth(100);
@@ -362,10 +347,10 @@ public class ServerThread extends Thread
 			p.setY(400);
 			PlayerClient killer = AmongUsInProcessing.state.getPlayer(b.getOwner());
 			killer.incrementKills();
-			AmongUsInProcessing.killfeed = new Killfeed(Colors.getByRGB(killer.getRColor(), killer.getGColor(), killer.getBColor(),
-				), Colors.getByRGB(p.getRColor(), p.getGColor(), p.getBColor()), AmongUsInProcessing.state.getWindow());
+			AmongUsInProcessing.killfeed = new Killfeed(Colors.getByRGB(killer.getRColor(), killer.getGColor(), killer.getBColor()
+				), Colors.getByRGB(p.getRColor(), p.getGColor(), p.getBColor()),AmongUsInProcessing.state.getWindow().millis(), AmongUsInProcessing.state.getWindow());
 		}
-		AmongUsInProcessing.state.remove(bid);
+		AmongUsInProcessing.state.removeBullet(bid);
 		
 		send.write(PacketTypes.REGISTER_HIT.getID());
 		send.write(id);

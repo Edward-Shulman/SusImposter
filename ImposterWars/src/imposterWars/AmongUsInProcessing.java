@@ -26,7 +26,7 @@ public class AmongUsInProcessing extends PApplet
 	private ClientThread client;
 	private ServerThread server;
 	private boolean inPractice;
-	Killfeed killfeed;
+	static Killfeed killfeed;
 	
 	public static void main(String[] args)
 	{
@@ -284,7 +284,12 @@ public class AmongUsInProcessing extends PApplet
 						{
 							if (server != null) 
 							{
-								server.registerHit(j, i);
+								try {
+									server.registerHit(j, i);
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 							}
 							else
 							{
