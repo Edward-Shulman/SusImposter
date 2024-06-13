@@ -215,7 +215,7 @@ public class AmongUsInProcessing extends PApplet
 				if (server != null || inPractice) {
 					if (!inRect(b.getX(), b.getY(), 0, 0, 700, 600)) 
 					{
-						state.bullets.remove(bEntry.getKey());
+						bIterator.remove();
 						if (server != null) 
 						{
 							try {
