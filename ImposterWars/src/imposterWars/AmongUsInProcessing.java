@@ -202,9 +202,11 @@ public class AmongUsInProcessing extends PApplet
 //				}
 //			}
 			
-			while (i < state.getBullets().size()) 
+			var bIterator = state.getBullets().entrySet().iterator();
+			while (bIterator.hasNext()) 
 			{
-				Bullet b = state.getBullets().get(i);
+				var bEntry = bIterator.next();
+				Bullet b = bEntry.getValue();
 				b.move();
 				if (b.getRoom().equals(state.getCurrentPlayer().getRoom()))
 				{
@@ -213,11 +215,11 @@ public class AmongUsInProcessing extends PApplet
 				if (server != null || inPractice) {
 					if (!inRect(b.getX(), b.getY(), 0, 0, 700, 600)) 
 					{
-						state.bullets.remove(i);
+						state.bullets.remove(bEntry.getKey());
 						if (server != null) 
 						{
 							try {
-								server.refreshBullets();
+								server.setBullet(bEntry.getKey(), false);
 							} catch (IOException e) {
 								e.printStackTrace();
 							}

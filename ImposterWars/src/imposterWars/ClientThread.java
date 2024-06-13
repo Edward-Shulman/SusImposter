@@ -87,8 +87,8 @@ public class ClientThread extends Thread
 				case UPDATE_PLAYER:
 					updatePlayer(new UUID(recieve.readLong(), recieve.readLong()), recieve.readNBytes(recievePacket.getLength() - 17));
 					break;
-				case UPDATE_PROJECTILES:
-					updateProjectiles(recieve.readNBytes(recievePacket.getLength() - 1));
+				case PUT_BULLET:
+					setBullet(new UUID(recieve.readLong(), recieve.readLong()), recieve.readBoolean(), new Bullet(recieve.readNBytes(36), AmongUsInProcessing.state.getWindow()));
 					break;
 				case UPDATE_ROOM:
 					updateRoom(new UUID(recieve.readLong(), recieve.readLong()), Rooms.values()[recieve.read()]);
@@ -129,6 +129,14 @@ public class ClientThread extends Thread
 			e.printStackTrace();
 		}
 		socket.close();
+	}
+	
+	private void setBullet(UUID id, boolean add, Bullet b)
+	{
+		if (add)
+			AmongUsInProcessing.state.bullets.put(id, b);
+		else
+			AmongUsInProcessing.state.bullets.remove(id);
 	}
 	
 	private void setPlayers(byte[] buf) throws IOException 
@@ -206,26 +214,26 @@ public class ClientThread extends Thread
 		AmongUsInProcessing.state.bullets.remove(bid);
 	}
 	
-	private void updateProjectiles(byte[] buf) throws IOException 
-	{
-		ByteArrayInputStream bais = new ByteArrayInputStream(buf);
-		DataInputStream read = new DataInputStream(bais);
-		int size = read.readInt();
-		Vector<Bullet> bullets = AmongUsInProcessing.state.getBullets();
-		bullets.clear();
-		try 
-		{
-			for (int i = 0; i < size; i++) 
-			{
-				bullets.add(new Bullet(read.readNBytes(36), AmongUsInProcessing.state.getWindow()));
-			}
-		}
-		catch (BufferUnderflowException e) 
-		{
-			System.out.println(size + "dog");
-		}
-		AmongUsInProcessing.state.bullets = bullets;
-	}
+//	private void updateProjectiles(byte[] buf) throws IOException 
+//	{
+//		ByteArrayInputStream bais = new ByteArrayInputStream(buf);
+//		DataInputStream read = new DataInputStream(bais);
+//		int size = read.readInt();
+//		Vector<Bullet> bullets = AmongUsInProcessing.state.getBullets();
+//		bullets.clear();
+//		try 
+//		{
+//			for (int i = 0; i < size; i++) 
+//			{
+//				bullets.add(new Bullet(read.readNBytes(36), AmongUsInProcessing.state.getWindow()));
+//			}
+//		}
+//		catch (BufferUnderflowException e) 
+//		{
+//			System.out.println(size + "dog");
+//		}
+//		AmongUsInProcessing.state.bullets = bullets;
+//	}
 	
 	private void updateRoom(UUID id, Rooms room) 
 	{

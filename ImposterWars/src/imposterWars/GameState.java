@@ -9,7 +9,7 @@ import processing.core.PApplet;
 public class GameState
 {
 	HashMap<UUID, PlayerClient> players;
-	Vector<Bullet> bullets;
+	HashMap<UUID, Bullet> bullets;
 	Vector<AmmoDrop> ammoDrops;
 	UUID currentPlayerIndex;
 	private PApplet a;
@@ -17,7 +17,7 @@ public class GameState
 	public GameState(PlayerClient initPlayer, PApplet a)
 	{
 		players = new HashMap<>();
-		bullets = new Vector<>();
+		bullets = new HashMap<>();
 		ammoDrops = new Vector<>();
 		this.currentPlayerIndex = UUID.randomUUID();
 		players.put(currentPlayerIndex, initPlayer);
@@ -51,7 +51,7 @@ public class GameState
 		players.remove(id);
 	}
 	
-	public Vector<Bullet> getBullets()
+	public HashMap<UUID, Bullet> getBullets()
 	{
 		return bullets;
 	}
@@ -88,11 +88,13 @@ public class GameState
 		return players.get(currentPlayerIndex);
 	}
 	
-	public void addBullet(UUID owner) 
+	public UUID addBullet(UUID owner) 
 	{
 		PlayerClient player = players.get(owner);
-		bullets.add(new Bullet(player.getX() + 165 * PApplet.cos(player.getRotation()), player.getY() + 165 * PApplet.sin(player.getRotation()), 
+		UUID bid = UUID.randomUUID();
+		bullets.put(bid, new Bullet(player.getX() + 165 * PApplet.cos(player.getRotation()), player.getY() + 165 * PApplet.sin(player.getRotation()), 
 				player.getRColor(), player.getGColor(), player.getBColor(), player.getRotation(), owner, player.getRoom(), a));
+		return bid;
 	}
 	
 	public void setPlayer(UUID id, PlayerClient p) 

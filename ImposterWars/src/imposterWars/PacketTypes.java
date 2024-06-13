@@ -17,7 +17,8 @@ public enum PacketTypes
 	UPDATE_ROTATION(11),
 	REGISTER_HIT(12),
 	UPDATE_PLAYER(13),
-	UPDATE_PLAYERS(14);
+	UPDATE_PLAYERS(14),
+	PUT_BULLET(15);
 	
 	private PacketTypes(int id) 
 	{
