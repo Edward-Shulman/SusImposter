@@ -9,7 +9,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -103,7 +102,8 @@ public class ServerThread extends Thread
 	private void playerConnectionUpdate(byte[] buf, InetSocketAddress addr) throws IOException
 	{
 		ByteArrayInputStream bais = new ByteArrayInputStream(buf);
-		UUID id = UUID.nameUUIDFromBytes(bais.readNBytes(16));
+		DataInputStream d = new DataInputStream(bais);
+		UUID id = new UUID(d.readLong(), d.readLong());
 		if (!AmongUsInProcessing.state.players.containsKey(id))
 		{
 			System.out.println("New player joined (" + addr.getAddress().toString() + ":" + addr.getPort()
@@ -111,7 +111,7 @@ public class ServerThread extends Thread
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			DataOutputStream send = new DataOutputStream(baos);
 			send.write(PacketTypes.UPDATE_PLAYERS.getID());
-			AmongUsInProcessing.state.setPlayer(id, new PlayerClient(buf, 1, buf.length - 1, AmongUsInProcessing.state.getWindow()));
+			AmongUsInProcessing.state.setPlayer(id, new PlayerClient(buf, 16, buf.length - 16, AmongUsInProcessing.state.getWindow()));
 			clients.put(id, addr);
 			send.writeInt(AmongUsInProcessing.state.getPlayerCount());
 			
@@ -119,8 +119,8 @@ public class ServerThread extends Thread
 			while (players.hasNext())
 			{
 				Entry<UUID, PlayerClient> p = players.next();
-				send.write(p.getKey().getMostSignificantBits());
-				send.write(p.getKey().getLeastSignificantBits());
+				send.writeLong(p.getKey().getMostSignificantBits());
+				send.writeLong(p.getKey().getLeastSignificantBits());
 				send.write(p.getValue().toBytes());
 			}
 			for (Entry<UUID, InetSocketAddress> client : clients.entrySet())
