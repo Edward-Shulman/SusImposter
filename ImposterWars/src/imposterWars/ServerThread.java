@@ -239,7 +239,10 @@ public class ServerThread extends Thread
 		send.writeBoolean(add);
 		send.writeLong(id.getMostSignificantBits());
 		send.writeLong(id.getLeastSignificantBits());
-		send.write(AmongUsInProcessing.state.getBullets().get(id).toBytes());
+		if (add)
+			send.write(AmongUsInProcessing.state.getBullets().get(id).toBytes());
+		else
+			send.write(new byte[36]);
 		
 		for (var client : clients.entrySet()) 
 		{
