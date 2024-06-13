@@ -111,14 +111,17 @@ public class ServerThread extends Thread
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			DataOutputStream send = new DataOutputStream(baos);
 			send.write(PacketTypes.UPDATE_PLAYERS.getID());
-			UUID nid = AmongUsInProcessing.state.addPlayer(new PlayerClient(buf, 1, buf.length - 1, AmongUsInProcessing.state.getWindow()));
-			clients.put(nid, addr);
+			AmongUsInProcessing.state.setPlayer(id, new PlayerClient(buf, 1, buf.length - 1, AmongUsInProcessing.state.getWindow()));
+			clients.put(id, addr);
 			send.writeInt(AmongUsInProcessing.state.getPlayerCount());
 			
-			var players = AmongUsInProcessing.state.players.values().iterator();
+			var players = AmongUsInProcessing.state.players.entrySet().iterator();
 			while (players.hasNext())
 			{
-				send.write(players.next().toBytes());
+				Entry<UUID, PlayerClient> p = players.next();
+				send.write(p.getKey().getMostSignificantBits());
+				send.write(p.getKey().getLeastSignificantBits());
+				send.write(p.getValue().toBytes());
 			}
 			for (Entry<UUID, InetSocketAddress> client : clients.entrySet())
 			{
