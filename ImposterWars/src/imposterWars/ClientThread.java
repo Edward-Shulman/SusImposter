@@ -217,7 +217,7 @@ public class ClientThread extends Thread
 		{
 			for (int i = 0; i < size; i++) 
 			{
-				bullets.add(new Bullet(read.readNBytes(21), AmongUsInProcessing.state.getWindow()));
+				bullets.add(new Bullet(read.readNBytes(36), AmongUsInProcessing.state.getWindow()));
 			}
 		}
 		catch (BufferUnderflowException e) 

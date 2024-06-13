@@ -234,7 +234,7 @@ public class ServerThread extends Thread
 
 	public void refreshBullets() throws IOException {
 		Vector<Bullet> bullets = AmongUsInProcessing.state.getBullets();
-		ByteArrayOutputStream baos = new ByteArrayOutputStream(21 * bullets.size() + 5);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(36 * bullets.size() + 5);
 		DataOutputStream send = new DataOutputStream(baos);
 		
 		send.write(PacketTypes.UPDATE_PROJECTILES.getID());
