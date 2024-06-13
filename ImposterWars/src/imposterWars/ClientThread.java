@@ -265,7 +265,7 @@ public class ClientThread extends Thread
 		send.writeLong(AmongUsInProcessing.state.getCurrentPlayerUUID().getMostSignificantBits());
 		send.writeLong(AmongUsInProcessing.state.getCurrentPlayerUUID().getLeastSignificantBits());
 		AmongUsInProcessing.state.getCurrentPlayer().setAmmo(AmongUsInProcessing.state.getCurrentPlayer().getAmmo() - 1);
-		DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), 2, serverAddr);
+		DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), baos.size(), serverAddr);
 		socket.send(sendPacket);
 	}
 	
