@@ -235,7 +235,7 @@ public class AmongUsInProcessing extends PApplet
 							if (server != null) 
 							{
 								try {
-									server.registerHit(pEntry.getKey(), i);
+									server.registerHit(pEntry.getKey(), bEntry.getKey());
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
@@ -253,13 +253,12 @@ public class AmongUsInProcessing extends PApplet
 								}
 								else 
 								{
-									state.removeBullet(i);
+									bIterator.remove();
 								}
 							}
 						}
 					}
 				}
-				i++;
 			}
 		}
 		

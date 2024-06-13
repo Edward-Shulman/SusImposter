@@ -364,7 +364,7 @@ public class ServerThread extends Thread
 		}
 	}
 
-	public void registerHit(UUID id, int bid) throws IOException
+	public void registerHit(UUID id, UUID bid) throws IOException
 	{
 		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
 		Bullet b = AmongUsInProcessing.state.bullets.get(bid);
@@ -390,7 +390,8 @@ public class ServerThread extends Thread
 		send.write(PacketTypes.REGISTER_HIT.getID());
 		send.writeLong(id.getMostSignificantBits());
 		send.writeLong(id.getLeastSignificantBits());
-		send.writeInt(bid);
+		send.writeLong(bid.getMostSignificantBits());
+		send.writeLong(bid.getLeastSignificantBits());
 		send.write(updatedRoom);
 		for (Entry<UUID, InetSocketAddress> client : clients.entrySet()) {
 			DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), baos.size(), client.getValue());

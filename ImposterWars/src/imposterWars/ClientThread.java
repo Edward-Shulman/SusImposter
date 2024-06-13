@@ -82,7 +82,7 @@ public class ClientThread extends Thread
 					updateConnection(new UUID(recieve.readLong(), recieve.readLong()));
 					break;
 				case REGISTER_HIT:
-					registerHit(new UUID(recieve.readLong(), recieve.readLong()), recieve.readInt(), recieve.read());
+					registerHit(new UUID(recieve.readLong(), recieve.readLong()), new UUID(recieve.readLong(), recieve.readLong()), recieve.read());
 					break;
 				case UPDATE_PLAYER:
 					updatePlayer(new UUID(recieve.readLong(), recieve.readLong()), recieve.readNBytes(recievePacket.getLength() - 17));
@@ -192,7 +192,7 @@ public class ClientThread extends Thread
 		AmongUsInProcessing.state.setPlayer(id, new PlayerClient(buf, 0, buf.length, AmongUsInProcessing.state.getWindow()));
 	}
 	
-	private void registerHit(UUID id, int bid, int kRoom) 
+	private void registerHit(UUID id, UUID bid, int kRoom) 
 	{
 		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
 		Bullet b = AmongUsInProcessing.state.bullets.get(bid);

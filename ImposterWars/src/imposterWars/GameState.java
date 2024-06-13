@@ -56,7 +56,7 @@ public class GameState
 		return bullets;
 	}
 	
-	public void removeBullet(int i)
+	public void removeBullet(UUID i)
 	{
 		bullets.remove(i);
 	}
