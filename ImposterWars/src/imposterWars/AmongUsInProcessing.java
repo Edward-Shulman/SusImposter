@@ -207,6 +207,10 @@ public class AmongUsInProcessing extends PApplet
 			{
 				var bEntry = bIterator.next();
 				Bullet b = bEntry.getValue();
+				if (b == null) {
+					bIterator.remove();
+					continue;
+				}
 				b.move();
 				if (b.getRoom().equals(state.getCurrentPlayer().getRoom()))
 				{

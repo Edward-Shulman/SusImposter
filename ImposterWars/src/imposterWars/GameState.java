@@ -101,4 +101,8 @@ public class GameState
 	{
 		players.put(id, p);
 	}
+	
+	public void nullBullet(UUID id) {
+		bullets.put(id, null);
+	}
 }

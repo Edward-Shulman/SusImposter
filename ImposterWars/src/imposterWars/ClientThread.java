@@ -211,7 +211,7 @@ public class ClientThread extends Thread
 		else {
 			p.setHealth(p.getHealth() - 10);
 		}
-		AmongUsInProcessing.state.bullets.remove(bid);
+		AmongUsInProcessing.state.nullBullet(bid);
 	}
 	
 //	private void updateProjectiles(byte[] buf) throws IOException 

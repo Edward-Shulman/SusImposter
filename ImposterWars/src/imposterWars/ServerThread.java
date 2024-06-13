@@ -388,7 +388,8 @@ public class ServerThread extends Thread
 			AmongUsInProcessing.killfeed = new Killfeed(Colors.getByRGB(killer.getRColor(), killer.getGColor(), killer.getBColor()
 				), Colors.getByRGB(p.getRColor(), p.getGColor(), p.getBColor()),AmongUsInProcessing.state.getWindow().millis(), AmongUsInProcessing.state.getWindow());
 		}
-		AmongUsInProcessing.state.removeBullet(bid);
+//		AmongUsInProcessing.state.removeBullet(bid);
+		AmongUsInProcessing.state.nullBullet(bid);
 		
 		send.write(PacketTypes.REGISTER_HIT.getID());
 		send.writeLong(id.getMostSignificantBits());
