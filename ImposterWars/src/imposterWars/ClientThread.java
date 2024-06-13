@@ -311,7 +311,7 @@ public class ClientThread extends Thread
 			break;
 		
 		}
-		DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), 6, serverAddr);
+		DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), baos.size(), serverAddr);
 		socket.send(sendPacket);
 	}
 
@@ -324,7 +324,7 @@ public class ClientThread extends Thread
 		send.writeLong(AmongUsInProcessing.state.getCurrentPlayerUUID().getLeastSignificantBits());
 		send.write(room.getID());
 		
-		DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), 3, serverAddr);
+		DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), baos.size(), serverAddr);
 		socket.send(sendPacket);
 	}
 }

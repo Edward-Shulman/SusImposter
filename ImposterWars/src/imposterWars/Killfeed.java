@@ -29,14 +29,19 @@ public class Killfeed {
 		
 		a.fill(0);
 		a.beginShape();
-		a.vertex(590, 20);
-		a.vertex(620, 20);
-		a.vertex(620, 30);
-		a.vertex(600, 30);
-		a.vertex(600, 40);
-		a.vertex(590, 40);
+		a.vertex(590, 15);
+		a.vertex(620, 15);
+		a.vertex(620, 25);
+		a.vertex(600, 25);
+		a.vertex(600, 35);
+		a.vertex(590, 35);
 		a.endShape(PApplet.CLOSE);
-		
+		a.stroke(0);
+		a.strokeWeight(2);
+		a.noFill();
+		a.arc(600, 25, 5, 5, 0, PApplet.HALF_PI);
+
+		a.noStroke();
 		a.fill(killedColor.getR(), killedColor.getG(), killedColor.getB());
 		a.text(killedColor.toString(), 630, 30);
 	}

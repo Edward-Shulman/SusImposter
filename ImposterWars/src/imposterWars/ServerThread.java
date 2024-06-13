@@ -133,9 +133,9 @@ public class ServerThread extends Thread
 		}
 		
 		AmongUsInProcessing.state.removePlayer(id);
-		ByteArrayOutputStream send = new ByteArrayOutputStream(2);
+		ByteArrayOutputStream send = new ByteArrayOutputStream(17);
 		send.write(PacketTypes.UPDATE_CONNECTION.getID());
-		send.write(buf[0]);
+		send.write(buf, 1, 16);
 		clients.remove(id);
 		for (Entry<UUID, InetSocketAddress> client : clients.entrySet())
 		{
