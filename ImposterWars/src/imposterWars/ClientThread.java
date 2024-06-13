@@ -88,7 +88,7 @@ public class ClientThread extends Thread
 					updatePlayer(new UUID(recieve.readLong(), recieve.readLong()), recieve.readNBytes(recievePacket.getLength() - 17));
 					break;
 				case PUT_BULLET:
-					setBullet(new UUID(recieve.readLong(), recieve.readLong()), recieve.readBoolean(), recieve.readNBytes(36));
+					setBullet(recieve.readBoolean(), new UUID(recieve.readLong(), recieve.readLong()), recieve.readNBytes(36));
 					break;
 				case UPDATE_ROOM:
 					updateRoom(new UUID(recieve.readLong(), recieve.readLong()), Rooms.values()[recieve.read()]);
@@ -131,7 +131,7 @@ public class ClientThread extends Thread
 		socket.close();
 	}
 	
-	private void setBullet(UUID id, boolean add, byte[] buf)
+	private void setBullet(boolean add, UUID id, byte[] buf)
 	{
 		if (add)
 			AmongUsInProcessing.state.bullets.put(id, new Bullet(buf, AmongUsInProcessing.state.getWindow()));
