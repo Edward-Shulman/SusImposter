@@ -227,7 +227,8 @@ public class ServerThread extends Thread
 	
 	public void shot(UUID id) throws IOException 
 	{
-		AmongUsInProcessing.state.getPlayer(id).setAmmo(AmongUsInProcessing.state.getCurrentPlayer().getAmmo() - 1);
+		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
+		p.setAmmo(p.getAmmo() - 1);
 		setBullet(AmongUsInProcessing.state.addBullet(id), true);
 	}
 	
