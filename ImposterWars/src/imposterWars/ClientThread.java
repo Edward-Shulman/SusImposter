@@ -10,7 +10,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
-import java.nio.BufferUnderflowException;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.Vector;
@@ -116,7 +115,6 @@ public class ClientThread extends Thread
 			dcStream.writeLong(AmongUsInProcessing.state.getCurrentPlayerUUID().getMostSignificantBits());
 			dcStream.writeLong(AmongUsInProcessing.state.getCurrentPlayerUUID().getLeastSignificantBits());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		DatagramPacket dcPacket = new DatagramPacket(baos.toByteArray(), 2, serverAddr);
@@ -213,27 +211,6 @@ public class ClientThread extends Thread
 		}
 		AmongUsInProcessing.state.nullBullet(bid);
 	}
-	
-//	private void updateProjectiles(byte[] buf) throws IOException 
-//	{
-//		ByteArrayInputStream bais = new ByteArrayInputStream(buf);
-//		DataInputStream read = new DataInputStream(bais);
-//		int size = read.readInt();
-//		Vector<Bullet> bullets = AmongUsInProcessing.state.getBullets();
-//		bullets.clear();
-//		try 
-//		{
-//			for (int i = 0; i < size; i++) 
-//			{
-//				bullets.add(new Bullet(read.readNBytes(36), AmongUsInProcessing.state.getWindow()));
-//			}
-//		}
-//		catch (BufferUnderflowException e) 
-//		{
-//			System.out.println(size + "dog");
-//		}
-//		AmongUsInProcessing.state.bullets = bullets;
-//	}
 	
 	private void updateRoom(UUID id, Rooms room) 
 	{

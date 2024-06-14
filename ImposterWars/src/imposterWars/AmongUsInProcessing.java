@@ -188,19 +188,6 @@ public class AmongUsInProcessing extends PApplet
 			rotatePlayer();
 			
 			i = 0;
-//			while (i < bullets.size())
-//			{
-//				Bullet b = bullets.get(i);
-//				b.draw();
-//				if (b.move()) 
-//				{
-//					i++;
-//				}
-//				else
-//				{
-//					bullets.remove(i);
-//				}
-//			}
 			
 			var bIterator = state.getBullets().entrySet().iterator();
 			while (bIterator.hasNext()) 

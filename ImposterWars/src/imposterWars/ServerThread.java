@@ -176,7 +176,6 @@ public class ServerThread extends Thread
 	
 	private void playerYMovement(UUID id, float vY) throws IOException 
 	{
-		System.out.println(id + " " + vY);
 		PlayerClient p = AmongUsInProcessing.state.getPlayer(id);
 		p.setvY(vY);
 		PacketTypes response;
@@ -251,25 +250,6 @@ public class ServerThread extends Thread
 			socket.send(sendPacket);
 		}
 	}
-
-//	public void refreshBullets() throws IOException {
-//		Vector<Bullet> bullets = AmongUsInProcessing.state.getBullets();
-//		ByteArrayOutputStream baos = new ByteArrayOutputStream(36 * bullets.size() + 5);
-//		DataOutputStream send = new DataOutputStream(baos);
-//		
-//		send.write(PacketTypes.UPDATE_PROJECTILES.getID());
-//		send.writeInt(bullets.size());
-//		for (Bullet b : bullets) 
-//		{
-//			send.write(b.toBytes());
-//		}
-//		
-//		for (Entry<UUID, InetSocketAddress> client : clients.entrySet()) 
-//		{
-//			DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), send.size(), client.getValue());
-//			socket.send(sendPacket);
-//		}
-//	}
 	
 	public void updateRotation(UUID id, float rot) throws IOException 
 	{
@@ -389,7 +369,6 @@ public class ServerThread extends Thread
 			AmongUsInProcessing.killfeed = new Killfeed(Colors.getByRGB(killer.getRColor(), killer.getGColor(), killer.getBColor()
 				), Colors.getByRGB(p.getRColor(), p.getGColor(), p.getBColor()),AmongUsInProcessing.state.getWindow().millis(), AmongUsInProcessing.state.getWindow());
 		}
-//		AmongUsInProcessing.state.removeBullet(bid);
 		AmongUsInProcessing.state.nullBullet(bid);
 		
 		send.write(PacketTypes.REGISTER_HIT.getID());
@@ -398,7 +377,8 @@ public class ServerThread extends Thread
 		send.writeLong(bid.getMostSignificantBits());
 		send.writeLong(bid.getLeastSignificantBits());
 		send.write(updatedRoom);
-		for (Entry<UUID, InetSocketAddress> client : clients.entrySet()) {
+		for (Entry<UUID, InetSocketAddress> client : clients.entrySet()) 
+		{
 			DatagramPacket sendPacket = new DatagramPacket(baos.toByteArray(), baos.size(), client.getValue());
 			socket.send(sendPacket);
 		}
